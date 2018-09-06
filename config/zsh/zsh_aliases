@@ -1,0 +1,10 @@
+export MDV_THEME=729.8953
+alias cpdir='cp -rf'
+alias agrep='egrep --color=auto -rIin'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias mdown="mdv -c 80 $1"
+alias mkdir_today="mkdir $(date +%F)"
+
+[ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_aliases" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_aliases"

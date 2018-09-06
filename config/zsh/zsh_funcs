@@ -1,0 +1,69 @@
+function tex_to_pdf {
+	pdflatex $1
+}
+
+function md_to_pdf {
+	pandoc -o "$1.pdf" "$1"
+}
+
+function dmalloc {
+	eval `command dmalloc -b $*`;
+}
+
+function fid {
+	local _dir
+	local _name
+	local _params
+	local _cmd_ret=0
+
+	if [ "$#" -eq "0" ]
+	then
+		_cmd_ret=0
+
+	elif [ "$#" -le "2" ]
+	then
+		if [ "$#" -eq "1" ]
+		then
+			_dir="."
+			_name="$1"
+		else
+			_dir="$1"
+			_name="$2"
+		fi
+		find "$_dir" -name "$_name"
+		_cmd_ret=$?
+
+	else
+		_dir="$1"
+		_name="$2"
+		_params="${@:3}"
+		find "$_dir" "$_params" -name "$_name"
+		_cmd_ret=$?
+	fi
+
+	return $_cmd_ret
+}
+
+function grep_libdep {
+	local _pattern="$1"
+	local _needle="$2"
+
+	for f in $(fid . "$_pattern"); do
+		echo "===== FILE: \"$f\" =====";
+		readelf -a "$f" | grep "$_needle";
+	done
+	echo "==== DONE ====";
+}
+
+function grep_symbols {
+	local _pattern="$1"
+	local _needle="$2"
+
+	for f in $(fid . "$_pattern"); do
+		echo "===== FILE: \"$f\" =====";
+		nm -alC "$f" | grep "$_needle";
+	done
+	echo "===== DONE =====";
+}
+
+[ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs"
