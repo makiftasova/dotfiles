@@ -1,0 +1,16 @@
+export TERM="xterm-256color"
+
+export VK_SDK_PATH="/opt/VulkanSDK/1.1.73.0/x86_64"
+export VK_LAYER_PATH="$VK_SDK_PATH/etc/explicit_layer.d"
+
+export RETDEC_INSTALL_DIR="$HOME/github/retdec"
+
+export GOPATH="$HOME/.gopath"
+
+PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+PATH="$HOME/.fzf/bin:$VK_SDK_PATH/bin:/usr/local/bin:$PATH"
+export PATH="$PATH:/opt/git-secrets:/usr/lib/go-1.9/bin:$GOPATH/bin:/opt/crosstool/bin"
+
+export LD_LIBRARY_PATH="$VK_SDK_PATH/lib:$LD_LIBRARY_PATH"
+
+[ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_env" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_env"
