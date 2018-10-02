@@ -66,4 +66,14 @@ function grep_symbols {
 	echo "===== DONE =====";
 }
 
+function sizeof {
+	local _dir=$(readlink -f "$1")
+	local _root=$(pwd)
+
+	cd "$_dir"
+	# echo "$_dir"
+	du -csh ./*
+	cd "$_root"
+}
+
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs"
