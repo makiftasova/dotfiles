@@ -1,0 +1,22 @@
+[user]
+	name = Mehmet Akif TASOVA
+	email = makiftasova@gmail.com
+[core]
+	editor = nvim
+[commit]
+	template = /home/makiftasova/.git_log_template
+[references]
+	path = /opt/GIT_REFERENCE_REPOSITORIES
+
+[alias]
+	l="!f() { git log --pretty=oneline --graph --abbrev-commit; }; f"
+	files= "!f() { git show --pretty='' --name-only $@; }; f"
+	patch-files = "!f() { git reset --hard $1; git reset --soft $1^; git diff --cached --name-only | while read x;do git commit -m \"$x\" -- \"$x\"; done; }; f"
+	ipatch = "!f() { git apply $@; git add -p; }; f"
+	pub = "!f() { git push -u ${1:-origin} --no-thin HEAD:`git config branch.$(git name-rev --name-only HEAD).merge | sed -e 's@refs/heads/@refs/for/@'`;  }; f"
+	draft-pub = "!f() { git push -u ${1:-origin} --no-thin HEAD:`git config branch.$(git name-rev --name-only HEAD).merge | sed -e 's@refs/heads/@refs/drafts/@'`;  }; f"
+	topic-pub = "!f() { git push -u ${2:-origin} --no-thin HEAD:`git config branch.$(git name-rev --name-only HEAD).merge | sed -e 's@refs/heads/@refs/for/@' | sed 's@$@/'$1'@'`;  }; f"
+[push]
+	default = simple
+[merge]
+	tool = meld
