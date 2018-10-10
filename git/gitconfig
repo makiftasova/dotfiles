@@ -9,7 +9,8 @@
 	path = /opt/GIT_REFERENCE_REPOSITORIES
 
 [alias]
-	l="!f() { git log --pretty=oneline --graph --abbrev-commit; }; f"
+	l = "!f() { git log --pretty=oneline --graph --abbrev-commit; }; f"
+	lr = "!f() { git log --pretty=oneline --graph --abbrev-commit $1..HEAD; }; f"
 	files= "!f() { git show --pretty='' --name-only $@; }; f"
 	patch-files = "!f() { git reset --hard $1; git reset --soft $1^; git diff --cached --name-only | while read x;do git commit -m \"$x\" -- \"$x\"; done; }; f"
 	ipatch = "!f() { git apply $@; git add -p; }; f"
