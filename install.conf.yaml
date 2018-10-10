@@ -6,9 +6,6 @@
 - clean: ['~', '~/.config']
 
 - link:
-        ~/.vimrc: vimrc
-        ~/.zshrc: config/zsh/zshrc
-        ~/.zprofile: zprofile
         ~/.config/i3:
                 path: config/i3/
                 create: true
@@ -16,3 +13,7 @@
                 path: config/zsh
                 create: true
                 force: true
+        ~/.gitconfig: git/gitconfig
+        ~/.vimrc: vimrc
+        ~/.zprofile: zprofile
+        ~/.zshrc: config/zsh/zshrc
