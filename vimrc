@@ -191,6 +191,7 @@ if has('cscope')
 	"set cscopetag cscopeverbose "makes cscope plug to print verbose messages
 	set nosplitright
 	set cst
+	set nocscopeverbose
 
 	if has('quickfix')
 		set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
