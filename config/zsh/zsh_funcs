@@ -76,4 +76,28 @@ function sizeof {
 	cd "$_root"
 }
 
+function repo_rinse {
+	git clean -xfd
+	git submodule foreach --recursive git clean -xfd
+	git reset --hard
+	git submodule foreach --recursive git reset --hard
+	git submodule update --init --recursive
+}
+
+function repo_prune {
+	local _cwd=$(pwd)
+
+	if [ "$#" -ne "0" ]
+	then
+		cd "$1"
+	fi
+
+	git remote prune origin
+
+	if [ "$#" -ne "0" ]
+	then
+		cd "$_cwd"
+	fi
+}
+
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs"
