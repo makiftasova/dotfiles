@@ -220,6 +220,7 @@ bar {
         tray_output primary
 }
 
+exec --no-startup-id setxkbmap us
 exec --no-startup-id "xrandr --output eDP1 --mode 1920x1080 --pos 2560x0 --rotate normal --output DP1-2 --primary --mode 2560x1080 --pos 0x0 --rotate normal --output HDMI2 --off --output HDMI1 --off --output DP1 --off --output DP1-3 --off --output DP2 --off --output DP1-1 --off"
 exec --no-startup-id feh --bg-max ~/.config/i3/wallpaper.png
 #exec --no-startup-id redshift-gtk -l 41.015137:28.979530 -t 5500:4500
