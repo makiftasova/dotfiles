@@ -10,6 +10,14 @@ function dmalloc {
 	eval `command dmalloc -b $*`;
 }
 
+function mkcd {
+	mkdir -p "$1" && cd "$1"
+}
+
+function ftar {
+	tar cvf "$1.tar" "$1"
+}
+
 function fid {
 	local _dir
 	local _name
