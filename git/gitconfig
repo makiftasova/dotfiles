@@ -20,7 +20,8 @@
 [push]
 	default = simple
 [merge]
-	tool = meld
+	tool = vimdiff
+	renameLimit = 1271
 [color]
 	ui = true
 [color "diff-highlight"]
