@@ -72,13 +72,12 @@ COMPLETION_WAITING_DOTS="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git git-flow gitfast)
-plugins+=(k)
 plugins+=(zsh-autosuggestions)
 plugins+=(jsontools)
 plugins+=(command-not-found)
 plugins+=(rust rustup cargo)
-plugins+=(zsh-autosuggestions)
 plugins+=(fzf)
+#plugins+=(k)
 #plugins+=(rg)
 #plugins+=(last-working-dir)
 
