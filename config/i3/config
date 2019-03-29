@@ -202,6 +202,9 @@ bindsym $mod+r mode "resize"
 bindsym $mod+m exec --no-startup-id xrandr --output eDP1 --off
 bindsym $mod+Shift+m exec --no-startup-id xrandr --output eDP1 --auto --left-of DP1-2
 
+bindsym $mod+n exec --no-startup-id xrandr --output DP1-2 --primary --mode 2560x1080 --pos 0x0 --output eDP1 --off
+bindsym $mod+Shift+n exec --no-startup-id xrandr --output eDP1 --primary --auto --pos 0x0 --output DP1-2 --off
+
 bindsym $mod+Control+h move workspace to output left
 bindsym $mod+Control+j move workspace to output down
 bindsym $mod+Control+k move workspace to output up
