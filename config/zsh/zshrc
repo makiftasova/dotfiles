@@ -125,4 +125,6 @@ alias ohmyzsh="$EDITOR ~/.oh-my-zsh"
 [ -f "$ZSH_CONFIG_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_HOME/zsh_funcs"
 [ -f "$ZSH_CONFIG_HOME/zsh_aliases" ] && source "$ZSH_CONFIG_HOME/zsh_aliases"
 
-source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ -r /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+	source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
