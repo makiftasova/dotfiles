@@ -108,4 +108,15 @@ function repo_prune {
 	fi
 }
 
+function git_refs_gc {
+	local __pwd="$(pwd)"
+	local __refs_path="$(git config --global references.path)"
+	for d in $(ls -l "$__refs_path" | grep '^d' | awk '{ print $9 }'); do
+		cd "$__refs_path/$d";
+		echo "git gc for repository $d";
+		git gc;
+	done
+	cd "$__pwd" ;
+}
+
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs"
