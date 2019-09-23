@@ -382,59 +382,13 @@ function! g:committia_hooks.edit_open(info)
 endfunction
 
 let g:clang_format#style_options = {
-			\ "AlignAfterOpenBracket" : "Align",
-			\ "AlignConsecutiveAssignments" : "false",
-			\ "AlignConsecutiveDeclarations" : "false",
-			\ "AlignEscapedNewlines" : "Left",
-			\ "AlignOperands" : "true",
-			\ "AlignTrailingComments" : "true",
-			\ "AllowAllParametersOfDeclarationOnNextLine" : "false",
-			\ "AllowShortBlocksOnASingleLine" : "false",
-			\ "AllowShortCaseLabelsOnASingleLine" : "false",
-			\ "AllowShortFunctionsOnASingleLine" : "None",
-			\ "AllowShortIfStatementsOnASingleLine" : "false",
-			\ "AllowShortLoopsOnASingleLine" : "false",
-			\ "AlwaysBreakAfterReturnType" : "None",
-			\ "AlwaysBreakBeforeMultilineStrings" : "false",
-			\ "BinPackArguments" : "false",
-			\ "BinPackParameters" : "false",
-			\ "BreakBeforeBinaryOperators" : "None",
-			\ "BreakBeforeBraces" : "Linux",
-			\ "BreakBeforeInheritanceComma" : "false",
-			\ "BreakBeforeTernaryOperators" : "false",
-			\ "BreakStringLiterals" : "false",
-			\ "ColumnLimit" : 100,
-			\ "Cpp11BracedListStyle" : "false",
-			\ "ForEachMacros" : "['RANGES_FOR', 'FOREACH', 'FOR_EACH', 'TAILQ_FOREACH', 'TAILQ_FOREACH_SAFE']",
-			\ "IndentCaseLabels" : "false",
-			\ "IndentPPDirectives" : "None",
-			\ "IndentWidth" : 8,
-			\ "IndentWrappedFunctionNames" : "false",
-			\ "KeepEmptyLinesAtTheStartOfBlocks" : "false",
-			\ "MaxEmptyLinesToKeep" : 1,
-			\ "NamespaceIndentation" : "All",
-			\ "PointerAlignment" : "Right",
-			\ "ReflowComments" : "true",
-			\ "SortIncludes" : "false",
-			\ "SpaceAfterCStyleCast" : "false",
-			\ "SpaceAfterTemplateKeyword" : "false",
-			\ "SpaceBeforeAssignmentOperators" : "true",
-			\ "SpaceBeforeParens" : "ControlStatements",
-			\ "SpaceInEmptyParentheses" : "false",
-			\ "SpacesInAngles" : "false",
-			\ "SpacesInCStyleCastParentheses" : "false",
-			\ "SpacesInContainerLiterals" : "false",
-			\ "SpacesInParentheses" : "false",
-			\ "SpacesInSquareBrackets" : "false",
-			\ "Standard" : "Cpp11",
-			\ "TabWidth" : 8,
-			\ "UseTab" : "Always",
-			\ "PenaltyBreakAssignment" : 20,
-			\ "PenaltyBreakBeforeFirstCallParameter" : 1000,
-			\ "PenaltyBreakComment" : 10,
-			\ "PenaltyBreakString" : 30,
-			\ "PenaltyExcessCharacter" : 1,
-			\ "PenaltyReturnTypeOnItsOwnLine" : 100	}
+		\ "BasedOnStyle" : "LLVM",
+		\ "IndentWidth" : 8,
+		\ "UseTab" : "Always",
+		\ "BreakBeforeBraces" : "Linux",
+		\ "AllowShortIfStatementsOnASingleLine" : "false",
+		\ "IndentCaseLabels" : "false"
+	\}
 
 " map to <Leader>cf in C++ code
 autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
@@ -529,7 +483,7 @@ else
 	let g:neocomplete#enable_at_startup = 1
 endif
 let g:gitgutter_max_signs = 2000
-let g:clang_format#command = "clang-format-6.0"
+let g:clang_format#command = "clang-format"
 "slimv
 let g:slimv_swank_cmd = '! tmux new-window -d -n REPL-SBCL "sbcl --load ~/.vim/bundle/slimv/slime/start-swank.lisp"'
 let g:ctrlp_map = ''
