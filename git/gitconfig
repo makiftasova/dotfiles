@@ -4,10 +4,7 @@
 [core]
 	editor = nvim
 [commit]
-	template = /home/makiftasova/.git_log_template
-[references]
-	path = /opt/GIT_REFERENCE_REPOSITORIES
-
+	template = ~/.gitmessage
 [alias]
 	l = "!f() { git log --pretty=oneline --graph --abbrev-commit; }; f"
 	lr = "!f() { git log --pretty=oneline --graph --abbrev-commit $1..HEAD; }; f"
