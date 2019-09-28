@@ -2,7 +2,7 @@
 	name = Mehmet Akif TASOVA
 	email = makiftasova@gmail.com
 [core]
-	editor = nvim
+	editor = vim
 [commit]
 	template = ~/.gitmessage
 [alias]
