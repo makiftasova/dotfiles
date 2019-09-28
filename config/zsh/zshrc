@@ -13,7 +13,7 @@ fi
 zstyle -e ':completion:*' special-dirs '[[ $PREFIX = (../)#(|.|..) ]] && reply=(..)'
 
 # Path to your oh-my-zsh installation.
-export ZSH=/home/makiftasova/.oh-my-zsh
+export ZSH=$HOME/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -75,7 +75,7 @@ plugins=(git git-flow gitfast)
 plugins+=(zsh-autosuggestions)
 plugins+=(jsontools)
 plugins+=(command-not-found)
-plugins+=(rust rustup cargo)
+plugins+=(rust cargo)
 plugins+=(fzf)
 #plugins+=(k)
 #plugins+=(rg)
