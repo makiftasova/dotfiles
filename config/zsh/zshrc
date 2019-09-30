@@ -73,6 +73,7 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git git-flow gitfast)
 plugins+=(zsh-autosuggestions)
+plugins+=(zsh-syntax-highlighting)
 plugins+=(jsontools)
 plugins+=(command-not-found)
 plugins+=(rust cargo)
@@ -124,7 +125,3 @@ alias ohmyzsh="$EDITOR ~/.oh-my-zsh"
 
 [ -f "$ZSH_CONFIG_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_HOME/zsh_funcs"
 [ -f "$ZSH_CONFIG_HOME/zsh_aliases" ] && source "$ZSH_CONFIG_HOME/zsh_aliases"
-
-if [[ -r /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
-	source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-fi
