@@ -6,7 +6,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'sjl/gundo.vim'
-Plug 'xolox/vim-easytags'
+" Plug 'xolox/vim-easytags' " use the version below for universal ctags
+Plug 'JohnStarich/vim-easytags'
 Plug 'majutsushi/tagbar'
 Plug 'junegunn/gv.vim'
 
