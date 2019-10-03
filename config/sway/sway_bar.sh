@@ -7,9 +7,9 @@
 keyboard_input_name="1:1:AT_Translated_Set_2_keyboard"
 
 # Date and time
-date=$(date "+%Y/%m/%d")
+date=$(date "+%F")
 # week=$(date "+w%-V")
-current_time=$(date "+%H:%M")
+current_time=$(date "+%R:%S")
 
 #############
 # Commands
