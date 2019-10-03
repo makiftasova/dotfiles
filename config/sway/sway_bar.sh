@@ -17,6 +17,7 @@ current_time=$(date "+%H:%M")
 # Battery or charger
 battery_charge=$(upower --show-info $(upower --enumerate | grep 'BAT') | egrep "percentage" | awk '{print $2}')
 battery_status=$(upower --show-info $(upower --enumerate | grep 'BAT') | egrep "state" | awk '{print $2}')
+battery_acpi=$(acpi -V | egrep -i "charging" | awk '{print $3  $4  $5}' | tr ',' ' ')
 
 # Audio and multimedia
 audio_volume=$(pamixer --sink `pactl list sinks short | grep RUNNING | awk '{print $1}'` --get-volume)
@@ -70,4 +71,4 @@ else
     audio_active='🔊'
 fi
 
-echo "🎧 $song_status $media_artist - $media_song | ⌨ $language | $network_active $interface_easyname ($ping ms) | 🏋 $loadavg_5min | $audio_active $audio_volume% | $battery_pluggedin $battery_charge | $date_and_week 🕘 $current_time"
+echo "🎧 $song_status $media_artist - $media_song | ⌨ $language | $network_active $interface_easyname ($ping ms) | 🏋 $loadavg_5min | $audio_active $audio_volume% | $battery_pluggedin $battery_acpi | $date_and_week 🕘 $current_time"

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sudo pacman -S --noconfirm --needed zsh git curl terminus-font terminus-font-otb noto-fonts-{cjk,emoji,extra}
+sudo pacman -S --noconfirm --needed acpi zsh git curl terminus-font terminus-font-otb noto-fonts-{cjk,emoji,extra}
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
