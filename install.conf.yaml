@@ -9,6 +9,9 @@
         ~/.config/i3:
                 path: config/i3/
                 create: true
+        ~/.config/sway:
+                path: config/sway/
+                create: true
         ~/.config/zsh:
                 path: config/zsh
                 create: true
