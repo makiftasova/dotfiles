@@ -3,4 +3,6 @@ export TERM="xterm-256color"
 PATH="$HOME/.local/bin:/usr/local/bin:$PATH:/usr/sbin"
 export PATH
 
+export JUPYTERLAB_DIR="$HOME/.local/share/jupyter/lab"
+
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_env" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_env"
