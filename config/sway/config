@@ -221,6 +221,12 @@ input type:keyboard {
 # finds out, if available)
 bar {
         position top
-	status_command i3status -c ~/.config/i3/i3status.conf
-        tray_output primary
+	font "Terminus (TTF)"
+	status_command while $config_dir/sway_bar.sh; do sleep 1; done
+
+	colors {
+		statusline #FFFFFF
+		background #000000AA
+		inactive_workspace #323232AA #323232AA #5C5C5CAA
+	}
 }
