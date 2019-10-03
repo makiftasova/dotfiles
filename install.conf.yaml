@@ -16,6 +16,9 @@
                 path: config/zsh
                 create: true
                 force: true
+        ~/.config/termite:
+                path: config/termite
+                create: true
         ~/.gitconfig: git/gitconfig
         ~/.gitmessage: git/gitmessage
         ~/.vimrc: vimrc
