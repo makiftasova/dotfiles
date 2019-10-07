@@ -142,7 +142,7 @@ set nowrapscan
 set number
 "set relativenumber
 
-set cc=100
+set cc=80
 
 set autoindent
 "set smartindent
