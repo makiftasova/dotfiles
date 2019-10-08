@@ -14,6 +14,10 @@ function mkcd {
 	mkdir -p "$1" && cd "$1"
 }
 
+function mdnote {
+	$EDITOR "$1_$(date +%F).md"
+}
+
 function ftar {
 	tar cvf "$1.tar" "$1"
 }
