@@ -15,6 +15,9 @@ function mkcd {
 }
 
 function mdnote {
+	if [ "$#" != "1" ]; then
+		return -1;
+	fi
 	$EDITOR "$1_$(date +%F).md"
 }
 
