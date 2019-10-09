@@ -99,8 +99,11 @@ export LC_TIME=en_US.UTF-8
 # else
 #   export EDITOR='vim'
 # fi
-
-export EDITOR='vim'
+if [ $(command -v nvim) != "" ]; then
+	export EDITOR='nvim';
+else
+	export EDITOR='vim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
