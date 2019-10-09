@@ -3,7 +3,7 @@ function tex_to_pdf {
 }
 
 function md_to_pdf {
-	pandoc -o "$1.pdf" "$1"
+	pandoc --pdf-engine=pdflatex -V geometry:"top=2cm, bottom=1.5cm, left=2.cm, right=2cm" -o "$1.pdf" "$1"
 }
 
 function dmalloc {
