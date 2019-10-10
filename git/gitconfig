@@ -8,6 +8,7 @@
 [alias]
 	l = "!f() { git log --pretty=oneline --graph --abbrev-commit; }; f"
 	lr = "!f() { git log --pretty=oneline --graph --abbrev-commit $1..HEAD; }; f"
+	lag = "!f() { git log --branches --remotes --tags --graph --oneline --decorate $@; }; f"
 	branch-diff = "!f() { git log --pretty=oneline --abbrev-commit --cherry-pick $1...$2; }; f"
 	files= "!f() { git show --pretty='' --name-only $@; }; f"
 	patch-files = "!f() { git reset --hard $1; git reset --soft $1^; git diff --cached --name-only | while read x;do git commit -m \"$x\" -- \"$x\"; done; }; f"
