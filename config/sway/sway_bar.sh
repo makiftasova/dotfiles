@@ -34,7 +34,7 @@ player_status=$(playerctl status)
 network=$(ip route get 1.1.1.1 | grep -Po '(?<=dev\s)\w+' | cut -f1 -d ' ')
 # interface_easyname grabs the "old" interface name before systemd renamed it
 # interface_easyname=$(dmesg | grep $network | grep renamed | awk 'NF>1{print $NF}')
-network_ip=$(ip addr show dev $network | grep -Po '(?<=inet\s)(\w+\.)+\w+')
+network_ip=""
 #ping=$(ping -c 1 www.archlinux.org | tail -1| awk '{print $4}' | cut -d '/' -f 2 | cut -d '.' -f 1)
 
 # Others
@@ -49,33 +49,34 @@ loadavg=$(cat /proc/loadavg | awk -F ' ' '{print $1" "$2" "$3}')
 
 if [ $battery_status = "discharging" ];
 then
-    battery_pluggedin='⚠'
+	battery_pluggedin='⚠'
 else
-    battery_pluggedin='⚡'
+	battery_pluggedin='⚡'
 fi
 
 if ! [ $network ]
 then
-   network_active="⛔"
+	network_active="⛔"
 else
-   network_active="⇆"
+	network_active="⇆"
+	network_ip=$(ip addr show dev $network | grep -Po '(?<=inet\s)(\w+\.)+\w+')
 fi
 
 if [ "$player_status" = "Playing" ]
 then
-    song_status='▶'
+	song_status='▶'
 elif [ "$player_status" = "Paused" ]
 then
-    song_status='⏸'
+	song_status='⏸'
 else
-    song_status='⏹'
+	song_status='⏹'
 fi
 
 if [ "$audio_is_muted" = "true" ]
 then
-    audio_active='🔇'
+	audio_active='🔇'
 else
-    audio_active='🔊'
+	audio_active='🔊'
 fi
 
 load="🏋"
