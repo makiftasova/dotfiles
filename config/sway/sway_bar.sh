@@ -16,10 +16,10 @@ current_time=$(date "+%R:%S")
 #############
 
 # Battery or charger
-battery=$(upower --enumerate | grep 'BAT')
-battery_charge=$(upower --show-info $battery | egrep "percentage" | awk '{print $2}')
-battery_status=$(upower --show-info $battery | egrep "state" | awk '{print $2}')
-battery_upower=$(upower --show-info $battery | egrep "time to" | awk '{print $4}')
+battery=$(upower --show-info $(upower --enumerate | grep 'BAT'))
+battery_charge=$(echo "$battery" | egrep "percentage" | awk '{print $2}')
+battery_status=$(echo "$battery" | egrep "state" | awk '{print $2}')
+battery_upower=$(echo "$battery" | egrep "time to" | awk '{print $4}')
 # battery_acpi=$(acpi -V | egrep -i "charging" | awk '{print $3  $4  $5}' | tr ',' ' ')
 
 # Audio and multimedia
