@@ -25,7 +25,7 @@ set $term termite
 set $config_dir $HOME/.config/sway
 
 # set bacgground
-output * bg $config_dir/wallpaper.png fill
+output * bg  /usr/share/backgrounds/archlinux/archlinux-simplyblack.png fill
 
 focus_follows_mouse no
 # Use Mouse+$mod to drag floating windows to their wanted position
