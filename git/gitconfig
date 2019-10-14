@@ -6,18 +6,15 @@
 [commit]
 	template = ~/.gitmessage
 [alias]
-	l = "!f() { git log --pretty=oneline --graph --abbrev-commit; }; f"
+	l = log --pretty=oneline --graph --abbrev-commit
 	lr = "!f() { git log --pretty=oneline --graph --abbrev-commit $1..HEAD; }; f"
-	lag = "!f() { git log --branches --remotes --tags --graph --oneline --decorate $@; }; f"
+	lag = log --branches --remotes --tags --graph --oneline --decorate
 	branch-diff = "!f() { git log --pretty=oneline --abbrev-commit --cherry-pick $1...$2; }; f"
 	daemon-readonly = !git daemon --base-path=. --export-all --reuseaddr --informative-errors --verbose
 	daemon-writeable = !git daemon --base-path=. --export-all --enable=receive-pack --reuseaddr --informative-errors --verbose
-	files= "!f() { git show --pretty='' --name-only $@; }; f"
+	files = show --pretty='' --name-only
 	patch-files = "!f() { git reset --hard $1; git reset --soft $1^; git diff --cached --name-only | while read x;do git commit -m \"$x\" -- \"$x\"; done; }; f"
 	ipatch = "!f() { git apply $@; git add -p; }; f"
-	pub = "!f() { git push -u ${1:-origin} --no-thin HEAD:`git config branch.$(git name-rev --name-only HEAD).merge | sed -e 's@refs/heads/@refs/for/@'`;  }; f"
-	draft-pub = "!f() { git push -u ${1:-origin} --no-thin HEAD:`git config branch.$(git name-rev --name-only HEAD).merge | sed -e 's@refs/heads/@refs/drafts/@'`;  }; f"
-	topic-pub = "!f() { git push -u ${2:-origin} --no-thin HEAD:`git config branch.$(git name-rev --name-only HEAD).merge | sed -e 's@refs/heads/@refs/for/@' | sed 's@$@/'$1'@'`;  }; f"
 [push]
 	default = simple
 [merge]
