@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-sudo pacman -S --noconfirm --needed acpi zsh git curl playerctl pamixer termite termite-terminfo terminus-font archlinux-wallpaper terminus-font-otb noto-fonts-{cjk,emoji,extra}
+sudo pacman -S --noconfirm --needed acpi zsh git curl playerctl pamixer \
+	termite termite-terminfo terminus-font archlinux-wallpaper \
+	terminus-font-otb xorg-fonts-alias wallutils \
+	noto-fonts-{cjk,emoji,extra}
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
