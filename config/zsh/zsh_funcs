@@ -99,6 +99,14 @@ function repo_rinse {
 	git submodule update --init --recursive
 }
 
+function git_gc_prune_all {
+	for f in $(find $(pwd) -name ".git" -type d); do
+		echo "processing: $f"
+		git -C $(dirname $f) gc --aggressive --prune=all;
+		echo "done: $f"
+	done
+}
+
 function repo_prune {
 	local _cwd=$(pwd)
 
