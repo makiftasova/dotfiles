@@ -1,3 +1,3 @@
 
-export GOROOT="/usr/lib/go-1.9"
+export GOROOT="/usr/lib/go"
 export PATH="$HOME/.cargo/bin:$PATH:$GOROOT/bin"
