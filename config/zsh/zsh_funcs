@@ -1,3 +1,26 @@
+function find_exec_in_path {
+	# $1 is executable name
+	local __tmp=$(mktemp)
+	for dir in $(echo $PATH | tr ':' '\n'); do
+		find "$dir" -type f -perm /111 -name "$1" >> "$__tmp"
+	done
+	head -1 "$__tmp"
+	rm "$__tmp"
+}
+
+function ed {
+	local __exec=$(find_exec_in_path "ed")
+	local __prompt="$ED_PROMPT"
+	if [ -z "$__exec" ] ; then
+		echo "ed not found in PATH";
+		return 1;
+	fi
+	if [ -z "$__prompt" ] ; then
+		__prompt="ed> "
+	fi
+	eval "$__exec" "-p" "\"$__prompt\"" "$@"
+}
+
 function tex_to_pdf {
 	pdflatex $1
 }
