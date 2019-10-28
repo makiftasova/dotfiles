@@ -1,11 +1,6 @@
 function find_exec_in_path {
 	# $1 is executable name
-	local __tmp=$(mktemp)
-	for dir in $(echo $PATH | tr ':' '\n'); do
-		find "$dir" -type f -perm /111 -name "$1" >> "$__tmp"
-	done
-	head -1 "$__tmp"
-	rm "$__tmp"
+	which -a "$1" | grep -e "^/" | head -1
 }
 
 function ed {
