@@ -1,11 +1,15 @@
 #! /usr/bin/env bash
 
+##############
+# Functions
+##############
+
+# startswith() { case $1 in "$2"*) true;; *) false;; esac; }
+
 # Change this according to your device
 ################
 # Variables
 ################
-
-startswith() { case $1 in "$2"*) true;; *) false;; esac; }
 
 # Keyboard input name
 # keyboard_input_name="1:1:AT_Translated_Set_2_keyboard"
@@ -42,7 +46,13 @@ network=$(ip route get 1.1.1.1 | grep -Po '(?<=dev\s)\w+' | cut -f1 -d ' ')
 network_ip=""
 #ping=$(ping -c 1 www.archlinux.org | tail -1| awk '{print $4}' | cut -d '/' -f 2 | cut -d '.' -f 1)
 #wifi_ssid=$(nmcli dev wifi list --rescan no | grep -e "^*" | cut -f8 -d ' ')
+network_info=$(nmcli dev show "$network")
+network_type=$(echo "$network_info" | grep "TYPE" | awk '{split($0,a,":"); gsub("(^[ \t]+)|([ \t]+$)", "", a[2]); print a[2]}')
 wifi_ssid=""
+if [ "$network_type" = "wifi" ];
+then
+	wifi_ssid=": $( echo "$network_info" | grep "CONNECTION" | awk '{split($0,a,":"); gsub("(^[ \t]+)|([ \t]+$)", "", a[2]); print a[2]}')``"
+fi
 
 # Others
 language=$(swaymsg -r -t get_inputs |\
@@ -67,11 +77,6 @@ then
 else
 	network_active="⇆"
 	network_ip=$(ip addr show dev "$network" | grep -Po '(?<=inet\s)(\w+\.)+\w+')
-fi
-
-if startswith "$network" "wlo";
-then
-	wifi_ssid=": $(nmcli dev wifi list --rescan no | grep -e '^\*' | cut -f8 -d ' ')"
 fi
 
 #if [ "$player_status" = "Playing" ]
