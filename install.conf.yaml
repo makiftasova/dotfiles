@@ -19,6 +19,9 @@
         ~/.config/termite:
                 path: config/termite
                 create: true
+        ~/.config/nvim:
+                path: config/nvim
+                create: true
         ~/.gitconfig: git/gitconfig
         ~/.gitmessage: git/gitmessage
         ~/.vimrc: vimrc
