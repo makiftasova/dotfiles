@@ -107,7 +107,6 @@ set backspace=indent,eol,start
 "set shiftwidth=4
 "set softtabstop=0
 set smarttab
-"set expandtablet g:clang_format#command = 'clang-format-3.5'
 
 " tabstop:          Width of tab character
 " " softtabstop:      Fine tunes the amount of white space to be added
@@ -382,14 +381,104 @@ function! g:committia_hooks.edit_open(info)
 
 endfunction
 
+" clang-format options
+let g:clang_format#command = "clang-format"
 let g:clang_format#style_options = {
-		\ "BasedOnStyle" : "LLVM",
-		\ "IndentWidth" : 8,
-		\ "UseTab" : "Always",
-		\ "BreakBeforeBraces" : "Linux",
-		\ "AllowShortIfStatementsOnASingleLine" : "false",
-		\ "IndentCaseLabels" : "false"
-	\}
+			\ "AccessModifierOffset": -4,
+			\ "AlignAfterOpenBracket": "Align",
+			\ "AlignConsecutiveAssignments": "false",
+			\ "AlignConsecutiveDeclarations": "false",
+			\ "AlignEscapedNewlines": "Left",
+			\ "AlignOperands": "true",
+			\ "AlignTrailingComments": "false",
+			\ "AllowAllParametersOfDeclarationOnNextLine": "false",
+			\ "AllowShortBlocksOnASingleLine": "false",
+			\ "AllowShortCaseLabelsOnASingleLine": "false",
+			\ "AllowShortFunctionsOnASingleLine": "None",
+			\ "AllowShortIfStatementsOnASingleLine": "false",
+			\ "AllowShortLoopsOnASingleLine": "false",
+			\ "AlwaysBreakAfterDefinitionReturnType": "None",
+			\ "AlwaysBreakAfterReturnType": "None",
+			\ "AlwaysBreakBeforeMultilineStrings": "false",
+			\ "AlwaysBreakTemplateDeclarations": "false",
+			\ "BinPackArguments": "true",
+			\ "BinPackParameters": "true",
+			\ "BraceWrappingAfterClass": "false",
+			\ "BraceWrappingAfterControlStatement": "false",
+			\ "BraceWrappingAfterEnum": "false",
+			\ "BraceWrappingAfterFunction": "true",
+			\ "BraceWrappingAfterNamespace": "true",
+			\ "BraceWrappingAfterObjCDeclaration": "false",
+			\ "BraceWrappingAfterStruct": "false",
+			\ "BraceWrappingAfterUnion": "false",
+			\ "BraceWrappingAfterExternBlock": "false",
+			\ "BraceWrappingBeforeCatch": "false",
+			\ "BraceWrappingBeforeElse": "false",
+			\ "BraceWrappingIndentBraces": "false",
+			\ "BraceWrappingSplitEmptyFunction": "true",
+			\ "BraceWrappingSplitEmptyRecord": "true",
+			\ "BraceWrappingSplitEmptyNamespace": "true",
+			\ "BreakBeforeBinaryOperators": "None",
+			\ "BreakBeforeBraces": "Custom",
+			\ "BreakBeforeInheritanceComma": "false",
+			\ "BreakBeforeTernaryOperators": "false",
+			\ "BreakConstructorInitializersBeforeComma": "false",
+			\ "BreakConstructorInitializers": "BeforeComma",
+			\ "BreakAfterJavaFieldAnnotations": "false",
+			\ "BreakStringLiterals": "false",
+			\ "ColumnLimit": 80,
+			\ "CompactNamespaces": "false",
+			\ "ConstructorInitializerAllOnOneLineOrOnePerLine": "false",
+			\ "ConstructorInitializerIndentWidth": 8,
+			\ "ContinuationIndentWidth": 8,
+			\ "Cpp11BracedListStyle": "false",
+			\ "DerivePointerAlignment": "false",
+			\ "DisableFormat": "false",
+			\ "ExperimentalAutoDetectBinPacking": "false",
+			\ "FixNamespaceComments": "false",
+			\ "IncludeBlocks": "Preserve",
+			\ "IndentCaseLabels": "false",
+			\ "IndentPPDirectives": "None",
+			\ "IndentWidth": 8,
+			\ "IndentWrappedFunctionNames": "false",
+			\ "JavaScriptQuotes": "Leave",
+			\ "JavaScriptWrapImports": "true",
+			\ "KeepEmptyLinesAtTheStartOfBlocks": "false",
+			\ "MaxEmptyLinesToKeep": 1,
+			\ "NamespaceIndentation": "Inner",
+			\ "ObjCBinPackProtocolList": "Auto",
+			\ "ObjCBlockIndentWidth": 8,
+			\ "ObjCSpaceAfterProperty": "true",
+			\ "ObjCSpaceBeforeProtocolList": "true",
+			\ "PenaltyBreakAssignment": 10,
+			\ "PenaltyBreakBeforeFirstCallParameter": 30,
+			\ "PenaltyBreakComment": 10,
+			\ "PenaltyBreakFirstLessLess": 0,
+			\ "PenaltyBreakString": 10,
+			\ "PenaltyExcessCharacter": 100,
+			\ "PenaltyReturnTypeOnItsOwnLine": 60,
+			\ "PointerAlignment": "Right",
+			\ "ReflowComments": "false",
+			\ "SortIncludes": "false",
+			\ "SortUsingDeclarations": "false",
+			\ "SpaceAfterCStyleCast": "false",
+			\ "SpaceAfterTemplateKeyword": "true",
+			\ "SpaceBeforeAssignmentOperators": "true",
+			\ "SpaceBeforeCtorInitializerColon": "true",
+			\ "SpaceBeforeInheritanceColon": "true",
+			\ "SpaceBeforeParens": "ControlStatements",
+			\ "SpaceBeforeRangeBasedForLoopColon": "true",
+			\ "SpaceInEmptyParentheses": "false",
+			\ "SpacesBeforeTrailingComments": 1,
+			\ "SpacesInAngles": "false",
+			\ "SpacesInContainerLiterals": "false",
+			\ "SpacesInCStyleCastParentheses": "false",
+			\ "SpacesInParentheses": "false",
+			\ "SpacesInSquareBrackets": "false",
+			\ "Standard": "Cpp03",
+			\ "TabWidth": 8,
+			\ "UseTab": "Always"
+			\}
 
 " map to <Leader>cf in C++ code
 autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
@@ -478,13 +567,8 @@ let g:MultipleSearchColorSequence = "blue,green,magenta,red,yellow,cyan,gray,bro
 let g:MultipleSearchMaxColors = 8
 let g:MultipleSearchTextColorSequence = "white,white,white,white,black,white,black,white"
 "code complete
-if has('nvim')
-	let g:deoplete#enable_at_startup = 1
-else
-	let g:neocomplete#enable_at_startup = 1
-endif
+let g:deoplete#enable_at_startup = 1
 let g:gitgutter_max_signs = 2000
-let g:clang_format#command = "clang-format"
 "slimv
 let g:slimv_swank_cmd = '! tmux new-window -d -n REPL-SBCL "sbcl --load ~/.vim/bundle/slimv/slime/start-swank.lisp"'
 let g:ctrlp_map = ''
