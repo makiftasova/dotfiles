@@ -4,7 +4,7 @@
 sudo pacman -S --noconfirm --needed acpi zsh git curl neovim playerctl pamixer \
 	termite termite-terminfo terminus-font gvim archlinux-wallpaper \
 	lm_sensors terminus-font-otb xorg-fonts-alias wallutils \
-	noto-fonts-{cjk,emoji,extra}
+	nvme-cli hddtemp udisks2 smartmontools noto-fonts-{cjk,emoji,extra}
 
 # install oh-my-zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
