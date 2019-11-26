@@ -1,7 +1,21 @@
 #!/usr/bin/env bash
 
+# create a directory for local git config (e.g. mail passwords, work account etc.)
+gitsendemail_dir="$HOME/.config/git"
+mkdir -p "$gitsendemail_dir"
+
+cat << GITSENDEMAIL > "$gitsendemail_dir/gitsendemail"
+[sendemail]
+	smtpserver = smtp.gmail.com
+	smtpuser = makiftasova@gmail.com
+	smtpencryption = tls
+	smtpserverport = 587
+	smtpPass =
+GITSENDEMAIL
+
 # install dependencies
 sudo pacman -S --noconfirm --needed acpi zsh git curl neovim playerctl pamixer \
+	perl-authen-sasl perl-net-smtp-ssl perl-mime-tools \
 	termite termite-terminfo terminus-font gvim archlinux-wallpaper \
 	lm_sensors terminus-font-otb xorg-fonts-alias wallutils \
 	nvme-cli hddtemp udisks2 smartmontools noto-fonts-{cjk,emoji,extra}
