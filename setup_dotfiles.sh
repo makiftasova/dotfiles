@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
 # create a directory for local git config (e.g. mail passwords, work account etc.)
-gitsendemail_dir="$HOME/.config/git"
-mkdir -p "$gitsendemail_dir"
+local_gitconfig_dir="$HOME/.config/git"
+mkdir -p "$local_gitconfig_dir"
 
-cat << GITSENDEMAIL > "$gitsendemail_dir/gitsendemail"
+cat << GITUSERINFO > "$local_gitconfig_dir/gituserinfo"
+[user]
+	name = Mehmet Akif TASOVA
+	email = makiftasova@gmail.com
+GITUSERINFO
+
+cat << GITSENDEMAIL > "$local_gitconfig_dir/gitsendemail"
 [sendemail]
 	smtpserver = smtp.gmail.com
 	smtpuser = makiftasova@gmail.com

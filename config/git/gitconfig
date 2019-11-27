@@ -1,6 +1,5 @@
-[user]
-	name = Mehmet Akif TASOVA
-	email = makiftasova@gmail.com
+[include]
+	path = ~/.config/git/gituserinfo
 [core]
 	editor = vim
 [commit]
