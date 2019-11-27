@@ -6,7 +6,7 @@ mkdir -p "$local_gitconfig_dir"
 
 cat << GITUSERINFO > "$local_gitconfig_dir/gituserinfo"
 [user]
-	name = Mehmet Akif TASOVA
+	name = Mehmet Akif Tasova
 	email = makiftasova@gmail.com
 GITUSERINFO
 
