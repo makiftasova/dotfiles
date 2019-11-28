@@ -36,3 +36,4 @@
 	whitespace = red reverse
 [include]
 	path = ~/.config/git/gitsendemail
+	path = ~/.config/git/gitlocalconfig
