@@ -10,6 +10,9 @@ cat << GITUSERINFO > "$local_gitconfig_dir/gituserinfo"
 	email = makiftasova@gmail.com
 GITUSERINFO
 
+cat << GITLOCALCONF >> "$local_gitconfig_dir/gitlocalconfig"
+GITLOCALCONF
+
 cat << GITSENDEMAIL > "$local_gitconfig_dir/gitsendemail"
 [sendemail]
 	smtpserver = smtp.gmail.com
