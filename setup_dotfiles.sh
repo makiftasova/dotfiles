@@ -7,6 +7,10 @@ create_empty_file_if_not_exists () {
 	fi
 }
 
+vim_plug_install_to_dir () {
+	curl -fLo "$1" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+}
+
 # install dependencies
 echo "Installing dependencies..."
 sudo pacman -S --noconfirm --needed acpi zsh git curl neovim playerctl pamixer \
@@ -15,11 +19,14 @@ sudo pacman -S --noconfirm --needed acpi zsh git curl neovim playerctl pamixer \
 	lm_sensors terminus-font-otb xorg-fonts-alias wallutils \
 	nvme-cli hddtemp udisks2 smartmontools noto-fonts-{cjk,emoji,extra}
 
-# install oh-my-zsh
+# install oh-my-zsh and plug-ins
 echo "installing oh-my-zsh and plug-ins..."
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
+echo "installing zsh-syntax-highlighting..."
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+
+echo "installing zsh-autosuggestions..."
 git clone https://github.com/zsh-users/zsh-autosuggestions.git "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
 
 # detect HW sensors
@@ -30,6 +37,8 @@ yes | sudo sensors-detect
 echo "installing dotfiles..."
 ./install
 
+# create directories and files for local zsh configs.
+# sed delimiter is set to "?" because "$HOME" contains "/" characters.
 local_zsh_config_dir=$(grep "ZSH_CONFIG_LOCAL_HOME" config/zsh/zshrc | cut -d'"' -f2 | sed "s?\$HOME?$HOME?g")
 mkdir -p "$local_zsh_config_dir"
 create_empty_file_if_not_exists "$local_zsh_config_dir/zsh_env"
@@ -43,12 +52,12 @@ chsh -s /usr/bin/zsh
 
 # install vim-plug and plug-ins for neovim
 echo "installing vim-plug and plungins for neovim..."
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+vim_plug_install_to_dir "$HOME/.local/share/nvim/site"
 nvim +PlugInstall +qa!
 
 # install vim-plug and olugins for vim
 echo "installing vim-plug and plungins for vim..."
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+vim_plug_install_to_dir "$HOME/.vim/autoload/plug.vim"
 vim +PlugInstall +qa!
 
 # create a directory for local git config
@@ -57,6 +66,7 @@ echo "setup local git configs..."
 local_gitconfig_dir="$HOME/.config/git"
 mkdir -p "$local_gitconfig_dir"
 
+## git user config.
 if ! [ -e "$local_gitconfig_dir/gituserinfo" ]; then
 cat << GITUSERINFO > "$local_gitconfig_dir/gituserinfo"
 [user]
@@ -65,11 +75,13 @@ cat << GITUSERINFO > "$local_gitconfig_dir/gituserinfo"
 GITUSERINFO
 fi
 
+## git local config (e.g. machine specific config)
 if ! [ -e "$local_gitconfig_dir/gitlocalconfig" ]; then
 cat << GITLOCALCONF >> "$local_gitconfig_dir/gitlocalconfig"
 GITLOCALCONF
 fi
 
+## git send-email config.
 if ! [ -e "$local_gitconfig_dir/gitsendemail" ]; then
 cat << GITSENDEMAIL > "$local_gitconfig_dir/gitsendemail"
 [sendemail]
