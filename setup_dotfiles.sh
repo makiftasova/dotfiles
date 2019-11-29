@@ -52,7 +52,7 @@ chsh -s /usr/bin/zsh
 
 # install vim-plug and plug-ins for neovim
 echo "installing vim-plug and plungins for neovim..."
-vim_plug_install_to_dir "$HOME/.local/share/nvim/site"
+vim_plug_install_to_dir "$HOME/.local/share/nvim/site/autoload/plug.vim"
 nvim +PlugInstall +qa!
 
 # install vim-plug and olugins for vim
