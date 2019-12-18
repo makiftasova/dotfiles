@@ -1,0 +1,121 @@
+#!/bin/bash
+#
+# Author: Mehmet Akif TASOVA <makiftasova@gmail.com>
+# Date:   2018-02-05
+#
+# Desc: 'vimscope' is a cscope launcher script with on demand project generation.
+#       Project folder generated and cached under .cscope folder of indexed source tree.
+#       On each launch, file list is generated, but rebuilding of cache is somehow buggy.
+#       In case of problems, just delete '.cscope' folder and rerun the script.
+#
+# Usage:
+#	vimscope <source_dir>
+#	(usually `vimscope .`)
+#
+# Change Log:
+#	- 2018-02-05 	Mehmet Akif TASOVA	initial version
+
+SRC_FOLDER=""
+PRJ_FOLDER=""
+
+locate_source_folder() {
+	local src="$1"
+
+	if [ x"" = x"$src" ]; then
+		echo "Usage: local_source_folder [dir]"
+		exit 0
+	fi
+
+	if echo "$src" | grep "^\/" >/dev/null; then
+		# absolute path
+		SRC_FOLDER="$src"
+	else
+		# not absolute path
+		SRC_FOLDER="$PWD/$src"
+	fi
+
+	if [ ! -d "$SRC_FOLDER" ]; then
+		echo "[-] problem with source folder '$SRC_FOLDER'"
+		exit
+	fi
+}
+
+prepare_project_file_list()
+{
+	echo -n "[+] preparing file list.."
+	find "$SRC_FOLDER" -name '*.cpp' -or -name '*.c' -or -name '*.hpp' -or -name '*.h' > "$PRJ_FOLDER/cscope.files"
+	if [ ! -f "$PRJ_FOLDER/cscope.files" ]; then
+		echo "failed"
+		exit 1
+	fi
+	echo "done"
+}
+
+prepare_project_file() {
+
+	cat << EOF > "$PRJ_FOLDER/cscope.proj"
+Version=2
+
+[AutoCompletion]
+Delay=500
+Enabled=true
+MaxEntries=100
+MinChars=3
+
+[Project]
+AutoRebuildTime=10
+CtagsCommand=
+FileTypes=*.c *.h *.l *.y *.S *.cc *.cpp *.cxx *.C *.hh *.hpp *.hxx *.H
+InvIndex=true
+Kernel=true
+Name="$SRC_FOLDER"
+NoCompress=false
+RootPath="$SRC_FOLDER"
+SlowPathDef=false
+TabWidth=0
+
+[Session]
+Bookmarks=
+CallTreeFiles=
+LastOpenFile=
+OpenFiles=
+QueryFiles=
+EOF
+
+}
+
+prepare_indexing() {
+	echo -n "[+] indexing source.."
+	( cd "$PRJ_FOLDER" && cscope -q -k -b -i "cscope.files" )
+	if [ ! -f "$PRJ_FOLDER/cscope.out" ]; then
+		echo "failed"
+		exit
+	fi
+	echo "done"
+}
+
+prepare_project_folder() {
+	PRJ_FOLDER="$SRC_FOLDER/.cscope"
+
+	if [ -d "$PRJ_FOLDER" ]; then
+		echo -n "[-] $PRJ_FOLDER exists. removing.."
+		rm -rf "$PRJ_FOLDER"
+		echo "done"
+	fi
+
+	mkdir -p "$PRJ_FOLDER"
+
+	prepare_project_file_list
+	prepare_project_file
+}
+
+if [ "$#" = "0" ]; then
+	echo "Usage: vimscope [src-folder]"
+	exit
+fi
+
+locate_source_folder "$1"
+prepare_project_folder
+if [ ! -f "$PRJ_FOLDER/cscope.out" ]; then
+	prepare_indexing
+fi
