@@ -5,8 +5,9 @@
 [commit]
 	template = ~/.gitmessage
 [alias]
-	l = log --pretty=oneline --graph --abbrev-commit
-	lr = "!f() { git log --pretty=oneline --graph --abbrev-commit $1..HEAD; }; f"
+	l = log --graph --decorate --pretty=oneline --abbrev-commit
+	la = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	lr = log --graph --decorate --pretty=oneline --abbrev-commit -n
 	lag = log --branches --remotes --tags --graph --oneline --decorate
 	par = "!f() { for r in $(git remote show); do git push -u $r $@; done }; f"
 	branch-diff = "!f() { git log --pretty=oneline --abbrev-commit --cherry-pick $1...$2; }; f"
