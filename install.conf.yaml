@@ -22,8 +22,8 @@
         ~/.config/nvim:
                 path: config/nvim
                 create: true
-        ~/.local/bin:
-                path: bin
+        ~/.local/sbin:
+                path: sbin
                 create: true
         ~/.clang-format: config/clang-format/clang-format
         ~/.gitconfig: config/git/gitconfig

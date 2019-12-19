@@ -14,7 +14,7 @@ vim_plug_install_to_dir () {
 # install dependencies
 echo "Installing dependencies..."
 sudo pacman -S --noconfirm --needed acpi zsh git curl neovim playerctl pamixer \
-	perl-authen-sasl perl-net-smtp-ssl perl-mime-tools \
+	cscope perl-authen-sasl perl-net-smtp-ssl perl-mime-tools \
 	termite termite-terminfo terminus-font gvim archlinux-wallpaper \
 	lm_sensors terminus-font-otb xorg-fonts-alias wallutils \
 	nvme-cli hddtemp udisks2 smartmontools noto-fonts-{cjk,emoji,extra}

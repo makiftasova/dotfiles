@@ -3,7 +3,7 @@ export ED_PROMPT="ed> "
 
 export MAKEFLAGS="-j$(nproc)"
 
-PATH="$HOME/.local/bin:/usr/local/bin:$PATH:/usr/sbin"
+PATH="$HOME/.local/sbin:$HOME/.local/bin:/usr/local/bin:$PATH:/usr/sbin"
 export PATH
 
 export JUPYTERLAB_DIR="$HOME/.local/share/jupyter/lab"
