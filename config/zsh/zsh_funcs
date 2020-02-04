@@ -1,8 +1,11 @@
+# find absolute path for given executable in PATH.
+# omits shell builtins, shell functions and shell aliases while searching.
 function find_exec_in_path {
 	# $1 is executable name
 	which -a "$1" | grep -e "^/" | head -1
 }
 
+# wrapper for ed(1) to change ed's prompt.
 function ed {
 	local __exec=$(find_exec_in_path "ed")
 	local __prompt="$ED_PROMPT"
@@ -20,6 +23,7 @@ function tex_to_pdf {
 	pdflatex $1
 }
 
+# convert given markdown file into a pdf document
 function md_to_pdf {
 	pandoc --pdf-engine=pdflatex -V geometry:"top=2cm, bottom=1.5cm, left=2.cm, right=2cm" -o "$1.pdf" "$1"
 }
@@ -28,10 +32,12 @@ function dmalloc {
 	eval `command dmalloc -b $*`;
 }
 
+# make a new directory and cd into it
 function mkcd {
 	mkdir -p "$1" && cd "$1"
 }
 
+# create a new markdown note with name "$NAME_$DATE.md"
 function mdnote {
 	if [ "$#" != "1" ]; then
 		return -1;
@@ -39,6 +45,7 @@ function mdnote {
 	$EDITOR "$1_$(date +%F).md"
 }
 
+# archive given directory in a tar archive
 function ftar {
 	tar cvf "$1.tar" "$1"
 }
@@ -109,6 +116,11 @@ function sizeof {
 	cd "$_root"
 }
 
+# revert git repository into fresh state.
+# * removes all out of tree files
+# * reset git repo to HEAD
+# * resets all submodules into their respective HEAD's
+# * update all submodules
 function repo_rinse {
 	git clean -xfd
 	git submodule foreach --recursive git clean -xfd
