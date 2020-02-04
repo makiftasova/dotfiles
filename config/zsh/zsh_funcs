@@ -50,6 +50,27 @@ function ftar {
 	tar cvf "$1.tar" "$1"
 }
 
+# archive given directory in a tar.gz archive
+function ftargz {
+	tar cvzf "$1.tar.gz" "$1"
+}
+
+# search recursively for files with given extension in given directory and
+# add them into a tar.gz archive
+function ftargz_ext {
+	local PATTERN="$1"
+	local DIR="$2"
+	local OUTP
+
+	if [ -z "$DIR" ]; then
+		DIR="."
+	fi
+
+	OUTP="$(basename "$(readlink -f $DIR)").tar.gz"
+
+	find "$DIR" -name "$PATTERN" -exec tar cvzf "$OUTP" {} +
+}
+
 function fid {
 	local _dir
 	local _name
