@@ -185,4 +185,28 @@ function git_refs_gc {
 	cd "$__pwd" ;
 }
 
+# run given command until it fails the print it stdout and stderr outputs of
+# its failure followed by number of runs it takes until command fails.
+function run_until_fails {
+	local CMD="$*"
+	local COUNTER=0
+
+	local SOUT
+	local SERR
+
+	SOUT=$(mktemp)
+	SERR=$(mktemp)
+
+	while "$CMD" >"$SOUT" 2>"$SERR"; do
+		COUNTER=$((COUNTER + 1))
+	done
+
+	cat "$SOUT"
+	cat "$SERR"
+
+	echo "[INF] $CMD failed after $COUNTER attempts."
+
+	rm -f "$SOUT" "$SERR"
+}
+
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs"
