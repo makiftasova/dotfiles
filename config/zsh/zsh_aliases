@@ -4,10 +4,10 @@ alias agrep='egrep --color=auto -rIin'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
-alias mdown="mdv -c 80 $1"
-alias mkdir_today="mkdir $(date +%F)"
+alias mkdir_today='mkdir $(date +%F)'
 alias cal="ncal -bM3"
 alias pcd='cd $(pwd)'
 alias manrandom='man $(find /usr/share/man -type f | shuf | head -1)'
 
+# shellcheck source=/dev/null
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_aliases" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_aliases"
