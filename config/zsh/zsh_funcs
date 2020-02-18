@@ -209,4 +209,16 @@ function run_until_fails {
 	rm -f "$SOUT" "$SERR"
 }
 
+function gif_to_mp4 {
+	if [ -z $(command -v ffmpeg) ]; then
+		echo "ffmpeg not found!";
+		return -1;
+	fi
+	local inp="$1";
+	local out="${inp%.*}.mp4"
+	echo "$out"
+	ffmpeg -i "$inp" -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "$out"
+
+}
+
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs"
