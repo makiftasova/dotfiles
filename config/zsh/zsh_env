@@ -1,11 +1,13 @@
 export TERM="xterm-256color"
 export ED_PROMPT="ed> "
 
-export MAKEFLAGS="-j$(nproc)"
+MAKEFLAGS="-j$(nproc)"
+export MAKEFLAGS
 
 PATH="$HOME/.local/sbin:$HOME/.local/bin:/usr/local/bin:$PATH:/usr/sbin"
 export PATH
 
 export JUPYTERLAB_DIR="$HOME/.local/share/jupyter/lab"
 
+# shellcheck source=/dev/null
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_env" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_env"
