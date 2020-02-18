@@ -2,14 +2,11 @@ export ZSH_CONFIG_HOME="$HOME/.config/zsh"
 export ZSH_CONFIG_LOCAL_HOME="$HOME/.config/zsh_local"
 
 # If you come from bash you might have to change your $PATH.
+# shellcheck source=/dev/null
 [ -f "$ZSH_CONFIG_HOME/zsh_env" ] && source "$ZSH_CONFIG_HOME/zsh_env"
 
-# Powerline
-if [[ -r /usr/share/powerline/bindings/zsh/powerline.zsh ]]; then
-    source /usr/share/powerline/bindings/zsh/powerline.zsh
-fi
-
 #zstyle ':completion:*' special-dirs true
+# shellcheck disable=SC2016 # shellcheck does not support zsh thus disabling suggestion
 zstyle -e ':completion:*' special-dirs '[[ $PREFIX = (../)#(|.|..) ]] && reply=(..)'
 
 # Path to your oh-my-zsh installation.
@@ -18,17 +15,8 @@ export ZSH=$HOME/.oh-my-zsh
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-#ZSH_THEME="robbyrussell"
-#ZSH_THEME="sunrise"
-#ZSH_THEME="sorin"
-#ZSH_THEME="sunaku"
-#ZSH_THEME="suvash"
+# shellcheck disable=SC2034  # Unused variables left for readability
 ZSH_THEME="bira"
-#ZSH_THEME="agnoster"
-#ZSH_THEME="amuse"
-#ZSH_THEME="powerlevel9k/powerlevel9k"
-#ZSH_THEME="bullet-train/bullet-train"
-#ZSH_THEME="agnosterzak/agnosterzak"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -53,6 +41,7 @@ export UPDATE_ZSH_DAYS=7
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
+# shellcheck disable=SC2034  # Unused variables left for readability
 COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
@@ -72,6 +61,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
+# shellcheck disable=SC2034  # Unused variables left for readability
 plugins=(
 	github
 	git-flow
@@ -87,9 +77,11 @@ plugins=(
 )
 
 # override generic oh-my-zsh config with local one if found.
+# shellcheck source=/dev/null
 [ -f "$ZSH_CONFIG_LOCAL_HOME/ohmyzshrc" ] && source "$ZSH_CONFIG_LOCAL_HOME/ohmyzshrc"
 
-source $ZSH/oh-my-zsh.sh
+# shellcheck source=/dev/null
+source "$ZSH/oh-my-zsh.sh"
 
 # User configuration
 
@@ -105,7 +97,7 @@ export LC_TIME=en_US.UTF-8
 # else
 #   export EDITOR='vim'
 # fi
-if [ "$(command -v nvim)" != "" ]; then
+if [ -n "$(command -v nvim)" ]; then
 	export EDITOR='nvim';
 else
 	export EDITOR='vim'
@@ -115,7 +107,7 @@ fi
 # export ARCHFLAGS="-arch x86_64"
 
 # ssh
-export SSH_KEY_PATH="~/.ssh/rsa_id"
+export SSH_KEY_PATH="$HOME/.ssh/rsa_id"
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -123,15 +115,18 @@ export SSH_KEY_PATH="~/.ssh/rsa_id"
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-alias zshconfig="$EDITOR ~/.zshrc"
-alias ohmyzsh="$EDITOR ~/.oh-my-zsh"
+alias zshconfig='$EDITOR ~/.zshrc'
+alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 
 # [ -f /etc/environment ] && source /etc/environment
 #source ~/.profile
 
 #[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# shellcheck source=/dev/null
 [ -f /etc/zsh_command_not_found ] && source /etc/zsh_command_not_found
 
+# shellcheck source=/dev/null
 [ -f "$ZSH_CONFIG_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_HOME/zsh_funcs"
+# shellcheck source=/dev/null
 [ -f "$ZSH_CONFIG_HOME/zsh_aliases" ] && source "$ZSH_CONFIG_HOME/zsh_aliases"
