@@ -2,16 +2,20 @@
 # omits shell builtins, shell functions and shell aliases while searching.
 function find_exec_in_path {
 	# $1 is executable name
+	# shellcheck disable=SC2230  # using `command -v` here makes things more diffucult
 	which -a "$1" | grep -e "^/" | head -1
 }
 
 # wrapper for ed(1) to change ed's prompt.
 function ed {
-	local __exec=$(find_exec_in_path "ed")
+	local __exec
 	local __prompt="$ED_PROMPT"
+
+	__exec=$(find_exec_in_path "ed")
+
 	if [ -z "$__exec" ] ; then
 		echo "ed not found in PATH";
-		return 1;
+		return 255;
 	fi
 	if [ -z "$__prompt" ] ; then
 		__prompt="ed> "
@@ -20,7 +24,7 @@ function ed {
 }
 
 function tex_to_pdf {
-	pdflatex $1
+	pdflatex "$1"
 }
 
 # convert given markdown file into a pdf document
@@ -28,19 +32,15 @@ function md_to_pdf {
 	pandoc --pdf-engine=pdflatex -V geometry:"top=2cm, bottom=1.5cm, left=2.cm, right=2cm" -o "$1.pdf" "$1"
 }
 
-function dmalloc {
-	eval `command dmalloc -b $*`;
-}
-
 # make a new directory and cd into it
 function mkcd {
-	mkdir -p "$1" && cd "$1"
+	mkdir -p "$1" && cd "$1" || return 255
 }
 
 # create a new markdown note with name "$NAME_$DATE.md"
 function mdnote {
 	if [ "$#" != "1" ]; then
-		return -1;
+		return 255;
 	fi
 	$EDITOR "$1_$(date +%F).md"
 }
@@ -72,37 +72,22 @@ function ftargz_ext {
 }
 
 function fid {
-	local _dir
-	local _name
-	local _params
-	local _cmd_ret=0
+	local __dir
+	local __name
 
-	if [ "$#" -eq "0" ]
-	then
-		_cmd_ret=0
-
-	elif [ "$#" -le "2" ]
-	then
-		if [ "$#" -eq "1" ]
-		then
-			_dir="."
-			_name="$1"
-		else
-			_dir="$1"
-			_name="$2"
-		fi
-		find "$_dir" -name "$_name"
-		_cmd_ret=$?
-
-	else
-		_dir="$1"
-		_name="$2"
-		_params="${@:3}"
-		find "$_dir" "$_params" -name "$_name"
-		_cmd_ret=$?
+	if [ "$#" -eq "0" ]; then
+		return 0;
 	fi
 
-	return $_cmd_ret
+	if [ "$#" -eq "1" ]; then
+		__dir="."
+		__name="$1"
+	else
+		__dir="$1"
+		__name="$2"
+	fi
+
+	find "$__dir" -name "$__name" "${@:3}"
 }
 
 function grep_libdep {
@@ -128,13 +113,15 @@ function grep_symbols {
 }
 
 function sizeof {
-	local _dir=$(readlink -f "$1")
-	local _root=$(pwd)
+	local __dir
+	local __root
 
-	cd "$_dir"
-	# echo "$_dir"
+	__dir=$(readlink -f "$1")
+	__root=$(pwd)
+
+	cd "$__dir" || return 255
 	du -csh ./*
-	cd "$_root"
+	cd "$__root" || return 255
 }
 
 # revert git repository into fresh state.
@@ -151,38 +138,27 @@ function repo_rinse {
 }
 
 function git_gc_prune_all {
-	for f in $(find $(pwd) -name ".git" -type d); do
-		echo "processing: $f"
-		git -C $(dirname $f) gc --aggressive --prune=all;
-		echo "done: $f"
+	local dname
+	for dir in $(find "$(pwd)" -name ".git" -type d -print0 | xargs -0 -I{} echo {}); do
+		dname="$(dirname "$dir")";
+		echo "processing $dname";
+		git -C "$dname" gc --aggressive --prune=all;
 	done
 }
 
 function repo_prune {
-	local _cwd=$(pwd)
+	local __cwd
+	__cwd=$(pwd)
 
-	if [ "$#" -ne "0" ]
-	then
-		cd "$1"
+	if [ "$#" -ne "0" ]; then
+		cd "$1" || return 255;
 	fi
 
 	git remote prune origin
 
-	if [ "$#" -ne "0" ]
-	then
-		cd "$_cwd"
+	if [ "$#" -ne "0" ]; then
+		cd "$__cwd" || return 255;
 	fi
-}
-
-function git_refs_gc {
-	local __pwd="$(pwd)"
-	local __refs_path="$(git config --global references.path)"
-	for d in $(ls -l "$__refs_path" | grep '^d' | awk '{ print $9 }'); do
-		cd "$__refs_path/$d";
-		echo "git gc for repository $d";
-		git gc;
-	done
-	cd "$__pwd" ;
 }
 
 # run given command until it fails the print it stdout and stderr outputs of
@@ -210,9 +186,9 @@ function run_until_fails {
 }
 
 function gif_to_mp4 {
-	if [ -z $(command -v ffmpeg) ]; then
+	if [ -z "$(command -v ffmpeg)" ]; then
 		echo "ffmpeg not found!";
-		return -1;
+		return 255;
 	fi
 	local inp="$1";
 	local out="${inp%.*}.mp4"
@@ -221,4 +197,5 @@ function gif_to_mp4 {
 
 }
 
+# shellcheck source=/dev/null
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs"
