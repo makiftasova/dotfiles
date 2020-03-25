@@ -201,5 +201,43 @@ function gif_to_mp4 {
 
 }
 
+## aurutils helpers
+
+function aur-remove {
+	# remove given list of packages from local AUR database
+	# depends on `repo-remove` from `pacman` package
+	# depends on `aurutils` package from AUR.
+	# arguments:
+	# "$@" -> package names to remove
+	local __db_path
+	local __db
+
+	if [ -z "$(find_exec_in_path "aur")" ] ; then
+		echo "aur not found in PATH";
+		return 255;
+	fi
+
+	__db_path=$(dirname "$(aur repo)");
+	if [ -z "$__db_path" ] ; then
+		echo "error: $__db_path is empty";
+		return 255;
+	fi
+
+	__db=$(find "$__db_path" -name "*.db.tar");
+	if [ -z "$__db" ] ; then
+		echo "No AUR repository database found at $__db_path";
+		return 255;
+	fi
+
+	repo-remove "$__db" "$@"
+	for f in "$@"; do
+		echo "deleting files of package: $f"
+		find "$__db_path" -name "$f*" -print -delete
+	done
+
+	# shellcheck disable=SC2016  # we don't want to expand variables here
+	echo 'you may want to run `sudo pacman -Sc` to cleanup more space.'
+}
+
 # shellcheck source=/dev/null
 [ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs"
