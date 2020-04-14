@@ -63,7 +63,6 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 # shellcheck disable=SC2034  # Unused variables left for readability
 plugins=(
-	github
 	git-flow
 	gitfast
 	gitignore
