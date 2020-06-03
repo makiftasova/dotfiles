@@ -18,6 +18,8 @@
 	ipatch = "!f() { git apply $@; git add -p; }; f"
 [push]
 	default = simple
+[pull]
+	rebase = false
 [merge]
 	tool = vimdiff
 	renameLimit = 2048
