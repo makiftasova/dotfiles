@@ -12,15 +12,34 @@ function ed {
 	local __prompt="$ED_PROMPT"
 
 	__exec=$(find_exec_in_path "ed")
-
-	if [ -z "$__exec" ] ; then
+	if [ -z "$__exec" ]; then
 		echo "ed not found in PATH";
 		return 255;
 	fi
-	if [ -z "$__prompt" ] ; then
+	if [ -z "$__prompt" ]; then
 		__prompt="ed> "
 	fi
 	eval "$__exec" "-p" "\"$__prompt\"" "$@"
+}
+
+# wraps `lp` to hide common parameters
+# `$PRINTER` must contain name of printer to use while printing.
+# also accepts any parameter accepted by `lp`
+function print_file {
+	local __exec
+
+	__exec=$(find_exec_in_path "lp")
+	if [ -z "$__exec" ]; then
+		echo 'cound not found "lp" on system. you should install it.'
+		return 254;
+	fi
+
+	if [ -z "$PRINTER" ]; then
+		echo 'variable $PRINTER is not set';
+		return 254;
+	fi
+
+	eval "$__exec" -d "$PRINTER" "$@"
 }
 
 function tex_to_pdf {
