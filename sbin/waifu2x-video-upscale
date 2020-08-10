@@ -1,0 +1,122 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-only
+# vim: set ts=8 sw=8 sts=4 noet:
+#
+# Simple wrapper script for upscaling video files using waifu2x-ncnn-vulkan and
+# ffmpeg
+#
+# Author: Mehmet Akif TASOVA <makiftasova@gmail.com>
+#
+# Usage:
+#   waifu2x-video-upscale VIDEO_FILE_TO_UPSCALE
+#   ex:
+#      waifu2x-video-upscale my_low_res_video.mp4
+#
+# Resources:
+#   * https://github.com/nihui/waifu2x-ncnn-vulkan
+#   * https://aur.archlinux.org/packages/waifu2x-ncnn-vulkan/
+#   * https://trac.ffmpeg.org/
+#   * https://ffmpeg.org/documentation.html
+
+function rm_if_exists {
+	if [ -f "$1" ]; then
+		echo "deleting file $1";
+		rm -f "$1";
+	fi
+}
+
+function rmdir_if_exists {
+	if [ -d "$1" ]; then
+		echo "deleting directory $1";
+		rm -rf "$1";
+	fi
+}
+
+TEMP_DIR=""
+TEMP_DIR_UPSCD=""
+AUDIO_FILE=""
+
+function exit_handler {
+	rm_if_exists "$AUDIO_FILE"
+	rmdir_if_exists "$TEMP_DIR"
+	rmdir_if_exists "$TEMP_DIR_UPSCD"
+}
+
+trap exit_handler EXIT
+trap exit_handler SIGINT
+
+# find absolute path for given executable in PATH.
+# omits shell builtins, shell functions and shell aliases while searching.
+function find_exec_in_path {
+	# $1 is executable name
+	which -a "$1" | grep -e "^/" | head -1
+}
+
+function get_waifu2x_exec {
+	local __exec
+
+	__exec=$(find_exec_in_path "waifu2x-ncnn-vulkan")
+	if [ -n "$__exec" ]; then
+		echo -n "$__exec"
+	fi
+
+	## TODO: add other possible waifu2x executables here
+
+	echo -n ""
+}
+
+if [ -z "$1" ]; then
+	echo "No input file given.";
+	exit 255;
+fi
+
+if [ -z "$(find_exec_in_path "ffmpeg")" ]; then
+	echo "ffmpeg not found. Pelase intall it first";
+	exit 254;
+fi
+
+WAIFU="$(get_waifu2x_exec)"
+if [ -z "$WAIFU" ]; then
+	echo "waifu2x not found. Please install it first";
+	exit  253;
+fi
+
+INPUT="$1"
+INPUT_BASENAME="$(basename "$INPUT")"
+
+OUTPUT="$(basename "${INPUT%.*}.upscaled.${INPUT##*.}")"
+echo "output file: $OUTPUT"
+
+FPS="$(ffmpeg -i "$INPUT" 2>&1 | sed -n "s/.*, \(.*\) fp.*/\1/p")"
+echo "Video FPS: $FPS"
+
+AUDIO_EXT=$(ffmpeg -i "$INPUT" 2>&1 | sed -n "s/^.*Audio\: \([A-Za-z0-9]*\) .*$/\1/p")
+echo "Audio codec: $AUDIO_EXT"
+
+VIDEO_CODEC=$(ffmpeg -i "$INPUT" 2>&1 | sed -n "s/^.*Video\: \([A-Za-z0-9]*\) .*$/\1/p")
+echo "Video codec: $VIDEO_CODEC"
+
+TEMP_DIR="$(mktemp -d "waifu-temp-XXXXXXXXXX")"
+TEMP_DIR_UPSCD="$(mktemp -d "waifu-temp-upscd-XXXXXXXXXX")"
+
+AUDIO_FILE="$INPUT_BASENAME.$AUDIO_EXT"
+echo "temp audio file: $AUDIO_FILE"
+
+echo "extracting audio..."
+ffmpeg -i "$INPUT" -vn -acodec copy "$AUDIO_FILE"
+
+IMAGES="$TEMP_DIR/$INPUT_BASENAME.%016d.png"
+# TODO: for some weird reason waifu2x-ncnn-vulkan add file extension twice to output file
+IMAGES_UPSCD="$TEMP_DIR_UPSCD/$INPUT_BASENAME.%16d.png.png"
+
+echo "extracting frames..."
+ffmpeg -r "$FPS" -i "$INPUT" -vsync 'drop' -hide_banner "$IMAGES"
+
+echo "upscaling..."
+"$WAIFU" -i "$TEMP_DIR" -o "$TEMP_DIR_UPSCD" -s 2
+
+echo "combining..."
+ffmpeg -i "$IMAGES_UPSCD" -i "$AUDIO_FILE" -r "$FPS" '-c:v' 'libx265' -crf '28' -vf "fps=$FPS,format=yuv420p" "$OUTPUT"
+
+echo "done upscaling."
