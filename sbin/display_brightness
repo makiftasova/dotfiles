@@ -1,0 +1,73 @@
+#! /usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-only
+# vim: set ts=8 sw=8 sts=4 noet:
+#
+# Simple wrapper script for setting all connected display's brighness value via
+# DDC protocol
+#
+# Must be run as root in order to use ddcutil
+#
+# Author: Mehmet Akif TASOVA <makiftasova@gmail.com>
+#
+# Usage:
+#   display_brighness BRIGHTNESS
+#   ex:
+#      display_brighness 75 # set brightness of all displays to 75%
+#
+
+function check_all_digits {
+	local __len
+
+	__len=$(expr "x$1" : "x[0-9]*$")
+	((__len=__len-1))
+
+	if [ "$__len" -gt 0 ]; then
+		echo -n "OK";
+	else
+		echo -n "FAIL";
+	fi
+}
+
+if [ -z "$(command -v "ddcutil")" ]; then
+	echo "ddcutil not found on system. please intall it first.";
+	exit 255;
+fi
+
+if [ "$#" -ne 1 ]; then
+	echo "No brightness value given.";
+	exit 254;
+fi
+
+if [ "$(id -u)" != "0" ]; then
+	echo "This script must run as root";
+	exit 253;
+fi
+
+BRIGHTNESS="$1"
+
+if [ "$(check_all_digits "$BRIGHTNESS")" = "FAIL" ]; then
+	echo "Brightness value mus be numeric";
+	exit 252;
+fi
+
+# TODO: check if given brightness fits into all displays' supported range
+if [ "$BRIGHTNESS" -gt 100 ] || [ "$BRIGHTNESS" -lt 0 ]; then
+	echo "Brightness must between 0-100";
+	exit 251;
+fi;
+
+readarray -t DISPLAYS <<<"$(ddcutil detect | grep '^Display ' | cut -d ' ' -f2)"
+
+NUM_DISPLAYS="${#DISPLAYS[@]}"
+
+echo "Found $NUM_DISPLAYS displays"
+
+if [ "${#DISPLAYS[@]}" = "0" ]; then
+	echo "No supported displays found";
+	exit 250;
+fi
+
+for disp in "${DISPLAYS[@]}"; do
+	ddcutil -d "$disp" setvcp 10 "$BRIGHTNESS"
+done
