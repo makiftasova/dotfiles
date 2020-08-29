@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# grabbed from https://gist.github.com/dleonard00/fa482b4e803bf1f905526275c116c6d8
+# made some minor edits to satify shellcheck
+
+sed '1,/<ca>/d;/<\/ca>/,$d' "$1" > "$1.ca.crt"
+sed '1,/<cert>/d;/<\/cert>/,$d' "$1" > "$1.client.crt"
+sed '1,/<key>/d;/<\/key>/,$d' "$1" > "$1.client.key"
+sed '1,/<tls-auth>/d;/<\/tls-auth>/,$d' "$1" > "$1.ta.key"
