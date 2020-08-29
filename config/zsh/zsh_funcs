@@ -22,6 +22,16 @@ function ed {
 	eval "$__exec" "-p" "\"$__prompt\"" "$@"
 }
 
+# wrapper for mpv to enable hardware acceleration easily
+function mpv-hwaccel {
+	if [ -z "$(find_exec_in_path "mpv")" ]; then
+		echo "mpv not found in PATH";
+		return 255;
+	fi
+
+	mpv --hwdec=auto $@
+}
+
 # wraps `lp` to hide common parameters
 # `$PRINTER` must contain name of printer to use while printing.
 # also accepts any parameter accepted by `lp`
