@@ -121,8 +121,7 @@ alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 #source ~/.profile
 
 # shellcheck source=/dev/null
-[ -f /etc/zsh_command_not_found ] && source /etc/zsh_command_not_found
-
+[ -f "$ZSH_CONFIG_HOME/zsh_utils" ] && source "$ZSH_CONFIG_HOME/zsh_utils"
 # shellcheck source=/dev/null
 [ -f "$ZSH_CONFIG_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_HOME/zsh_funcs"
 # shellcheck source=/dev/null
