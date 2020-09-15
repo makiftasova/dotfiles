@@ -572,3 +572,5 @@ let g:gitgutter_max_signs = 2000
 let g:slimv_swank_cmd = '! tmux new-window -d -n REPL-SBCL "sbcl --load ~/.vim/bundle/slimv/slime/start-swank.lisp"'
 let g:ctrlp_map = ''
 nnoremap <c-p> :FZF<cr>
+
+let g:tex_flavor = 'latex'
