@@ -6,6 +6,8 @@ function command_not_found_handler {
 
 	local pkgs cmd="$1" files=()
 
+	echo "zsh: querying packages for command $cmd"
+
 	files=(${(f)"$(pacman -F --machinereadable -- "/usr/bin/${cmd}")"})
 	if (( ${#files[@]} )); then
 		echo "$cmd may be found in the following packages:"
