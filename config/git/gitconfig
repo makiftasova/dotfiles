@@ -1,7 +1,7 @@
 [include]
 	path = ~/.config/git/gituserinfo
 [core]
-	editor = vim
+	editor = nvim
 [commit]
 	template = ~/.gitmessage
 [alias]
@@ -21,7 +21,7 @@
 [pull]
 	rebase = false
 [merge]
-	tool = vimdiff
+	tool = nvimdiff
 	renameLimit = 2048
 [color]
 	ui = true
@@ -40,3 +40,7 @@
 [include]
 	path = ~/.config/git/gitsendemail
 	path = ~/.config/git/gitlocalconfig
+[mergetool]
+	path = nvim
+[mergetool "nvimdiff"]
+	cmd = nvim -f -d -c '4wincmd w | wincmd J' $LOCAL $BASE $REMOTE $MERGED
