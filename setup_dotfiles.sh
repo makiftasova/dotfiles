@@ -18,7 +18,10 @@ sudo pacman -S --noconfirm --needed acpi zsh git curl neovim playerctl pamixer \
 	termite termite-terminfo terminus-font gvim archlinux-wallpaper \
 	lm_sensors terminus-font-otb xorg-fonts-alias wallutils \
 	nvme-cli hddtemp udisks2 smartmontools noto-fonts-{cjk,emoji,extra} \
-	wl-clipboard xclip xsel bash-completion ctags fzf ripgrep
+	wl-clipboard xclip xsel bash-completion ctags fzf ripgrep pkgfile
+
+echo "Update pkgfile db"
+sudo pkgfile --update
 
 # install oh-my-zsh and plug-ins
 echo "installing oh-my-zsh and plug-ins..."
