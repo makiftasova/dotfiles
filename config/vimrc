@@ -15,7 +15,7 @@ Plug 'junegunn/gv.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'morhetz/gruvbox'
-Plug 'mhinz/vim-startify'
+"Plug 'mhinz/vim-startify'
 Plug 'gregsexton/gitv', {'on': ['Gitv']}
 "Plug 'altercation/vim-colors-solarized'
 "Plug 'dracula/vim'
