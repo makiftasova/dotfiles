@@ -57,11 +57,7 @@ Plug 'lervag/vimtex'
 
 " Utils
 Plug 'mhinz/vim-grepper'
-if has('nvim')
-	Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-	Plug 'Shougo/neocomplete.vim'
-endif
+Plug 'Shougo/neocomplete.vim'
 Plug 'itchyny/vim-cursorword'
 Plug 'rhysd/committia.vim'
 Plug 'chrisbra/vim-diff-enhanced'
@@ -69,7 +65,7 @@ Plug 'chrisbra/vim-diff-enhanced'
 " LRU
 Plug 'xolox/vim-misc'
 Plug 'vim-scripts/a.vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
 
 call plug#end()
