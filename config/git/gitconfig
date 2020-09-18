@@ -20,8 +20,10 @@
 	default = simple
 [pull]
 	rebase = false
+[mergetool "vimdiff"]
+	path = nvim
 [merge]
-	tool = nvimdiff
+	tool = vimdiff
 	renameLimit = 2048
 [color]
 	ui = true
@@ -40,7 +42,3 @@
 [include]
 	path = ~/.config/git/gitsendemail
 	path = ~/.config/git/gitlocalconfig
-[mergetool]
-	path = nvim
-[mergetool "nvimdiff"]
-	cmd = nvim -f -d -c '4wincmd w | wincmd J' $LOCAL $BASE $REMOTE $MERGED
