@@ -1,3 +1,6 @@
+# shellcheck disable=SC2148
+# Do not warn for "unknown shell" since this file will be included from zshrc
+
 # find absolute path for given executable in PATH.
 # omits shell builtins, shell functions and shell aliases while searching.
 function find_exec_in_path {
@@ -29,7 +32,7 @@ function mpv-hwaccel {
 		return 255;
 	fi
 
-	mpv --hwdec=auto $@
+	mpv --hwdec=auto "$@"
 }
 
 # wraps `lp` to hide common parameters
@@ -45,6 +48,7 @@ function print_file {
 	fi
 
 	if [ -z "$PRINTER" ]; then
+		# shellcheck disable=SC2016  # we want to print variable name
 		echo 'variable $PRINTER is not set';
 		return 254;
 	fi

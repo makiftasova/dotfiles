@@ -1,3 +1,6 @@
+# shellcheck disable=SC2148
+# Do not warn for "unknown shell" since this file is main config file for zsh
+
 export ZSH_CONFIG_HOME="$HOME/.config/zsh"
 export ZSH_CONFIG_LOCAL_HOME="$HOME/.config/zsh_local"
 

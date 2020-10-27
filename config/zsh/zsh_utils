@@ -1,0 +1,2 @@
+# shellcheck disable=SC2148
+# Do not warn for "unknown shell" since this file will be included from zshrc

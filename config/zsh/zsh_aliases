@@ -1,3 +1,6 @@
+# shellcheck disable=SC2148
+# Do not warn for "unknown shell" since this file will be included from zshrc
+
 export MDV_THEME=729.8953
 alias cpdir='cp -rf'
 alias agrep='egrep --color=auto -rIin'
