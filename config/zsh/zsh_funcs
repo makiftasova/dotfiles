@@ -230,6 +230,28 @@ function gif_to_mp4 {
 
 }
 
+#
+# lsifr - list installed packages from given pacman repo
+#
+# Usage:
+#   lsfr $reponame
+#
+# Notes:
+#   * Unlike `paclist` from `community/pacman-contrib` package, also shows
+#   insatalled version of pacakge and lastest version available on given repo.
+#
+#   * If installed version string does not match with repo version string,
+#   installed package might be installed from another repo.
+#
+function lsifr {
+	if [ -z "$(command -v pacman)" ]; then
+		echo "pacman not found on system, can't continue!";
+		return 255;
+	fi
+
+	pacman -Sl "$1" | grep 'installed:' | cut -d' ' -f2-
+}
+
 ## aurutils helpers
 
 function aur-remove {
