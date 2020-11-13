@@ -272,19 +272,13 @@ function aur-remove {
 		return 255;
 	fi
 
-	__db_path=$(dirname "$(aur repo)");
+	__db_path="$(aur repo -p)"
 	if [ -z "$__db_path" ] ; then
 		echo "error: $__db_path is empty";
 		return 255;
 	fi
 
-	__db=$(find "$__db_path" -name "*.db.tar");
-	if [ -z "$__db" ] ; then
-		echo "No AUR repository database found at $__db_path";
-		return 255;
-	fi
-
-	repo-remove "$__db" "$@"
+	repo-remove "$__db_path" "$@"
 	for f in "$@"; do
 		echo "deleting files of package: $f"
 		find "$__db_path" -name "$f*" -print -delete
