@@ -1,0 +1,86 @@
+#! /usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-only
+# vim: set ts=8 sw=8 sts=4 noet:
+#
+# Simple shell script to manage manual fzf installations.
+#
+# Author: Mehmet Akif TASOVA <makiftasova@gmail.com>
+#
+# Dependencies:
+#   git: pretty much any version (script only needs 'clone' and 'pull' commands)
+#
+# Usage:
+#   fzf-tool [install|update|uninstall]
+
+FZF_REPO_URL='https://github.com/junegunn/fzf.git'
+FZF_CWD="$(pwd)"
+
+if [ -z "$FZF_PATH" ]; then
+	FZF_PATH="$HOME/.fzf"
+fi
+
+function fzf_tool_check_deps {
+	if [ -z "$(command -v "git")" ]; then
+		echo "ERROR: git not found on system.";
+		exit 255;
+	fi
+}
+
+function fzf_tool_usage {
+	echo 'sub commands:'
+	printf "\tinstall: install fzf to \$FZF_PATH\n"
+	printf "\tupdate: update fzf repo and installation in \$FZF_PATH\n"
+	printf "\tuninstall: remove fzf from \$FZF_PATH\n"
+	printf "\nCurrent \$FZF_PATH=%s\n" "$FZF_PATH"
+}
+
+function fzf_tool_install {
+	if [ -d "$FZF_PATH" ]; then
+		echo "WARNING: deleting $FZF_PATH and clonnig again";
+		rm -rf "$FZF_PATH";
+	fi
+	git clone "$FZF_REPO_URL" "$FZF_PATH"
+	cd "$FZF_PATH" || return 254
+	./install
+}
+
+function fzf_tool_update {
+	if ! [ -d "$FZF_PATH" ]; then
+		fzf_tool_install;
+	fi
+	cd "$FZF_PATH" || return 254
+	git pull
+	./install
+}
+
+
+function fzf_tool_uninstall {
+	if ! [ -d "$FZF_PATH" ]; then
+		echo "ERROR: fzf installation not found in $FZF_PATH";
+		return 253;
+	fi
+	cd "$FZF_PATH" || return 254
+	./uninstall
+	cd "$FZF_CWD" || return 254
+	rm -rf "$FZF_PATH"
+}
+
+fzf_tool_check_deps
+
+case "$1" in
+	install)
+		fzf_tool_install
+		;;
+	update)
+		fzf_tool_update
+		;;
+	uninstall)
+		fzf_tool_uninstall
+		;;
+	*)
+		fzf_tool_usage
+		;;
+esac
+
+cd "$FZF_CWD" || exit 1;
