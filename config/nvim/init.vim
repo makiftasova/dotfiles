@@ -65,7 +65,7 @@ Plug 'chrisbra/vim-diff-enhanced'
 " LRU
 Plug 'xolox/vim-misc'
 Plug 'vim-scripts/a.vim'
-Plug 'junegunn/fzf'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
 call plug#end()
