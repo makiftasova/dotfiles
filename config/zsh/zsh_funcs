@@ -12,17 +12,18 @@ function find_exec_in_path {
 # wrapper for ed(1) to change ed's prompt.
 function ed {
 	local __exec
-	local __prompt="$ED_PROMPT"
+	# shellcheck disable=SC2154 # $ED_PROMPT should be defined in zsh_env
+	local __prompt="${ED_PROMPT}"
 
 	__exec=$(find_exec_in_path "ed")
-	if [ -z "$__exec" ]; then
+	if [ -z "${__exec}" ]; then
 		echo "ed not found in PATH";
 		return 255;
 	fi
-	if [ -z "$__prompt" ]; then
+	if [ -z "${__prompt}" ]; then
 		__prompt="ed> "
 	fi
-	eval "$__exec" "-p" "\"$__prompt\"" "$@"
+	eval "${__exec}" "-p" "\"${__prompt}\"" "$@"
 }
 
 # wrapper for mpv to enable hardware acceleration easily
@@ -42,18 +43,19 @@ function print_file {
 	local __exec
 
 	__exec=$(find_exec_in_path "lp")
-	if [ -z "$__exec" ]; then
+	if [ -z "${__exec}" ]; then
 		echo 'cound not found "lp" on system. you should install it.'
 		return 254;
 	fi
 
-	if [ -z "$PRINTER" ]; then
+	# shellcheck disable=SC2154 # $PRINTER should be defined in zsh_env
+	if [ -z "${PRINTER}" ]; then
 		# shellcheck disable=SC2016  # we want to print variable name
 		echo 'variable $PRINTER is not set';
 		return 254;
 	fi
 
-	eval "$__exec" -d "$PRINTER" "$@"
+	eval "${__exec}" -d "${PRINTER}" "$@"
 }
 
 function tex_to_pdf {
@@ -79,7 +81,8 @@ function mdnote {
 	if [ "$#" != "1" ]; then
 		return 255;
 	fi
-	$EDITOR "$1_$(date +%F).md"
+	# shellcheck disable=SC2154 # $EDITOR should be defined in zsh_env
+	${EDITOR} "$1_$(date +%F).md"
 }
 
 # archive given directory in a tar archive
@@ -99,13 +102,13 @@ function ftargz_ext {
 	local DIR="$2"
 	local OUTP
 
-	if [ -z "$DIR" ]; then
+	if [ -z "${DIR}" ]; then
 		DIR="."
 	fi
 
-	OUTP="$(basename "$(readlink -f $DIR)").tar.gz"
+	OUTP="$(basename "$(readlink -f "${DIR}")").tar.gz"
 
-	find "$DIR" -name "$PATTERN" -exec tar cvzf "$OUTP" {} +
+	find "${DIR}" -name "${PATTERN}" -exec tar cvzf "${OUTP}" {} +
 }
 
 # unzip list of zip files into seperate directories
@@ -118,12 +121,12 @@ function unzipdir {
 	for file in "$@"; do
 		local ext="${file##*.}"
 		local base
-		base="$(basename "$file" ".$ext")"
-		if [ "$ext" != 'zip' ]; then
-			echo "ERROR: file extension is not zip: $file";
+		base="$(basename "${file}" ".${ext}")"
+		if [ "${ext}" != 'zip' ]; then
+			echo "ERROR: file extension is not zip: ${file}";
 			return 254;
 		fi
-		unzip "$file" -d "$base"
+		unzip "${file}" -d "${base}"
 	done
 }
 
@@ -143,16 +146,16 @@ function fid {
 		__name="$2"
 	fi
 
-	find "$__dir" -name "$__name" "${@:3}"
+	find "${__dir}" -name "${__name}" "${@:3}"
 }
 
 function grep_libdep {
 	local _pattern="$1"
 	local _needle="$2"
 
-	for f in $(fid . "$_pattern"); do
-		echo "===== FILE: \"$f\" =====";
-		readelf -a "$f" | grep "$_needle";
+	for f in $(fid . "${_pattern}"); do
+		echo "===== FILE: \"${f}\" =====";
+		readelf -a "${f}" | grep "${_needle}";
 	done
 	echo "==== DONE ====";
 }
@@ -161,9 +164,9 @@ function grep_symbols {
 	local _pattern="$1"
 	local _needle="$2"
 
-	for f in $(fid . "$_pattern"); do
-		echo "===== FILE: \"$f\" =====";
-		nm -alC "$f" | grep "$_needle";
+	for f in $(fid . "${_pattern}"); do
+		echo "===== FILE: \"${f}\" =====";
+		nm -alC "${f}" | grep "${_needle}";
 	done
 	echo "===== DONE =====";
 }
@@ -175,9 +178,9 @@ function sizeof {
 	__dir=$(readlink -f "$1")
 	__root=$(pwd)
 
-	cd "$__dir" || return 255
+	cd "${__dir}" || return 255
 	du -csh ./*
-	cd "$__root" || return 255
+	cd "${__root}" || return 255
 }
 
 # revert git repository into fresh state.
@@ -196,9 +199,9 @@ function repo_rinse {
 function git_gc_prune_all {
 	local dname
 	for dir in $(find "$(pwd)" -name ".git" -type d -print0 | xargs -0 -I{} echo {}); do
-		dname="$(dirname "$dir")";
-		echo "processing $dname";
-		git -C "$dname" gc --aggressive --prune=all;
+		dname="$(dirname "${dir}")";
+		echo "processing ${dname}";
+		git -C "${dname}" gc --aggressive --prune=all;
 	done
 }
 
@@ -213,7 +216,7 @@ function repo_prune {
 	git remote prune origin
 
 	if [ "$#" -ne "0" ]; then
-		cd "$__cwd" || return 255;
+		cd "${__cwd}" || return 255;
 	fi
 }
 
@@ -229,16 +232,16 @@ function run_until_fails {
 	SOUT=$(mktemp)
 	SERR=$(mktemp)
 
-	while "$CMD" >"$SOUT" 2>"$SERR"; do
+	while "${CMD}" >"${SOUT}" 2>"${SERR}"; do
 		COUNTER=$((COUNTER + 1))
 	done
 
-	cat "$SOUT"
-	cat "$SERR"
+	cat "${SOUT}"
+	cat "${SERR}"
 
-	echo "[INF] $CMD failed after $COUNTER attempts."
+	echo "[INF] ${CMD} failed after ${COUNTER} attempts."
 
-	rm -f "$SOUT" "$SERR"
+	rm -f "${SOUT}" "${SERR}"
 }
 
 function gif_to_mp4 {
@@ -248,9 +251,8 @@ function gif_to_mp4 {
 	fi
 	local inp="$1";
 	local out="${inp%.*}.mp4"
-	echo "$out"
-	ffmpeg -i "$inp" -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "$out"
-
+	echo "${out}"
+	ffmpeg -i "${inp}" -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "${out}"
 }
 
 #
@@ -284,7 +286,6 @@ function aur-remove {
 	# arguments:
 	# "$@" -> package names to remove
 	local __db_path
-	local __db
 
 	if [ -z "$(find_exec_in_path "aur")" ] ; then
 		echo "aur not found in PATH";
@@ -292,20 +293,20 @@ function aur-remove {
 	fi
 
 	__db_path="$(aur repo -p)"
-	if [ -z "$__db_path" ] ; then
-		echo "error: $__db_path is empty";
+	if [ -z "${__db_path}" ] ; then
+		echo "error: ${__db_path} is empty";
 		return 255;
 	fi
 
-	repo-remove "$__db_path" "$@"
+	repo-remove "${__db_path}" "$@"
 	for f in "$@"; do
-		echo "deleting files of package: $f"
-		find "$__db_path" -name "$f*" -print -delete
+		echo "deleting files of package: ${f}"
+		find "${__db_path}" -name "${f}*" -print -delete
 	done
 
 	# shellcheck disable=SC2016  # we don't want to expand variables here
 	echo 'you may want to run `sudo pacman -Sc` to cleanup more space.'
 }
 
-# shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_funcs"
+# shellcheck source=/dev/null disable=SC2154
+[ -f "${ZSH_CONFIG_LOCAL_HOME}/zsh_funcs" ] && source "${ZSH_CONFIG_LOCAL_HOME}/zsh_funcs"

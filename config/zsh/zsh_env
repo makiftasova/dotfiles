@@ -8,15 +8,15 @@ MAKEFLAGS="-j$(nproc)"
 export MAKEFLAGS
 
 # add rubygems' bin directory to path if rubygems is installed
-if [ "$(command -v gem)" ]; then
+if [ -n "$(command -v gem)" ]; then
 	USR_GEM_DIR="$(gem environment | grep "USER INSTALLATION DIRECTORY" | head -n1 | cut -d':' -f2 | tr -d ' ')/bin"
-	PATH="$USR_GEM_DIR:$PATH"
+	PATH="${USR_GEM_DIR}:${PATH}"
 fi
 
-PATH="$HOME/.local/sbin:$HOME/.local/bin:/usr/local/bin:$PATH:/usr/sbin"
+PATH="${HOME}/.local/sbin:${HOME}/.local/bin:/usr/local/bin:${PATH}:/usr/sbin"
 export PATH
 
-export JUPYTERLAB_DIR="$HOME/.local/share/jupyter/lab"
+export JUPYTERLAB_DIR="${HOME}/.local/share/jupyter/lab"
 
-# shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_LOCAL_HOME/zsh_env" ] && source "$ZSH_CONFIG_LOCAL_HOME/zsh_env"
+# shellcheck source=/dev/null disable=SC2154
+[ -f "${ZSH_CONFIG_LOCAL_HOME}/zsh_env" ] && source "${ZSH_CONFIG_LOCAL_HOME}/zsh_env"
