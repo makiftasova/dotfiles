@@ -108,6 +108,25 @@ function ftargz_ext {
 	find "$DIR" -name "$PATTERN" -exec tar cvzf "$OUTP" {} +
 }
 
+# unzip list of zip files into seperate directories
+function unzipdir {
+	if [ -z "$(command -v unzip)" ]; then
+		echo "unzip not found";
+		return 255;
+	fi
+
+	for file in "$@"; do
+		local ext="${file##*.}"
+		local base
+		base="$(basename "$file" ".$ext")"
+		if [ "$ext" != 'zip' ]; then
+			echo "ERROR: file extension is not zip: $file";
+			return 254;
+		fi
+		unzip "$file" -d "$base"
+	done
+}
+
 function fid {
 	local __dir
 	local __name
