@@ -1,19 +1,19 @@
 # shellcheck disable=SC2148
 # Do not warn for "unknown shell" since this file is main config file for zsh
 
-export ZSH_CONFIG_HOME="$HOME/.config/zsh"
-export ZSH_CONFIG_LOCAL_HOME="$HOME/.local/config/zsh"
+export ZSH_CONFIG_HOME="${HOME}/.config/zsh"
+export ZSH_CONFIG_LOCAL_HOME="${HOME}/.local/config/zsh"
 
 # If you come from bash you might have to change your $PATH.
 # shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_HOME/env" ] && source "$ZSH_CONFIG_HOME/env"
+[ -f "${ZSH_CONFIG_HOME}/env" ] && source "${ZSH_CONFIG_HOME}/env"
 
 #zstyle ':completion:*' special-dirs true
 # shellcheck disable=SC2016 # shellcheck does not support zsh thus disabling suggestion
 zstyle -e ':completion:*' special-dirs '[[ $PREFIX = (../)#(|.|..) ]] && reply=(..)'
 
 # Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+export ZSH=${HOME}/.oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -80,10 +80,10 @@ plugins=(
 
 # override generic oh-my-zsh config with local one if found.
 # shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_LOCAL_HOME/ohmyzshrc" ] && source "$ZSH_CONFIG_LOCAL_HOME/ohmyzshrc"
+[ -f "${ZSH_CONFIG_LOCAL_HOME}/ohmyzshrc" ] && source "${ZSH_CONFIG_LOCAL_HOME}/ohmyzshrc"
 
 # shellcheck source=/dev/null
-source "$ZSH/oh-my-zsh.sh"
+source "${ZSH}/oh-my-zsh.sh"
 
 # User configuration
 
@@ -109,7 +109,7 @@ fi
 # export ARCHFLAGS="-arch x86_64"
 
 # ssh
-export SSH_KEY_PATH="$HOME/.ssh/rsa_id"
+export SSH_KEY_PATH="${HOME}/.ssh/rsa_id"
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -124,8 +124,8 @@ alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 #source ~/.profile
 
 # shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_HOME/utils" ] && source "$ZSH_CONFIG_HOME/utils"
+[ -f "${ZSH_CONFIG_HOME}/utils" ] && source "${ZSH_CONFIG_HOME}/utils"
 # shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_HOME/funcs" ] && source "$ZSH_CONFIG_HOME/funcs"
+[ -f "${ZSH_CONFIG_HOME}/funcs" ] && source "${ZSH_CONFIG_HOME}/funcs"
 # shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_HOME/aliases" ] && source "$ZSH_CONFIG_HOME/aliases"
+[ -f "${ZSH_CONFIG_HOME}/aliases" ] && source "${ZSH_CONFIG_HOME}/aliases"
