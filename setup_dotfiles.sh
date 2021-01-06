@@ -54,6 +54,15 @@ create_empty_file_if_not_exists "$local_zsh_config_dir/zsh_aliases"
 echo "changing user's shell to zsh..."
 chsh -s /usr/bin/zsh
 
+# create local rc files for vim and nvim
+local_config_dir="$HOME/.local/config"
+mkdir -p "${local_config_dir}"
+mkdir -p "${local_config_dir}/vim"
+mkdir -p "${local_config_dir}/nvim"
+
+create_empty_file_if_not_exists "${local_config_dir}/vim/init.vim"
+create_empty_file_if_not_exists "${local_config_dir}/nvim/init.vim"
+
 # install vim-plug and plug-ins for neovim
 echo "installing vim-plug and plungins for neovim..."
 vim_plug_install_to_dir "$HOME/.local/share/nvim/site/autoload/plug.vim"

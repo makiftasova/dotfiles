@@ -571,3 +571,5 @@ let g:ctrlp_map = ''
 nnoremap <c-p> :FZF<cr>
 
 let g:tex_flavor = 'latex'
+
+source $HOME/.local/config/nvim/init.vim
