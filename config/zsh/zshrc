@@ -2,11 +2,11 @@
 # Do not warn for "unknown shell" since this file is main config file for zsh
 
 export ZSH_CONFIG_HOME="$HOME/.config/zsh"
-export ZSH_CONFIG_LOCAL_HOME="$HOME/.config/zsh_local"
+export ZSH_CONFIG_LOCAL_HOME="$HOME/.local/config/zsh"
 
 # If you come from bash you might have to change your $PATH.
 # shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_HOME/zsh_env" ] && source "$ZSH_CONFIG_HOME/zsh_env"
+[ -f "$ZSH_CONFIG_HOME/env" ] && source "$ZSH_CONFIG_HOME/env"
 
 #zstyle ':completion:*' special-dirs true
 # shellcheck disable=SC2016 # shellcheck does not support zsh thus disabling suggestion
@@ -124,8 +124,8 @@ alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 #source ~/.profile
 
 # shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_HOME/zsh_utils" ] && source "$ZSH_CONFIG_HOME/zsh_utils"
+[ -f "$ZSH_CONFIG_HOME/utils" ] && source "$ZSH_CONFIG_HOME/utils"
 # shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_HOME/zsh_funcs" ] && source "$ZSH_CONFIG_HOME/zsh_funcs"
+[ -f "$ZSH_CONFIG_HOME/funcs" ] && source "$ZSH_CONFIG_HOME/funcs"
 # shellcheck source=/dev/null
-[ -f "$ZSH_CONFIG_HOME/zsh_aliases" ] && source "$ZSH_CONFIG_HOME/zsh_aliases"
+[ -f "$ZSH_CONFIG_HOME/aliases" ] && source "$ZSH_CONFIG_HOME/aliases"

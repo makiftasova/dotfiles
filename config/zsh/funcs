@@ -309,4 +309,4 @@ function aur-remove {
 }
 
 # shellcheck source=/dev/null disable=SC2154
-[ -f "${ZSH_CONFIG_LOCAL_HOME}/zsh_funcs" ] && source "${ZSH_CONFIG_LOCAL_HOME}/zsh_funcs"
+[ -f "${ZSH_CONFIG_LOCAL_HOME}/funcs" ] && source "${ZSH_CONFIG_LOCAL_HOME}/funcs"
