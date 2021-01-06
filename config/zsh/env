@@ -19,4 +19,4 @@ export PATH
 export JUPYTERLAB_DIR="${HOME}/.local/share/jupyter/lab"
 
 # shellcheck source=/dev/null disable=SC2154
-[ -f "${ZSH_CONFIG_LOCAL_HOME}/zsh_env" ] && source "${ZSH_CONFIG_LOCAL_HOME}/zsh_env"
+[ -f "${ZSH_CONFIG_LOCAL_HOME}/env" ] && source "${ZSH_CONFIG_LOCAL_HOME}/env"

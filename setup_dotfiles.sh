@@ -45,10 +45,10 @@ echo "installing dotfiles..."
 # sed delimiter is set to "?" because "$HOME" contains "/" characters.
 local_zsh_config_dir=$(grep "export.*ZSH_CONFIG_LOCAL_HOME" config/zsh/zshrc | cut -d'"' -f2 | sed "s?\$HOME?$HOME?g")
 mkdir -p "$local_zsh_config_dir"
-create_empty_file_if_not_exists "$local_zsh_config_dir/zsh_env"
+create_empty_file_if_not_exists "$local_zsh_config_dir/env"
 create_empty_file_if_not_exists "$local_zsh_config_dir/ohmyzshrc"
-create_empty_file_if_not_exists "$local_zsh_config_dir/zsh_funcs"
-create_empty_file_if_not_exists "$local_zsh_config_dir/zsh_aliases"
+create_empty_file_if_not_exists "$local_zsh_config_dir/funcs"
+create_empty_file_if_not_exists "$local_zsh_config_dir/aliases"
 
 # change user shell to zsh
 echo "changing user's shell to zsh..."
