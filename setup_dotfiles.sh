@@ -28,10 +28,10 @@ echo "installing oh-my-zsh and plug-ins..."
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 echo "installing zsh-syntax-highlighting..."
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
 
 echo "installing zsh-autosuggestions..."
-git clone https://github.com/zsh-users/zsh-autosuggestions.git "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+git clone https://github.com/zsh-users/zsh-autosuggestions.git "${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
 
 # detect HW sensors
 echo "detecting hardware sensors..."
@@ -43,19 +43,19 @@ echo "installing dotfiles..."
 
 # create directories and files for local zsh configs.
 # sed delimiter is set to "?" because "$HOME" contains "/" characters.
-local_zsh_config_dir=$(grep "export.*ZSH_CONFIG_LOCAL_HOME" config/zsh/zshrc | cut -d'"' -f2 | sed "s?\$HOME?$HOME?g")
-mkdir -p "$local_zsh_config_dir"
-create_empty_file_if_not_exists "$local_zsh_config_dir/env"
-create_empty_file_if_not_exists "$local_zsh_config_dir/ohmyzshrc"
-create_empty_file_if_not_exists "$local_zsh_config_dir/funcs"
-create_empty_file_if_not_exists "$local_zsh_config_dir/aliases"
+local_zsh_config_dir=$(grep "export.*ZSH_CONFIG_LOCAL_HOME" config/zsh/zshrc | cut -d'"' -f2 | sed "s?\${HOME}?${HOME}?g")
+mkdir -p "${local_zsh_config_dir}"
+create_empty_file_if_not_exists "${local_zsh_config_dir}/env"
+create_empty_file_if_not_exists "${local_zsh_config_dir}/ohmyzshrc"
+create_empty_file_if_not_exists "${local_zsh_config_dir}/funcs"
+create_empty_file_if_not_exists "${local_zsh_config_dir}/aliases"
 
 # change user shell to zsh
 echo "changing user's shell to zsh..."
 chsh -s /usr/bin/zsh
 
 # create local rc files for vim and nvim
-local_config_dir="$HOME/.local/config"
+local_config_dir="${HOME}/.local/config"
 mkdir -p "${local_config_dir}"
 mkdir -p "${local_config_dir}/vim"
 mkdir -p "${local_config_dir}/nvim"
@@ -65,23 +65,23 @@ create_empty_file_if_not_exists "${local_config_dir}/nvim/init.vim"
 
 # install vim-plug and plug-ins for neovim
 echo "installing vim-plug and plungins for neovim..."
-vim_plug_install_to_dir "$HOME/.local/share/nvim/site/autoload/plug.vim"
+vim_plug_install_to_dir "${HOME}/.local/share/nvim/site/autoload/plug.vim"
 nvim +PlugInstall +qa!
 
 # install vim-plug and olugins for vim
 echo "installing vim-plug and plungins for vim..."
-vim_plug_install_to_dir "$HOME/.vim/autoload/plug.vim"
+vim_plug_install_to_dir "${HOME}/.vim/autoload/plug.vim"
 vim +PlugInstall +qa!
 
 # create a directory for local git config
 # (e.g. mail passwords, work account etc.)
 echo "setup local git configs..."
-local_gitconfig_dir="$HOME/.config/git"
-mkdir -p "$local_gitconfig_dir"
+local_gitconfig_dir="${HOME}/.config/git"
+mkdir -p "${local_gitconfig_dir}"
 
 ## git user config.
-if ! [ -e "$local_gitconfig_dir/gituserinfo" ]; then
-cat << GITUSERINFO > "$local_gitconfig_dir/gituserinfo"
+if ! [ -e "${local_gitconfig_dir}/gituserinfo" ]; then
+cat << GITUSERINFO > "${local_gitconfig_dir}/gituserinfo"
 [user]
 	name = Mehmet Akif Tasova
 	email = makiftasova@gmail.com
@@ -89,14 +89,14 @@ GITUSERINFO
 fi
 
 ## git local config (e.g. machine specific config)
-if ! [ -e "$local_gitconfig_dir/gitlocalconfig" ]; then
-cat << GITLOCALCONF >> "$local_gitconfig_dir/gitlocalconfig"
+if ! [ -e "${local_gitconfig_dir}/gitlocalconfig" ]; then
+cat << GITLOCALCONF >> "${local_gitconfig_dir}/gitlocalconfig"
 GITLOCALCONF
 fi
 
 ## git send-email config.
-if ! [ -e "$local_gitconfig_dir/gitsendemail" ]; then
-cat << GITSENDEMAIL > "$local_gitconfig_dir/gitsendemail"
+if ! [ -e "${local_gitconfig_dir}/gitsendemail" ]; then
+cat << GITSENDEMAIL > "${local_gitconfig_dir}/gitsendemail"
 [sendemail]
 	smtpserver = smtp.gmail.com
 	smtpuser = makiftasova@gmail.com
