@@ -1,5 +1,7 @@
 [include]
 	path = ~/.config/git/gituserinfo
+[init]
+	defaultBranch = master
 [core]
 	editor = nvim
 [commit]
