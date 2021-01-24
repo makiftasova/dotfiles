@@ -4,6 +4,8 @@
 export TERM="xterm-256color"
 export ED_PROMPT="ed> "
 
+export GNUPGHOME="${HOME}/.config/gnupg"
+
 MAKEFLAGS="-j$(nproc)"
 export MAKEFLAGS
 

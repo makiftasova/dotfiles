@@ -23,6 +23,14 @@ sudo pacman -S --noconfirm --needed acpi zsh git curl neovim playerctl pamixer \
 echo "Update pkgfile db"
 sudo pkgfile --update
 
+echo "Setup GnuPG home directory"
+__gpg_dir=$(grep "export.*GNUPGHOME" config/zsh/env | cut -d'"' -f2 | sed "s?\${HOME}?${HOME}?g")
+if ! [ -d "${__gpg_dir}" ]; then
+	mkdir -p "${__gpg_dir}"
+	chmod 700 "${__gpg_dir}"
+fi
+unset __gpg_dir
+
 # install oh-my-zsh and plug-ins
 echo "installing oh-my-zsh and plug-ins..."
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
