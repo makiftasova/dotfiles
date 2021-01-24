@@ -274,7 +274,7 @@ function lsifr {
 		return 255;
 	fi
 
-	pacman -Sl "$1" | grep 'installed:' | cut -d' ' -f2-
+	pacman -Sl "$1" | grep 'installed' | cut -d' ' -f2-
 }
 
 ## aurutils helpers
