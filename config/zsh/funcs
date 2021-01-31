@@ -76,6 +76,43 @@ function mkcd {
 	mkdir -p "$1" && cd "$1" || return 255
 }
 
+# rm files in cwd and all sub-directoriesolder than given number of days
+function rmolder {
+	local __num_days
+
+	if [ -z "$(command -v find)" ]; then
+		echo 'find not found';
+		return 255;
+	fi
+
+	__num_days="$1"
+	if [ -z "${__num_days}" ]; then
+		__num_days="7"
+	fi
+
+	case "${__num_days}" in
+		''|*[!0-9]*) echo 'given number of days is not nuemric'; return 254 ;;
+		*) ;;
+	esac
+
+	# do a dry run, and print files if tehre is more than 1 parameter
+	if [ -z "$2" ]; then
+		find . -type f -mtime +"${__num_days}" -print -delete
+	else
+		find . -type f -mtime +"${__num_days}"
+	fi
+}
+
+# rm all empty sub-direcctories in cwd.
+function rmempty {
+	if [ -z "$(command -v find)" ]; then
+		echo 'find not found';
+		return 255;
+	fi
+
+	find . -type d -empty -print -delete
+}
+
 # create a new markdown note with name "$NAME_$DATE.md"
 function mdnote {
 	if [ "$#" != "1" ]; then
