@@ -345,5 +345,28 @@ function aur-remove {
 	echo 'you may want to run `sudo pacman -Sc` to cleanup more space.'
 }
 
+# Used to checkk diffs between $FILE and $FILE.orig before commiting current
+# version of $FILE
+# Only supports `neovim`'s diff mode.
+function svn-diff-orig {
+	local __ans
+
+	for f in $(svn status | grep '\.orig$' | awk '{print $2}'); do
+		nvim -d "${f%.orig}" "${f}";
+		printf '%s' "Erase '${f}'? "
+		select __ans in "Yes" "No" "Exit"; do
+			case "${__ans}" in
+				Yes)
+					rm "${f}"
+					continue 2;;
+				No)
+					continue 2;;
+				Exit)
+					break 2;;
+			esac
+		done
+	done
+}
+
 # shellcheck source=/dev/null disable=SC2154
 [ -f "${ZSH_CONFIG_LOCAL_HOME}/funcs" ] && source "${ZSH_CONFIG_LOCAL_HOME}/funcs"
