@@ -368,5 +368,34 @@ function svn-diff-orig {
 	done
 }
 
+# wrap `telnet` with `tee` to always log telnet console to file
+# log file name format: telnet_YYYY-mm-DD_HH:MM:SS.log
+function telnet {
+	local __date
+	local __tee
+	local __telnet
+
+	__date="$(command -vp date)"
+	__tee="$(command -vp tee)"
+	__telnet="$(command -vp telnet)"
+
+	if [ -z "${__date}" ]; then
+		printf '%s\n' 'date not found'
+		return 255;
+	fi
+
+	if [ -z "${__tee}" ]; then
+		printf '%s\n' 'tee not found'
+		return 254
+	fi
+
+	if [ -z "${__telnet}" ]; then
+		printf '%s\n' 'telnet not found'
+		return 253
+	fi
+
+	"${__telnet}" "$@" | "${__tee}" -i telnet_"$("${__date}" +%F_%T)".log
+}
+
 # shellcheck source=/dev/null disable=SC2154
 [ -f "${ZSH_CONFIG_LOCAL_HOME}/funcs" ] && source "${ZSH_CONFIG_LOCAL_HOME}/funcs"
