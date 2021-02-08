@@ -355,6 +355,7 @@ function svn-diff-orig {
 		nvim -d "${f%.orig}" "${f}";
 		printf '%s' "Erase '${f}'? "
 		select __ans in "Yes" "No" "Exit"; do
+			# shellcheck disable=SC2249 # input sanitized by `select`
 			case "${__ans}" in
 				Yes)
 					rm "${f}"
