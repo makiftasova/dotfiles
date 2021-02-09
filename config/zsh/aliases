@@ -1,19 +1,23 @@
 # shellcheck disable=SC2148
 # Do not warn for "unknown shell" since this file will be included from zshrc
 
-export MDV_THEME=729.8953
 alias sudo='sudo ' # alias sudo so we can use other asliases with sudo
+
 alias f='find . -name'
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
+
 alias cpdir='cp -rf'
-alias agrep='egrep --color=auto -rIin'
+
 alias grep='grep --color=auto'
+alias agrep='egrep --color=auto -rIin'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
+
 alias mkdir_today='mkdir $(date +%F)'
+
 alias cal="ncal -bM3"
-alias pcd='cd $(pwd)'
+
 alias manrandom='man $(find /usr/share/man -type f | shuf | head -1)'
 
 # shellcheck source=/dev/null disable=SC2154
