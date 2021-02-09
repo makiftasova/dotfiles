@@ -67,10 +67,6 @@ function md_to_pdf {
 	pandoc --pdf-engine=pdflatex -V geometry:"top=2cm, bottom=1.5cm, left=2.cm, right=2cm" -o "$1.pdf" "$1"
 }
 
-function mdown {
-	mdv -c 80 "$1"
-}
-
 # make a new directory and cd into it
 function mkcd {
 	mkdir -p "$1" && cd "$1" || return 255
@@ -211,30 +207,6 @@ function repo_rinse {
 	git reset --hard
 	git submodule foreach --recursive git reset --hard
 	git submodule update --init --recursive
-}
-
-function git_gc_prune_all {
-	local dname
-	for dir in $(find "$(pwd)" -name ".git" -type d -print0 | xargs -0 -I{} echo {}); do
-		dname="$(dirname "${dir}")";
-		echo "processing ${dname}";
-		git -C "${dname}" gc --aggressive --prune=all;
-	done
-}
-
-function repo_prune {
-	local __cwd
-	__cwd=$(pwd)
-
-	if [ "$#" -ne "0" ]; then
-		cd "$1" || return 255;
-	fi
-
-	git remote prune origin
-
-	if [ "$#" -ne "0" ]; then
-		cd "${__cwd}" || return 255;
-	fi
 }
 
 # run given command until it fails the print it stdout and stderr outputs of
