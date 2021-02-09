@@ -3,6 +3,9 @@
 
 export MDV_THEME=729.8953
 alias sudo='sudo ' # alias sudo so we can use other asliases with sudo
+alias f='find . -name'
+alias fd='find . -type d -name'
+alias ff='find . -type f -name'
 alias cpdir='cp -rf'
 alias agrep='egrep --color=auto -rIin'
 alias grep='grep --color=auto'
