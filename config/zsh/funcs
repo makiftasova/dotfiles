@@ -167,45 +167,25 @@ function unzipdir {
 	done
 }
 
-function fid {
-	local __dir
-	local __name
-
-	if [ "$#" -eq "0" ]; then
-		return 0;
-	fi
-
-	if [ "$#" -eq "1" ]; then
-		__dir="."
-		__name="$1"
-	else
-		__dir="$1"
-		__name="$2"
-	fi
-
-	find "${__dir}" -name "${__name}" "${@:3}"
-}
-
-function grep_libdep {
-	local _pattern="$1"
-	local _needle="$2"
-
-	for f in $(fid . "${_pattern}"); do
+# designed to wrapped by another shell function, do not use directly
+# $1 = file name pattern to search
+# $2 = string to grep in command output
+# $3 command to run for each file
+# $@:4 arguments for given command
+function __grep_generic {
+        for f in ${~1}; do
 		echo "===== FILE: \"${f}\" =====";
-		readelf -a "${f}" | grep "${_needle}";
+		"${3}" "${@:4}" "${f}" | grep "${2}";
 	done
 	echo "==== DONE ====";
 }
 
-function grep_symbols {
-	local _pattern="$1"
-	local _needle="$2"
+function grep_libdep {
+	__grep_generic "$1" "$2" "readelf" "-a"
+}
 
-	for f in $(fid . "${_pattern}"); do
-		echo "===== FILE: \"${f}\" =====";
-		nm -alC "${f}" | grep "${_needle}";
-	done
-	echo "===== DONE =====";
+function grep_symbols {
+	__grep_generic "$1" "$2" "nm" "-a" "-l" "-C"
 }
 
 function sizeof {
