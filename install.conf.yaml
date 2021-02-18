@@ -6,18 +6,9 @@
 - clean: ['~', '~/.config']
 
 - link:
+        ~/.clang-format: config/clang-format/clang-format
         ~/.config/i3:
                 path: config/i3/
-                create: true
-        ~/.config/sway:
-                path: config/sway/
-                create: true
-        ~/.config/zsh:
-                path: config/zsh
-                create: true
-                force: true
-        ~/.config/termite:
-                path: config/termite
                 create: true
         ~/.config/nvim:
                 path: config/nvim
@@ -25,7 +16,16 @@
         ~/.local/sbin:
                 path: sbin
                 create: true
-        ~/.clang-format: config/clang-format/clang-format
+        ~/.config/sway:
+                path: config/sway/
+                create: true
+        ~/.config/termite:
+                path: config/termite
+                create: true
+        ~/.config/zsh:
+                path: config/zsh
+                create: true
+                force: true
         ~/.gitconfig: config/git/gitconfig
         ~/.gitmessage: config/git/gitmessage
         ~/.vimrc: config/vimrc
