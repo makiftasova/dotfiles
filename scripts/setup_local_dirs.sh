@@ -7,7 +7,7 @@ create_empty_file_if_not_exists () {
 	fi
 }
 
-echo -n "setup local zsh configs..."
+echo -n "Setting up local zsh configs..."
 
 # create directories and files for local zsh configs.
 # sed delimiter is set to "?" because "$HOME" contains "/" characters.
@@ -17,10 +17,22 @@ create_empty_file_if_not_exists "${local_zsh_config_dir}/env"
 create_empty_file_if_not_exists "${local_zsh_config_dir}/ohmyzshrc"
 create_empty_file_if_not_exists "${local_zsh_config_dir}/funcs"
 create_empty_file_if_not_exists "${local_zsh_config_dir}/aliases"
+unset local_zsh_config_dir
 
 echo "done"
 
-echo -n "setup local git configs..."
+echo -n "Setting up local neovim config..."
+
+local_nvim_config_dir="${HOME}/.local/config/nvim"
+
+mkdir -p "${local_nvim_config_dir}"
+create_empty_file_if_not_exists "${local_nvim_config_dir}/init.vim"
+
+unset local_nvim_config_dir
+
+echo "done"
+
+echo -n "Setting up local git configs..."
 
 # create a directory for local git config
 # (e.g. mail passwords, work account etc.)
@@ -53,6 +65,8 @@ cat << GITSENDEMAIL > "${local_gitconfig_dir}/gitsendemail"
 	smtpPass =
 GITSENDEMAIL
 fi
+
+unset local_gitconfig_dir
 
 echo "done"
 

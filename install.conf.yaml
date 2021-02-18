@@ -20,6 +20,12 @@
           stdin: true
           stdout: true
           stderr: true
+        -
+          command: scripts/setup_local_dirs.sh
+          description: Setup PC local config
+          stdin: true
+          stdout: true
+          stderr: true
 
 - link:
         ~/.clang-format: config/clang-format/clang-format
@@ -86,12 +92,6 @@
         -
           command: nvim +PlugInstall +qa!
           description: Install plugins for neovim
-          stdin: true
-          stdout: true
-          stderr: true
-        -
-          command: scripts/setup_local_dirs.sh
-          description: Setup PC local config
           stdin: true
           stdout: true
           stderr: true
