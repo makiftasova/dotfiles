@@ -5,6 +5,22 @@
 
 - clean: ['~', '~/.config']
 
+- shell:
+        -
+          command: >
+                  sudo pacman -S --needed git curl zsh neovim python-pynvim
+                  xclip xsel wl-clipboard fzf ripgrep cscope ctags
+          description: Installing utilities
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: chsh -s /usr/bin/zsh
+          description: Changing user shell to zsh
+          stdin: true
+          stdout: true
+          stderr: true
+
 - link:
         ~/.clang-format: config/clang-format/clang-format
         ~/.config/i3:
@@ -34,3 +50,49 @@
         ~/.vimrc: config/vimrc
         ~/.zprofile: config/zprofile
         ~/.zshrc: config/zsh/zshrc
+
+- shell:
+        -
+          command: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+          description: Installing oh-my-zsh
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: >
+                  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+                  ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+          description: Installing zsh-syntax-highlighting plugin for oh-my-zsh
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: >
+                  git clone https://github.com/zsh-users/zsh-autosuggestions.git
+                  ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+          description: Installing zsh-autosuggestions plugin for oh-my-zsh
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: >
+                  curl -fLo ~/.local/share/nvim/site/autoload/plug.vim
+                  --create-dirs
+                  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+          description: Install Vim-Plug for neovim
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: nvim +PlugInstall +qa!
+          description: Install plugins for neovim
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: scripts/setup_local_dirs.sh
+          description: Setup PC local config
+          stdin: true
+          stdout: true
+          stderr: true
+
