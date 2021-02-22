@@ -101,8 +101,10 @@ export LC_TIME=en_US.UTF-8
 # fi
 if [ -n "$(command -v nvim)" ]; then
 	export EDITOR='nvim';
+        export DIFFPROG='nvim -d'
 else
 	export EDITOR='vim'
+        export DIFFPROG='vim -d'
 fi
 
 # Compilation flags
