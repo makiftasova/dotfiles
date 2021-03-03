@@ -1,6 +1,12 @@
 # shellcheck disable=SC2148
 # Do not warn for "unknown shell" since this file will be included from zshrc
 
+# export XDG Base Directory Specification's User Directories.
+# XDG_RUNTIME_DIR should already be defined by `pam_systemd`
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_DATA_HOME="${HOME}/.local/share"
+
 export TERM="xterm-256color"
 export ED_PROMPT="ed> "
 
