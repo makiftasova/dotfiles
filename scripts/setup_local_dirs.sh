@@ -11,7 +11,7 @@ echo -n "Setting up local zsh configs..."
 
 # create directories and files for local zsh configs.
 # sed delimiter is set to "?" because "$HOME" contains "/" characters.
-local_zsh_config_dir=$(grep "export.*ZSH_CONFIG_LOCAL_HOME" config/zsh/zshrc | cut -d'"' -f2 | sed "s?\${HOME}?${HOME}?g")
+local_zsh_config_dir=$(grep "export.*ZSH_CONFIG_LOCAL_HOME" ../config/zsh/zshrc | cut -d'"' -f2 | sed "s?\${HOME}?${HOME}?g")
 mkdir -p "${local_zsh_config_dir}"
 create_empty_file_if_not_exists "${local_zsh_config_dir}/env"
 create_empty_file_if_not_exists "${local_zsh_config_dir}/ohmyzshrc"
@@ -72,7 +72,7 @@ echo "done"
 
 echo -n "Setting up GnuPG home directory..."
 
-__gpg_dir=$(grep "export.*GNUPGHOME" config/zsh/env | cut -d'"' -f2 | sed "s?\${HOME}?${HOME}?g")
+__gpg_dir=$(grep "export.*GNUPGHOME" ../config/zsh/env | cut -d'"' -f2 | sed "s?\${HOME}?${HOME}?g")
 if ! [ -d "${__gpg_dir}" ]; then
 	mkdir -p "${__gpg_dir}"
 	chmod 700 "${__gpg_dir}"
