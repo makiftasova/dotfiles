@@ -36,12 +36,12 @@ echo -n "Setting up local git configs..."
 
 # create a directory for local git config
 # (e.g. mail passwords, work account etc.)
-local_gitconfig_dir="${HOME}/.config/git"
+local_gitconfig_dir="${HOME}/.local/config/git"
 mkdir -p "${local_gitconfig_dir}"
 
 ## git user config.
-if ! [ -e "${local_gitconfig_dir}/gituserinfo" ]; then
-cat << GITUSERINFO > "${local_gitconfig_dir}/gituserinfo"
+if ! [ -e "${local_gitconfig_dir}/userinfo" ]; then
+cat << GITUSERINFO > "${local_gitconfig_dir}/userinfo"
 [user]
 	name = Mehmet Akif Tasova
 	email = makiftasova@gmail.com
@@ -49,14 +49,14 @@ GITUSERINFO
 fi
 
 ## git local config (e.g. machine specific config)
-if ! [ -e "${local_gitconfig_dir}/gitlocalconfig" ]; then
-cat << GITLOCALCONF >> "${local_gitconfig_dir}/gitlocalconfig"
+if ! [ -e "${local_gitconfig_dir}/localconfig" ]; then
+cat << GITLOCALCONF >> "${local_gitconfig_dir}/localconfig"
 GITLOCALCONF
 fi
 
 ## git send-email config.
-if ! [ -e "${local_gitconfig_dir}/gitsendemail" ]; then
-cat << GITSENDEMAIL > "${local_gitconfig_dir}/gitsendemail"
+if ! [ -e "${local_gitconfig_dir}/sendemail" ]; then
+cat << GITSENDEMAIL > "${local_gitconfig_dir}/sendemail"
 [sendemail]
 	smtpserver = smtp.gmail.com
 	smtpuser = makiftasova@gmail.com

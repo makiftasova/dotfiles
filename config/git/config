@@ -1,11 +1,11 @@
 [include]
-	path = ~/.config/git/gituserinfo
+	path = ~/.local/config/git/userinfo
 [init]
 	defaultBranch = master
 [core]
 	editor = nvim
 [commit]
-	template = ~/.gitmessage
+	template = ~/.config/git/message
 [alias]
 	l = log --graph --decorate --pretty=oneline --abbrev-commit
 	la = log --graph --decorate --pretty=oneline --abbrev-commit --all
@@ -42,5 +42,5 @@
 	new = green bold
 	whitespace = red reverse
 [include]
-	path = ~/.config/git/gitsendemail
-	path = ~/.config/git/gitlocalconfig
+	path = ~/.local/config/git/sendemail
+	path = ~/.local/config/git/localconfig

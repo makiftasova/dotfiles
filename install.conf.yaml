@@ -51,8 +51,10 @@
                 path: config/zsh
                 create: true
                 force: true
-        ~/.gitconfig: config/git/gitconfig
-        ~/.gitmessage: config/git/gitmessage
+        ~/.config/git:
+                path: config/git
+                create: true
+                force: true
         ~/.vimrc: config/vimrc
         ~/.zprofile: config/zprofile
         ~/.zshrc: config/zsh/zshrc
