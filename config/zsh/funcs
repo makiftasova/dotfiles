@@ -145,10 +145,11 @@ function unzipdir {
 		local ext="${file##*.}"
 		local base
 		base="$(basename "${file}" ".${ext}")"
-		if [ "${ext}" != 'zip' ]; then
-			echo "ERROR: file extension is not zip: ${file}";
-			return 254;
+		if [ -n "$(file ${file} 2>/dev/null | grep -v 'Zip archive data')" ]; then
+			echo "ERROR: not a valid zip file, skipping: ${file}";
+			continue;
 		fi
+
 		unzip "${file}" -d "${base}"
 	done
 }
