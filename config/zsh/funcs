@@ -314,7 +314,7 @@ function svn-diff-orig {
 
 # wrap `telnet` with `tee` to always log telnet console to file
 # log file name format: telnet_YYYY-mm-DD_HH:MM:SS.log
-function telnet {
+function telnet_log {
 	local __date
 	local __tee
 	local __telnet
