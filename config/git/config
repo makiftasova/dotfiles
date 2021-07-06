@@ -7,12 +7,12 @@
 [commit]
 	template = ~/.config/git/message
 [alias]
-	l = log --graph --decorate --pretty=oneline --abbrev-commit
-	la = log --graph --decorate --pretty=oneline --abbrev-commit --all
-	lr = log --graph --decorate --pretty=oneline --abbrev-commit -n
+	l = log --graph --decorate --oneline
+	la = log --graph --decorate --oneline --all
+	lr = log --graph --decorate --oneline -n
 	lag = log --branches --remotes --tags --graph --oneline --decorate
 	par = "!f() { for r in $(git remote show); do git push -u $r $@; done }; f"
-	branch-diff = "!f() { git log --pretty=oneline --abbrev-commit --cherry-pick $1...$2; }; f"
+	branch-diff = "!f() { git log --oneline --cherry-pick $1...$2; }; f"
 	daemon-readonly = !git daemon --base-path=. --export-all --reuseaddr --informative-errors --verbose
 	daemon-writeable = !git daemon --base-path=. --export-all --enable=receive-pack --reuseaddr --informative-errors --verbose
 	files = show --pretty='' --name-only
