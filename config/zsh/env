@@ -17,7 +17,7 @@ export MAKEFLAGS
 
 # add rubygems' bin directory to path if rubygems is installed
 if [ -n "$(command -v gem)" ]; then
-	USR_GEM_DIR="$(gem environment | grep "USER INSTALLATION DIRECTORY" | head -n1 | cut -d':' -f2 | tr -d ' ')/bin"
+	USR_GEM_DIR="$(gem environment | grep 'USER INSTALLATION DIRECTORY' | head -n1 | cut -d':' -f2 | tr -d ' ')/bin"
 	PATH="${USR_GEM_DIR}:${PATH}"
 fi
 
