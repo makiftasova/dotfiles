@@ -8,8 +8,18 @@
 - shell:
         -
           command: >
-                  sudo pacman -S --needed git curl zsh neovim python-pynvim
-                  xclip xsel wl-clipboard fzf ripgrep cscope ctags
+                  sudo pacman -S --needed
+                  clang cscope ctags curl
+                  fzf
+                  git
+                  neovim
+                  python-pynvim
+                  ripgrep
+                  rust-analyzer
+                  texlab
+                  wl-clipboard
+                  xclip xsel
+                  zsh
           description: Installing utilities
           stdin: true
           stdout: true
