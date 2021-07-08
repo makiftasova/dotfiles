@@ -480,9 +480,11 @@ nnoremap <c-p> :FZF<cr>
 
 let g:tex_flavor = 'latex'
 
-" Enable clangd for LSP
+" Enable language servers for for LSP
 lua << EOF
-require'lspconfig'.clangd.setup{}
+require'lspconfig'.clangd.setup{} -- C/C++
+require'lspconfig'.rust_analyzer.setup{} -- rustlang
+require'lspconfig'.texlab.setup{} -- (La)TeX
 EOF
 
 source $HOME/.local/config/nvim/init.vim
