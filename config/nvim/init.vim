@@ -68,6 +68,9 @@ Plug 'vim-scripts/a.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
+" LSP (neovim 0.5.0+)
+Plug 'neovim/nvim-lspconfig'
+
 call plug#end()
 
 """""""""""""""""""""""""""""""
@@ -476,5 +479,10 @@ let g:ctrlp_map = ''
 nnoremap <c-p> :FZF<cr>
 
 let g:tex_flavor = 'latex'
+
+" Enable clangd for LSP
+lua << EOF
+require'lspconfig'.clangd.setup{}
+EOF
 
 source $HOME/.local/config/nvim/init.vim
