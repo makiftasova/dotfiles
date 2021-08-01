@@ -187,6 +187,19 @@ function sizeof {
 	cd "${__root}" || return 255
 }
 
+# use `watch` and `grep` to monitor Dirty and Writeback bytes in /proc/meminfo
+function sync_progress {
+	local __period
+
+	__period="$1"
+
+	if [ -z "${__period}" ]; then
+		__period="0.5"
+	fi
+
+	watch -n "${__period}" -d grep -e Dirty: -e Writeback: /proc/meminfo
+}
+
 # revert git repository into fresh state.
 # * removes all out of tree files
 # * reset git repo to HEAD
