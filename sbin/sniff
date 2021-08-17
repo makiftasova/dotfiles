@@ -43,7 +43,7 @@ sniff_reset_to_sta () {
 	echo "INFO: reverting back to STA managed mode ... "
 	sudo rfkill unblock "$rfkill_phy_id"
 	if ! sudo iw dev "$dev" del; then
-		echo "ERROR: mon0 could not be deleted, maybe you are already in STA managed mode?"
+		echo "ERROR: $dev could not be deleted, maybe you are already in STA managed mode?"
 	fi
 	if ! sudo iw phy "$phy" interface add "$dev" type managed; then
 		echo "ERROR: we could not switch back to STA mode"
@@ -60,14 +60,12 @@ sniff_fix_devices () {
 	echo "Trying to fix messed up interfaces..."
 	sudo rfkill unblock "$rfkill_phy_id"
 	sudo iw dev "$dev" del &> /dev/null
-	sudo iw dev wlan0 del &> /dev/null
-	sudo iw dev mon0 del &> /dev/null
 	sudo iw phy "$phy" interface add "$dev" type managed
 	if ! sudo ifconfig "$dev" up; then
 		echo "WARN: Could not setup managed interface. Trying alternative method"
 		sudo ip link set "$dev" up
 	fi
-	sudo service NetworkManager restart
+	sudo systemctl restart NetworkManager.service
 	nmcli radio wifi on
 	echo "Your interfaces should be fixed now."
 }
@@ -82,10 +80,10 @@ sniff_set_freqs () { # $ctrl_chan $bw $chan_center
 	chan_center="$3"
 
 	if [ -z "$chan_center" ]; then
-		sudo iw dev mon0 set freq "$ctrl_chan" "$bw"
+		sudo iw dev "$dev" set freq "$ctrl_chan" "$bw"
 		return $?
 	else
-		sudo iw dev mon0 set freq "$ctrl_chan" "$bw" "$chan_center"
+		sudo iw dev "$dev" set freq "$ctrl_chan" "$bw" "$chan_center"
 		return $?
 	fi
 }
@@ -125,26 +123,24 @@ sniff_setup () { # $channel $bw $phy $dev
 	fi
 	sleep 2
 
-	if ! sudo iw phy "$phy" interface add mon0 type monitor; then
-		echo "ERROR: interface mon0 cannot be added to $phy interface."
+	if ! sudo iw phy "$phy" interface add "$dev" type monitor; then
+		echo "ERROR: interface $dev cannot be added to $phy interface."
 		exit 1
 	fi
 	sleep 2
 
-	if ! sudo ip link set mon0 up; then
-		echo "ERROR: Could not setup mon0 interface. Trying alternative method..."
+	if ! sudo ip link set "$dev" up; then
+		echo "ERROR: Could not setup $dev interface. Trying alternative method..."
 		sudo rfkill unblock "$(rfkill list | grep "phy" | awk -F':' '{print $1}')"
-		sudo iw dev wlan0 del &> /dev/null
-		sudo iw dev mon0 del &> /dev/null
 		sudo iw dev "$dev" del &> /dev/null
-		sudo iw phy "$phy" interface add mon0 type monitor
-		sudo ifconfig mon0 up
-		if ! sudo ifconfig mon0 up; then
-			echo "ERROR: Could not setup mon0 interface! Giving up."
+		sudo iw phy "$phy" interface add "$dev" type monitor
+		sudo ifconfig "$dev" up
+		if ! sudo ifconfig "$dev" up; then
+			echo "ERROR: Could not setup $dev interface! Giving up."
 			exit 5
 		fi
 	fi
-	echo "INFO: Setting requency bands to mon0 interface"
+	echo "INFO: Setting requency bands to "$dev" interface"
 	sleep 2
 
 	# 20 MHz channels
@@ -504,10 +500,10 @@ sniff_setup () { # $channel $bw $phy $dev
 	fi
 
 	if ! sniff_set_freqs "$chan_ctrl" "$bw" "$chan_center"; then
-		echo "ERROR: failed to set frequencies for mon0 interface"
+		echo "ERROR: failed to set frequencies for $dev interface"
 		exit 100
 	fi
-	echo "INFO: Channel $channel successfully set to mon0 at $bw MHz Bandwidth."
+	echo "INFO: Channel $channel successfully set to $dev at $bw MHz Bandwidth."
 }
 
 if [ -z "$phy" ]; then
@@ -527,25 +523,22 @@ fi
 
 if [ -z "$dev" ]; then
 	echo "ERROR: interface is NULL. Trying to recover..."
-	sudo iw phy "$phy" interface add wlan0 type managed
-	if ! sudo ifconfig wlan0 up; then
+	sudo iw phy "$phy" interface add "$dev" type managed
+	if ! sudo ifconfig "$dev" up; then
 		echo "ERROR: could not revert $dev back to managed STA mode"
 		exit 11
 	fi
-	if ! sudo ifconfig wlan0 up; then
-		echo "ERROR: can not setup wlan0, trying to unblock it via rfkill... "
+	if ! sudo ifconfig "$dev" up; then
+		echo "ERROR: can not setup $dev, trying to unblock it via rfkill... "
 		if ! sudo rfkill unblock "$(rfkill list | grep "phy" | awk -F':' '{print $1}')"; then
 			echo "ERROR: rfkill was notthe issue... exiting..."
 			exit 12
 		fi
 		exit 13
 	fi
-	dev="wlan0"
 	echo "INFO: Successfully recovered $dev interface."
 	echo "INFO: Now continuing to monitor mode settings."
 	sleep 2
-elif [ "$dev" = "mon0" ]; then
-	echo "WARN: mon0 already up."
 fi
 
 case "$channel" in
