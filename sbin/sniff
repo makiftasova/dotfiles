@@ -1,0 +1,561 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+#
+# sniff - a helper script to setup WiFi monitor interfaces.
+# Arguments:
+# * sniff [channel] [bandwidth]
+# * sniff reset
+# * sniff fix
+#
+# Notes:
+# * This script uses channel 36 as defult if no channel information is given.
+# * This script uses bandwidth 80 MHz as defult if no bandwidth information is given.
+#
+# Example Usage:
+#
+# Start monitor mode on control channel 44 and 40 MHz bandwidth:
+# $ sniff 44 40
+#
+# Start monitor mode on control channel 11 and 20 MHz bandwidth:
+# $ sniff 11 20
+#
+# Start monitor mode on control channel 124 and 20 MHz bandwidth:
+# $ sniff 124
+#
+# Reset interface to STA managed mode:
+# $ sniff reset
+#
+# Try fixing broken PHY interfaces:
+# $ sniff fix
+#
+# Do not run with revert option when in managed mode! if this is the case, use
+# doctor feature to rep configurations.
+
+channel="$1"
+bw="$2"
+phy="$(iw phy | grep -m 1 "Wiphy" | awk -F' ' '{print $2}')"
+dev="$(iw dev | grep -m 1 "Interface" | awk '{print $2}')"
+rfkill_phy_id="$(rfkill list | grep "phy" | awk -F':' '{print $1}')"
+
+sniff_reset_to_sta () {
+	echo "INFO: reverting back to STA managed mode ... "
+	sudo rfkill unblock "$rfkill_phy_id"
+	if ! sudo iw dev "$dev" del; then
+		echo "ERROR: mon0 could not be deleted, maybe you are already in STA managed mode?"
+	fi
+	if ! sudo iw phy "$phy" interface add "$dev" type managed; then
+		echo "ERROR: we could not switch back to STA mode"
+		exit 41
+	fi
+	if ! sudo ifconfig "$dev" up; then
+		echo "ERROR: managed interface $dev not found"
+		exit 42
+	fi
+	echo "INFO: Successfully resetted interface back to STA mode"
+}
+
+sniff_fix_devices () {
+	echo "Trying to fix messed up interfaces..."
+	sudo rfkill unblock "$rfkill_phy_id"
+	sudo iw dev "$dev" del &> /dev/null
+	sudo iw dev wlan0 del &> /dev/null
+	sudo iw dev mon0 del &> /dev/null
+	sudo iw phy "$phy" interface add "$dev" type managed
+	if ! sudo ifconfig "$dev" up; then
+		echo "WARN: Could not setup managed interface. Trying alternative method"
+		sudo ip link set "$dev" up
+	fi
+	sudo service NetworkManager restart
+	nmcli radio wifi on
+	echo "Your interfaces should be fixed now."
+}
+
+sniff_set_freqs () { # $ctrl_chan $bw $chan_center
+	local ctrl_chan
+	local bw
+	local chan_center
+
+	ctrl_chan="$1"
+	bw="$2"
+	chan_center="$3"
+
+	if [ -z "$chan_center" ]; then
+		sudo iw dev mon0 set freq "$ctrl_chan" "$bw"
+		return $?
+	else
+		sudo iw dev mon0 set freq "$ctrl_chan" "$bw" "$chan_center"
+		return $?
+	fi
+}
+
+sniff_setup () { # $channel $bw $phy $dev
+	local band
+	local channel
+	local chan_ctrl
+	local chan_center
+	local bw
+	local phy
+	local dev
+
+	channel="$1"
+	bw="$2"
+	phy="$3"
+	dev="$4"
+
+	if [ "$channel" -gt 35 ]; then
+		band='5'
+	else
+		band='2.4'
+	fi
+
+	echo "sniff configuration:"
+	echo "========================="
+	echo "band: ${band} GHz"
+	echo "channel: ${channel}"
+	echo "bandwidth: ${bw}"
+	echo "interface: ${dev}"
+	echo "phy layer: ${phy}"
+	echo "========================="
+
+	if ! sudo iw dev "$dev" del; then
+		echo "ERROR: interface $dev cannot be deleted"
+		exit 1
+	fi
+	sleep 2
+
+	if ! sudo iw phy "$phy" interface add mon0 type monitor; then
+		echo "ERROR: interface mon0 cannot be added to $phy interface."
+		exit 1
+	fi
+	sleep 2
+
+	if ! sudo ip link set mon0 up; then
+		echo "ERROR: Could not setup mon0 interface. Trying alternative method..."
+		sudo rfkill unblock "$(rfkill list | grep "phy" | awk -F':' '{print $1}')"
+		sudo iw dev wlan0 del &> /dev/null
+		sudo iw dev mon0 del &> /dev/null
+		sudo iw dev "$dev" del &> /dev/null
+		sudo iw phy "$phy" interface add mon0 type monitor
+		sudo ifconfig mon0 up
+		if ! sudo ifconfig mon0 up; then
+			echo "ERROR: Could not setup mon0 interface! Giving up."
+			exit 5
+		fi
+	fi
+	echo "INFO: Setting requency bands to mon0 interface"
+	sleep 2
+
+	# 20 MHz channels
+	if [ "$bw" = '20' ]; then
+		case "$channel" in
+			# 2.4 GHz Channels
+			1)
+				chan_ctrl='2412';
+				;;
+			2)
+				chan_ctrl='2417';
+				;;
+			3)
+				chan_ctrl='2422';
+				;;
+			4)
+				chan_ctrl='2427';
+				;;
+			5)
+				chan_ctrl='2432';
+				;;
+			6)
+				chan_ctrl='2437';
+				;;
+			7)
+				chan_ctrl='2442';
+				;;
+			8)
+				chan_ctrl='2447';
+				;;
+			9)
+				chan_ctrl='2452';
+				;;
+			10)
+				chan_ctrl='2457';
+				;;
+			11)
+				chan_ctrl='2462';
+				;;
+			12)
+				chan_ctrl='2467';
+				;;
+			13)
+				chan_ctrl='2472';
+				;;
+			14)
+				chan_ctrl='2484';
+				;;
+			# 5 GHz Channels
+			36)
+				chan_ctrl='5180';
+				;;
+			40)
+				chan_ctrl='5200';
+				;;
+			44)
+				chan_ctrl='5220';
+				;;
+			48)
+				chan_ctrl='5240';
+				;;
+			52)
+				chan_ctrl='5260';
+				;;
+			56)
+				chan_ctrl='5280';
+				;;
+			60)
+				chan_ctrl='5300';
+				;;
+			64)
+				chan_ctrl='5320';
+				;;
+			100)
+				chan_ctrl='5500';
+				;;
+			104)
+				chan_ctrl='5520';
+				;;
+			108)
+				chan_ctrl='5540';
+				;;
+			112)
+				chan_ctrl='5560';
+				;;
+			116)
+				chan_ctrl='5580';
+				;;
+			120)
+				chan_ctrl='5600';
+				;;
+			124)
+				chan_ctrl='5620';
+				;;
+			128)
+				chan_ctrl='5640';
+				;;
+			132)
+				chan_ctrl='5660';
+				;;
+			126)
+				chan_ctrl='5680';
+				;;
+			140)
+				chan_ctrl='5700';
+				;;
+			144)
+				chan_ctrl='5720';
+				;;
+			149)
+				chan_ctrl='5745';
+				;;
+			153)
+				chan_ctrl='5765';
+				;;
+			157)
+				chan_ctrl='5785';
+				;;
+			161)
+				chan_ctrl='5805';
+				;;
+			# Unknown channel
+			*)
+				echo "ERROR: Unknown channel $channel for $band GHz in $bw MHz";
+                                exit 125;
+				;;
+		esac
+	# 40 MHz channels
+	elif [ "$bw" = '40' ]; then
+		case "$channel" in
+			# 2.4 GHz Channels
+			3)
+				chan_ctrl='2422';
+				;;
+			11)
+				chan_ctrl='2462';
+				;;
+			# 5 GHz Channels
+			36)
+				chan_ctrl='5180';
+				chan_center='5190';
+				;;
+			40)
+				chan_ctrl='5200';
+				chan_center='5190'
+				;;
+			44)
+				chan_ctrl='5220';
+				chan_center='5230';
+				;;
+			48)
+				chan_ctrl='5240';
+				chan_center='5230';
+				;;
+			52)
+				chan_ctrl='5260';
+				chan_center='5270';
+				;;
+			56)
+				chan_ctrl='5280';
+				chan_center='5270';
+				;;
+			60)
+				chan_ctrl='5300';
+				chan_center='5310';
+				;;
+			64)
+				chan_ctrl='5320';
+				chan_center='5310';
+				;;
+			100)
+				chan_ctrl='5500';
+				chan_center='5510';
+				;;
+			104)
+				chan_ctrl='5520';
+				chan_center='5510';
+				;;
+			108)
+				chan_ctrl='5540';
+				chan_center='5550';
+				;;
+			112)
+				chan_ctrl='5560';
+				chan_center='5550';
+				;;
+			116)
+				chan_ctrl='5580';
+				chan_center='5590';
+				;;
+			120)
+				chan_ctrl='5600';
+				chan_center='5590';
+				;;
+			124)
+				chan_ctrl='5620';
+				chan_center='5630';
+				;;
+			128)
+				chan_ctrl='5640';
+				chan_center='5630';
+				;;
+			132)
+				chan_ctrl='5660';
+				chan_center='5670';
+				;;
+			126)
+				chan_ctrl='5680';
+				chan_center='5670';
+				;;
+			140)
+				chan_ctrl='5700';
+				chan_center='5710';
+				;;
+			144)
+				chan_ctrl='5720';
+				chan_center='5710';
+				;;
+			149)
+				chan_ctrl='5745';
+				chan_center='5755';
+				;;
+			153)
+				chan_ctrl='5765';
+				chan_center='5755';
+				;;
+			157)
+				chan_ctrl='5785';
+				chan_center='5795';
+				;;
+			161)
+				chan_ctrl='5805';
+				chan_center='5795';
+				;;
+			# Unknown channel
+			*)
+				echo "ERROR: Unknown channel $channel for $band GHz in $bw MHz";
+                                exit 125;
+				;;
+		esac
+	# 80 MHz channels
+	elif [ "$bw" = '80' ]; then
+		case "$channel" in
+			# 2.4 GHz Channels
+			# no 2.4 GHz channels in this bandwidth
+			# 5 GHz Channels
+			36)
+				chan_ctrl='5180';
+				chan_center='5210';
+				;;
+			40)
+				chan_ctrl='5200';
+				chan_center='5210'
+				;;
+			44)
+				chan_ctrl='5220';
+				chan_center='5210';
+				;;
+			48)
+				chan_ctrl='5240';
+				chan_center='5210';
+				;;
+			52)
+				chan_ctrl='5260';
+				chan_center='5290';
+				;;
+			56)
+				chan_ctrl='5280';
+				chan_center='5290';
+				;;
+			60)
+				chan_ctrl='5300';
+				chan_center='5290';
+				;;
+			64)
+				chan_ctrl='5320';
+				chan_center='5290';
+				;;
+			100)
+				chan_ctrl='5500';
+				chan_center='5530';
+				;;
+			104)
+				chan_ctrl='5520';
+				chan_center='5530';
+				;;
+			108)
+				chan_ctrl='5540';
+				chan_center='5530';
+				;;
+			112)
+				chan_ctrl='5560';
+				chan_center='5530';
+				;;
+			116)
+				chan_ctrl='5580';
+				chan_center='5610';
+				;;
+			120)
+				chan_ctrl='5600';
+				chan_center='5610';
+				;;
+			124)
+				chan_ctrl='5620';
+				chan_center='5610';
+				;;
+			128)
+				chan_ctrl='5640';
+				chan_center='5610';
+				;;
+			132)
+				chan_ctrl='5660';
+				chan_center='5690';
+				;;
+			126)
+				chan_ctrl='5680';
+				chan_center='5690';
+				;;
+			140)
+				chan_ctrl='5700';
+				chan_center='5690';
+				;;
+			144)
+				chan_ctrl='5720';
+				chan_center='5690';
+				;;
+			149)
+				chan_ctrl='5745';
+				chan_center='5775';
+				;;
+			153)
+				chan_ctrl='5765';
+				chan_center='5775';
+				;;
+			157)
+				chan_ctrl='5785';
+				chan_center='5775';
+				;;
+			161)
+				chan_ctrl='5805';
+				chan_center='5775';
+				;;
+			# Unknown channel
+			*)
+				echo "ERROR: Unknown channel $channel for $band GHz in $bw MHz";
+                                exit 125;
+				;;
+		esac
+	else
+		echo "ERROR: Bandwidth $bw is not supported"
+		exit 90
+	fi
+
+	if [ -z "$chan_ctrl" ]; then
+		echo "ERROR: Could not determine control channel for channel $channel in bandwidth $bw"
+		exit 95
+	fi
+
+	if ! sniff_set_freqs "$chan_ctrl" "$bw" "$chan_center"; then
+		echo "ERROR: failed to set frequencies for mon0 interface"
+		exit 100
+	fi
+	echo "INFO: Channel $channel successfully set to mon0 at $bw MHz Bandwidth."
+}
+
+if [ -z "$phy" ]; then
+	echo "ERROR: script error, PHY is NULL"
+	exit 10
+fi
+
+if [ -z "$channel" ]; then
+	echo "WARN: No channel number provided. Using default (36)"
+	channel='36'
+fi
+
+if [ -z "$bw" ]; then
+	echo "WARN: No bandwidth provided. Using default (20 MHz)"
+	bw='20'
+fi
+
+if [ -z "$dev" ]; then
+	echo "ERROR: interface is NULL. Trying to recover..."
+	sudo iw phy "$phy" interface add wlan0 type managed
+	if ! sudo ifconfig wlan0 up; then
+		echo "ERROR: could not revert $dev back to managed STA mode"
+		exit 11
+	fi
+	if ! sudo ifconfig wlan0 up; then
+		echo "ERROR: can not setup wlan0, trying to unblock it via rfkill... "
+		if ! sudo rfkill unblock "$(rfkill list | grep "phy" | awk -F':' '{print $1}')"; then
+			echo "ERROR: rfkill was notthe issue... exiting..."
+			exit 12
+		fi
+		exit 13
+	fi
+	dev="wlan0"
+	echo "INFO: Successfully recovered $dev interface."
+	echo "INFO: Now continuing to monitor mode settings."
+	sleep 2
+elif [ "$dev" = "mon0" ]; then
+	echo "WARN: mon0 already up."
+fi
+
+case "$channel" in
+	reset)
+		sniff_reset_to_sta;
+		;;
+	fix)
+		sniff_fix_devices;
+		;;
+	*)
+		sniff_setup "$channel" "$bw" "$phy" "$dev";
+		;;
+esac
