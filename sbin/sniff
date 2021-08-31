@@ -523,6 +523,8 @@ fi
 
 if [ -z "$dev" ]; then
 	echo "ERROR: interface is NULL. Trying to recover..."
+	echo "Assuming ifname was \"wlan0\" since we lost proper ifname".
+	dev='wlan0'
 	sudo iw phy "$phy" interface add "$dev" type managed
 	if ! sudo ifconfig "$dev" up; then
 		echo "ERROR: could not revert $dev back to managed STA mode"
