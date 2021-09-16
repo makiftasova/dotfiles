@@ -13,6 +13,7 @@ alias grep='grep --color=auto'
 alias agrep='egrep --color=auto -rIin'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
+alias zgrep='zgrep --color=auto'
 
 alias mkdir_today='mkdir $(date +%F)'
 
