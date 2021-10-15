@@ -145,7 +145,7 @@ function unzipdir {
 		local ext="${file##*.}"
 		local base
 		base="$(basename "${file}" ".${ext}")"
-		if [ -n "$(file ${file} 2>/dev/null | grep -v 'Zip archive data')" ]; then
+		if file "${file}" 2>/dev/null | grep -vq 'Zip archive data'; then
 			echo "ERROR: not a valid zip file, skipping: ${file}";
 			continue;
 		fi
