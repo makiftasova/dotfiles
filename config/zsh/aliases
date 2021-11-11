@@ -19,6 +19,9 @@ alias mkdir_today='mkdir $(date +%F)'
 
 alias cal="ncal -bM3"
 
+alias now='date -u +%Y%M%dT%H%m%S'
+alias nowtz='date +%Y%M%dT%H%m%SZ%z'
+
 alias manrandom='man $(find /usr/share/man -type f | shuf | head -1)'
 
 # shellcheck source=/dev/null disable=SC2154
