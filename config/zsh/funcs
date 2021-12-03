@@ -276,6 +276,7 @@ function aur-remove {
 	# remove given list of packages from local AUR database
 	# depends on `repo-remove` from `pacman` package
 	# depends on `aurutils` package from AUR.
+	# Only works on the first repo reported by `aur repo --list-path`
 	# arguments:
 	# "$@" -> package names to remove
 	local __db_path
@@ -285,7 +286,7 @@ function aur-remove {
 		return 255;
 	fi
 
-	__db_path="$(aur repo -p)"
+	__db_path="$(aur repo --list-path 2>/dev/null | head -n 1)"
 	if [ -z "${__db_path}" ] ; then
 		echo "error: ${__db_path} is empty";
 		return 255;
