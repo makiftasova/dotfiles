@@ -467,6 +467,7 @@ au FileType rust nmap gx <Plug>(rust-def-vertical)
 au FileType rust nmap <leader>gd <Plug>(rust-doc)
 
 "multiplesearch config
+nnoremap <leader>s :exe "Search ".expand('<cword>')<CR>
 let g:MultipleSearchColorSequence = "blue,green,magenta,red,yellow,cyan,gray,brown"
 let g:MultipleSearchMaxColors = 8
 let g:MultipleSearchTextColorSequence = "white,white,white,white,black,white,black,white"
