@@ -6,8 +6,6 @@ Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'sjl/gundo.vim'
-" Plug 'xolox/vim-easytags' " use the version below for universal ctags
-Plug 'JohnStarich/vim-easytags'
 Plug 'majutsushi/tagbar'
 Plug 'junegunn/gv.vim'
 
@@ -16,9 +14,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'morhetz/gruvbox'
 Plug 'mhinz/vim-startify'
-Plug 'gregsexton/gitv', {'on': ['Gitv']}
-"Plug 'altercation/vim-colors-solarized'
-"Plug 'dracula/vim'
 
 " Text Utils
 Plug 'easymotion/vim-easymotion'
@@ -44,13 +39,18 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'pangloss/vim-javascript'
 Plug 'mattn/emmet-vim'
 
-" Programming Language Specific
+" clang-format
 Plug 'rhysd/vim-clang-format'
-Plug 'kovisoft/slimv'
+
+" Python
+Plug 'tell-k/vim-autopep8'
+
+" rustlang
 Plug 'rust-lang/rust.vim'
 Plug 'racer-rust/vim-racer'
-Plug 'fatih/vim-go'
-Plug 'tell-k/vim-autopep8'
+
+" LISP
+Plug 'kovisoft/slimv'
 
 " LaTeX
 Plug 'lervag/vimtex'
