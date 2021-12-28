@@ -81,7 +81,6 @@ plugins=(
 	jsontools
 	command-not-found
 	rust
-	cargo
 	fzf
 	zsh-autosuggestions
 	zsh-syntax-highlighting
