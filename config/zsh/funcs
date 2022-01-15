@@ -248,6 +248,49 @@ function gif_to_mp4 {
 	ffmpeg -i "${inp}" -movflags faststart -pix_fmt yuv420p -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" "${out}"
 }
 
+# ffmpeg_undefault_ytdl_subtitle - unset default flag for 1st subtitle stream in
+# video file
+#
+#`youtube-dl` (or its fork `yt-dlp`) sets 1st subtitle stream as "default" when
+# embedding subtitle(s) into downloaded video file(s). This functions loops over
+# all the video files with extensions `.mkv`, `.mp4`, and `.webm`, and unsets
+# `default` flag for 1st subtitle stream
+function ffmpeg_undefault_ytdl_subtitle {
+	local indir
+	local outdir
+	local outfile
+
+	if [ -z "$(command -v ffmpeg)" ]; then
+		echo "ffmpeg not found!"
+		return 255
+	fi
+
+	indir="${1}"
+	outdir="${1}-nodefault"
+
+	if ! [ -d "${indir}" ]; then
+		echo "Directory ${indir} not exists"
+		return 254
+	fi
+
+	if ! [ -d "${outdir}" ]; then
+		echo "Creating output directory ${outdir}"
+		mkdir -p "${outdir}"
+	fi
+
+	setopt +o nomatch
+
+	for infile in "${indir}/"*.{mkv,mp4,webm}; do
+		outfile="${outdir}/$(basename "${infile}")"
+
+		echo "Processing ${infile} --> ${outfile}"
+
+		ffmpeg -i "${infile}" -c copy -map 0 -disposition:s:0 -default "${outfile}"
+	done
+
+	setopt -o nomatch
+}
+
 #
 # lsifr - list installed packages from given pacman repo
 #
