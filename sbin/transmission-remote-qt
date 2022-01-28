@@ -1,0 +1,14 @@
+#! /usr/bin/env sh
+
+CONFIG_DIR=""
+
+if [ -n "${XDG_CONFIG_HOME}" ]; then
+	CONFIG_DIR="${XDG_CONFIG_HOME}/transmission-remote"
+fi
+
+if [ -z "${CONFIG_DIR}" ]; then
+	CONFIG_DIR="${HOME}/.config/transmission-remote"
+fi
+
+transmission-qt -g "${CONFIG_DIR}" "$@"
+
