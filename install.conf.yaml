@@ -86,6 +86,10 @@
                 path: config/git
                 create: true
                 force: true
+        ~/.config/glow:
+                path: config/glow
+                create: true
+                force: true
         ~/.vimrc: config/vimrc
         ~/.zprofile: config/zprofile
         ~/.zshrc: config/zsh/zshrc
