@@ -12,6 +12,7 @@
                   clang cscope ctags curl
                   fzf
                   git
+                  glow
                   neovim
                   python-pynvim
                   ripgrep
