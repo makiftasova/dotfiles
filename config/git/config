@@ -21,6 +21,7 @@
 [push]
 	default = simple
 [pull]
+	ff = only
 	rebase = true
 [mergetool "vimdiff"]
 	path = nvim
