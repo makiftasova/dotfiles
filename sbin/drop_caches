@@ -1,0 +1,19 @@
+#! /usr/bin/env sh
+
+if [ -z "${EUID}" ]; then
+	EUID="$(id -u)"
+fi
+
+if [ "${EUID}" -ne "0" ]; then
+	echo 'not root'
+	exit 255
+fi
+
+sync_cmd="$(command -v sync)"
+if [ -n "${sync_cmd}" ]; then
+	"${sync_cmd}"
+else
+	echo 'sync not found on system. could not sync caches to persistent storage.'
+fi
+
+echo 3 > /proc/sys/vm/drop_caches
