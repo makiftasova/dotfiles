@@ -9,15 +9,26 @@
         -
           command: >
                   sudo pacman -S --needed
-                  clang cscope ctags curl
+                  clang
+                  cscope
+                  ctags
+                  curl
+                  dmenu
+                  foot
                   fzf
                   git
                   glow
+                  mako
                   neovim
+                  otf-font-awesome
                   python-pynvim
                   ripgrep
                   rust-analyzer
+                  sway
+                  swayidle
+                  swaylock
                   texlab
+                  waybar
                   wl-clipboard
                   xclip xsel
                   zsh
