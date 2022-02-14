@@ -219,6 +219,9 @@ input type:keyboard {
 	xkb_options grp:win_space_toggle
 }
 
+# Start gammastep
+exec gammastep -m wayland -l 41.0082:28.9784
+
 # Start waybar to display a workspace bar (plus the system information waybar
 # finds out, if available)
 # bar {
