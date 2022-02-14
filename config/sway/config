@@ -16,16 +16,17 @@ set $up k
 set $right l
 
 # set lock command
-set $lock swaylock -ec "000000"
+set $lock swaylock
 
 # set terminal
-set $term termite
+set $term kitty
 
 # set sway config dir
 set $config_dir $HOME/.config/sway
+set $local_config_dir $HOME/.local/config/sway
 
-# set bacgground
-output * bg  /usr/share/backgrounds/archlinux/archlinux-simplyblack.png fill
+# set background
+output * bg  /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 
 focus_follows_mouse no
 # Use Mouse+$mod to drag floating windows to their wanted position
@@ -39,8 +40,9 @@ bindsym $mod+F1 exec $lock
 # kill focused window
 bindsym $mod+Shift+q kill
 
-# start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
+set $menu wofi --show run --localtion 0 --allow-images --insensitive
+# start app launcher
+bindsym $mod+d exec $menu
 
 # change focus
 bindsym $mod+j focus left
@@ -217,10 +219,16 @@ input type:keyboard {
 	xkb_options grp:win_space_toggle
 }
 
-# Start i3bar to display a workspace bar (plus the system information i3status
+# Start waybar to display a workspace bar (plus the system information waybar
 # finds out, if available)
+# bar {
+# 	position top
+# 	swaybar_command waybar
+# }
+
+# Start swaybar
 bar {
-        position top
+	position top
 	font "Terminus (TTF)"
 	status_command while $config_dir/sway_bar.sh; do sleep 1; done
 
@@ -231,3 +239,7 @@ bar {
 		inactive_workspace #323232 #323232 #676767
 	}
 }
+
+# setup display outputs
+include $local_config_dir/outputs
+

@@ -18,6 +18,7 @@
                   fzf
                   git
                   glow
+                  kitty
                   mako
                   neovim
                   otf-font-awesome
@@ -30,6 +31,7 @@
                   texlab
                   waybar
                   wl-clipboard
+                  wofi
                   xclip
                   xorg-bdftopcf
                   xorg-mkfontscale
@@ -75,6 +77,12 @@
           stderr: true
 - link:
         ~/.clang-format: config/clang-format/clang-format
+        ~/.config/kitty:
+                path: config/kitty/
+                create: true
+        ~/.config/mako:
+                path: config/mako/
+                create: true
         ~/.config/i3:
                 path: config/i3/
                 create: true

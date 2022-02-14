@@ -90,3 +90,25 @@ fi
 unset gpg_dir
 
 echo "done"
+
+echo -n "Setting up local Sway config directory..."
+
+local_sway_config_dir="${HOME}/.local/config/sway"
+
+mkdir -p "${local_sway_config_dir}"
+
+if ! [ -e "${local_sway_config_dir}/config" ]; then
+cat << SWAYCONFIG > "${local_sway_config_dir}/config"
+# use this file to setup PC specific details.
+SWAYCONFIG
+fi
+
+if ! [ -e "${local_sway_config_dir}/outputs" ]; then
+cat << SWAYOUTPUTS > "${local_sway_config_dir}/outputs"
+# use this file to setup display outputs
+SWAYOUTPUTS
+fi
+
+unset local_sway_config_dir
+
+echo "done"
