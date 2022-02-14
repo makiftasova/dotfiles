@@ -30,7 +30,10 @@
                   texlab
                   waybar
                   wl-clipboard
-                  xclip xsel
+                  xclip
+                  xorg-bdftopcf
+                  xorg-mkfontscale
+                  xsel
                   zsh
           description: Installing utilities
           stdin: true
@@ -86,6 +89,9 @@
                 create: true
         ~/.config/sway:
                 path: config/sway/
+                create: true
+        ~/.config/waybar:
+                path: config/waybar/
                 create: true
         ~/.config/termite:
                 path: config/termite
