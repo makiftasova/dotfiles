@@ -90,6 +90,9 @@
         ~/.config/sway:
                 path: config/sway/
                 create: true
+        ~/.config/swaylock:
+                path: config/swaylock/
+                create: true
         ~/.config/waybar:
                 path: config/waybar/
                 create: true
