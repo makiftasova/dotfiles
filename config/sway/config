@@ -249,3 +249,6 @@ bar {
 # setup display outputs
 include $local_config_dir/outputs
 
+# include local config
+include $local_config_dir/config
+
