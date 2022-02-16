@@ -194,7 +194,15 @@ input type:keyboard {
 }
 
 # Start gammastep
-exec gammastep -m wayland -l 41.0082:28.9784
+exec --no-startup-id gammastep -m wayland -l 41.0082:28.9784
+
+# start some helper apps
+exec --no-startup-id mako
+
+# setup keybonds to dismiss mako notifications
+# TODO: find better keybinds
+bindsym $mod+Control+Space exec makoctl dismiss
+bindsym $mod+Control+Shift+Space exec makoctl dismiss --all
 
 # Start waybar to display a workspace bar (plus the system information waybar
 # finds out, if available)
@@ -223,3 +231,7 @@ include $local_config_dir/outputs
 # include local config
 include $local_config_dir/config
 
+
+# Setup gnome-keyring
+exec eval $(gnome-keyring-daemon --start)
+exec export SSH_AUTH_SOCK

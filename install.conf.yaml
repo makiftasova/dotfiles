@@ -24,6 +24,8 @@
                   mako
                   neovim
                   otf-font-awesome
+                  pamixer
+                  playerctl
                   python-pynvim
                   ripgrep
                   rust-analyzer
