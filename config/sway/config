@@ -231,7 +231,3 @@ include $local_config_dir/outputs
 # include local config
 include $local_config_dir/config
 
-
-# Setup gnome-keyring
-exec eval $(gnome-keyring-daemon --start)
-exec export SSH_AUTH_SOCK
