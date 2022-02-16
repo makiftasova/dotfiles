@@ -191,6 +191,8 @@ bindsym $mod+minus scratchpad show
 input type:keyboard {
 	xkb_layout us,tr
 	xkb_options grp:win_space_toggle
+	xkb_numlock enabled
+	xkb_capslock disabled
 }
 
 # Start gammastep
