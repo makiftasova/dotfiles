@@ -1,5 +1,8 @@
-ignore-empty-password
 daemonize
+ignore-empty-password
+show-keyboard-layout
+indicator-caps-lock
+color=000000FF
 line-uses-ring
 indicator-radius=100
 indicator-thickness=15
