@@ -195,6 +195,14 @@ input type:keyboard {
 	xkb_capslock disabled
 }
 
+input type:pointer {
+	natural_scroll enabled
+}
+
+input type:touchpad {
+	natural_scroll enabled
+}
+
 # Start gammastep
 exec --no-startup-id gammastep -m wayland -l 41.0082:28.9784
 
