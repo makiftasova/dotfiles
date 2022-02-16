@@ -108,9 +108,6 @@
         ~/.config/waybar:
                 path: config/waybar/
                 create: true
-        ~/.config/termite:
-                path: config/termite
-                create: true
         ~/.config/zsh:
                 path: config/zsh
                 create: true
