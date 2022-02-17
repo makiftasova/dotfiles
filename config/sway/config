@@ -203,6 +203,10 @@ input type:touchpad {
 	natural_scroll enabled
 }
 
+# use no window borders by default. can be overridden in local config below
+default_border none
+default_floating_border none
+
 # Start gammastep
 exec --no-startup-id gammastep -m wayland -l 41.0082:28.9784
 
