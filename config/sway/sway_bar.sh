@@ -32,9 +32,10 @@ battery_upower=$(echo "$battery" | grep -E "time to" | awk '{print $4}')
 # battery_acpi=$(acpi -V | egrep -i "charging" | awk '{print $3  $4  $5}' | tr ',' ' ')
 
 # Audio and multimedia
-audio_sink=$(pactl list sinks short | awk '{print $1}')
-audio_volume=$(pamixer --sink "$audio_sink" --get-volume)
-audio_is_muted=$(pamixer --sink "$audio_sink" --get-mute)
+# audio_sink="$(pactl list sinks short| grep "$(pactl get-default-sink)" | awk '{print $1}')"
+audio_volume=$(pamixer --sink '@DEFAULT_SINK@' --get-volume)
+audio_is_muted=$(pamixer --sink '@DEFAULT_SINK@' --get-mute)
+
 media_artist=$(playerctl metadata artist)
 media_song=$(playerctl metadata title)
 player_status=$(playerctl status)
