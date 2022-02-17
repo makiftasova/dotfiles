@@ -139,3 +139,10 @@ alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 [ -f "${ZSH_CONFIG_HOME}/funcs" ] && source "${ZSH_CONFIG_HOME}/funcs"
 # shellcheck source=/dev/null
 [ -f "${ZSH_CONFIG_HOME}/aliases" ] && source "${ZSH_CONFIG_HOME}/aliases"
+
+# if swaywm is installed and we are running from tty1, start swaywm
+sway_bin="$(command -v sway)"
+if  [ -n "$sway_bin" ] && [ "$(tty)" = "/dev/tty1" ]; then
+	exec "$sway_bin"
+fi
+unset sway_bin
