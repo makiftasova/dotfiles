@@ -17,8 +17,6 @@ alias zgrep='zgrep --color=auto'
 
 alias mkdir_today='mkdir $(date +%F)'
 
-alias cal="ncal -bM3"
-
 alias now='date -u +%Y%M%dT%H%m%S'
 alias nowtz='date +%Y%M%dT%H%m%SZ%z'
 
