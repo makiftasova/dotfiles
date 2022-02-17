@@ -80,6 +80,9 @@
           stdout: true
           stderr: true
 - link:
+        ~/.config/environment.d:
+                path: config/environment.d/
+                create: true
         ~/.clang-format: config/clang-format/clang-format
         ~/.config/kitty:
                 path: config/kitty/
