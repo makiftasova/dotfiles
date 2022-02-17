@@ -1,0 +1,10 @@
+#! /usr/bin/env bash
+
+gshell="$(command -v gnome-shell)"
+if [ -z "${gshell}" ]; then
+	echo 'gnome-shell not found'
+	exit 255
+fi
+
+export XDG_SESSION_TYPE='wayland'
+exec "${gshell}" "--wayland"
