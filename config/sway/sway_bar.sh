@@ -23,7 +23,7 @@ current_time="$(date "+%T")"
 #############
 
 # Battery or charger
-battery="$(upower --show-info "$(upower --enumerate | grep 'BAT')" | frep 'failed')"
+battery="$(upower --show-info "$(upower --enumerate | grep 'BAT')" | grep -v 'failed')"
 if [ -n "$battery" ]; then
 	battery_charge=$(echo "$battery" | grep -E "percentage" | awk '{print $2}')
 	battery_status=$(echo "$battery" | grep -E "state" | awk '{print $2}')
