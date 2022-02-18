@@ -136,9 +136,6 @@ bindsym --no-repeat $mod+Mod1+Print exec $grim -o $(swaymsg -rt get_outputs | jq
 # take screenshot of selected region
 bindsym --no-repeat $mod+Shift+Print exec slurp | $grim -g -
 
-bindsym $mod+Shift+a exec "setxkbmap tr"
-bindsym $mod+Shift+s exec "setxkbmap us"
-
 # reload the configuration file
 bindsym $mod+Shift+c reload
 
