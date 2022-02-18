@@ -122,13 +122,19 @@ bindsym XF86AudioPrev exec playerctl previous
 set $grim grim -t png
 
 # take screenshot of all outputs
-bindsym --release Print exec $grim
+bindsym --no-repeat $mod+Print exec $grim
 
 # take screenshot of focused window
-bindsym --release Control+Print exec $grim -g "$(swaymsg -t get_tree | jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')"
+bindsym --no-repeat $mod+Control+Print exec \
+	swaymsg -rt get_tree | \
+	jq -j '.. | select(.type?) | select(.focused).rect | \"\(.x),\(.y) \(.width)x\(.height)\"' | \
+	$grim -g -
 
 # take screenshot of focused output
-bindsym --release Shift+Print exec $grim -o $(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')
+bindsym --no-repeat $mod+Mod1+Print exec $grim -o $(swaymsg -rt get_outputs | jq -r '.[] | select(.focused) | .name')
+
+# take screenshot of selected region
+bindsym --no-repeat $mod+Shift+Print exec slurp | $grim -g -
 
 bindsym $mod+Shift+a exec "setxkbmap tr"
 bindsym $mod+Shift+s exec "setxkbmap us"
