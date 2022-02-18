@@ -7,6 +7,10 @@ alias f='find . -name'
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
 
+# alias to easily power-off external HDD before removing it
+# example usage: `hddoff /dev/sda`
+alias hddoff='udisksctl power-off -b '
+
 alias cpdir='cp -rf'
 
 alias grep='grep --color=auto'
