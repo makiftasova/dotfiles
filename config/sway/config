@@ -204,6 +204,7 @@ input type:pointer {
 
 input type:touchpad {
 	natural_scroll enabled
+	tap enabled
 }
 
 # use no window borders by default. can be overridden in local config below
