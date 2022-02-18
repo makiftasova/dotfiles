@@ -19,6 +19,7 @@
                   gammastep
                   git
                   glow
+                  grim
                   jq
                   kitty
                   mako
@@ -29,6 +30,7 @@
                   python-pynvim
                   ripgrep
                   rust-analyzer
+                  slurp
                   sway
                   swayidle
                   swaylock
