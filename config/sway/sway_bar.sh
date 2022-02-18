@@ -55,11 +55,11 @@ case "$audio_is_muted" in
 		;;
 esac
 
-media_artist=$(playerctl metadata artist)
+media_artist=$(playerctl metadata artist 2>/dev/null)
 
-media_song=$(playerctl metadata title)
+media_song=$(playerctl metadata title 2>/dev/null)
 
-player_status=$(playerctl status)
+player_status=$(playerctl status 2>/dev/null)
 case "$player_status" in
 	Playing )
 		song_status='▶'
