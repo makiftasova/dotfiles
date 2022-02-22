@@ -9,8 +9,13 @@
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
 
-# set lock command
-set $lock swaylock
+# use swaylock for locking screen.
+# it uses config file from '$XDG_CONFIG_HOME/swaylock/config' by default
+# (see 'man swaylock')
+set $lock swaylock -f
+
+# set keybind for locking screen
+bindsym $mod+l exec $lock
 
 # set terminal
 set $term kitty
@@ -28,8 +33,6 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec $term
-
-bindsym $mod+F1 exec $lock
 
 # kill focused window
 bindsym $mod+Shift+q kill
