@@ -1,0 +1,10 @@
+# swaylock uses config file from $XDG_CONFIG_HOME/swaylock/config
+
+# wait for 300 seconds before locking screen
+timeout 300 'swaylock'
+
+# wait 300 seconds more (toatl of 600 seconds) before closing off outputs
+timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'
+
+# lock screen before sleep
+before-sleep 'swaylock'

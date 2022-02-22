@@ -17,6 +17,10 @@ set $lock swaylock -f
 # set keybind for locking screen
 bindsym $mod+l exec $lock
 
+# setup swayidle to lock screen after set amount of time
+# swayidle will use config file at $XDG_CONFIG_HOME/swayidle/config by default.
+exec swayidle -w
+
 # set terminal
 set $term kitty
 

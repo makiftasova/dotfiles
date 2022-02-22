@@ -110,6 +110,9 @@
         ~/.config/swaylock:
                 path: config/swaylock/
                 create: true
+        ~/.config/swayidle:
+                path: config/swayidle/
+                create: true
         ~/.config/waybar:
                 path: config/waybar/
                 create: true
