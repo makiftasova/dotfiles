@@ -205,10 +205,12 @@ input type:keyboard {
 	xkb_capslock disabled
 }
 
+# enable natural_scroll for pointer devices
 input type:pointer {
 	natural_scroll enabled
 }
 
+# enable tap and natural_scroll for touchpads
 input type:touchpad {
 	natural_scroll enabled
 	tap enabled
@@ -217,6 +219,12 @@ input type:touchpad {
 # use no window borders by default. can be overridden in local config below
 default_border none
 default_floating_border none
+
+# use default border settings for kitty.
+for_window [app_id="kitty"] border normal 2
+
+# inhibit idle when firefox is fullscreen
+for_window [app_id="firefox"] inhibit_idle fullscreen
 
 # Start gammastep
 exec gammastep -m wayland -l 41.0082:28.9784
