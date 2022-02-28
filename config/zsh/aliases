@@ -11,6 +11,9 @@ alias ff='find . -type f -name'
 # example usage: `hddoff /dev/sda`
 alias hddoff='udisksctl power-off -b '
 
+# alias `cal` to `cal -m` to start weeks at monday
+alias cal='cal -m'
+
 alias cpdir='cp -rf'
 
 alias grep='grep --color=auto'
