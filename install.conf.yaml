@@ -9,6 +9,7 @@
         -
           command: >
                   sudo pacman -S --needed
+                  brightnessctl
                   clang
                   cscope
                   ctags
