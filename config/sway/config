@@ -226,6 +226,10 @@ for_window [app_id="kitty"] border normal 2
 # inhibit idle when firefox is fullscreen
 for_window [app_id="firefox"] inhibit_idle fullscreen
 
+# export Wayland display info for gtk applications
+# https://github.com/swaywm/sway/wiki#gtk-applications-take-20-seconds-to-start
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+
 # Start gammastep
 exec gammastep -m wayland -l 41.0082:28.9784
 
