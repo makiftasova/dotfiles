@@ -117,6 +117,9 @@
         ~/.config/waybar:
                 path: config/waybar/
                 create: true
+        ~/.config/wayvnc:
+                path: config/wayvnc/
+                create: true
         ~/.config/zsh:
                 path: config/zsh
                 create: true
