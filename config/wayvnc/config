@@ -1,1 +1,3 @@
-address=0.0.0.0
+# only accept connections from localhost by default
+# see 'man wayvnc' for details
+address=localhost

@@ -112,3 +112,21 @@ fi
 unset local_sway_config_dir
 
 echo "done"
+
+echo -n "Creating sample config for wayvnc..."
+
+local_wayvnc_config_dir="${HOME}/.local/config/wayvnc"
+
+mkdir -p "${local_wayvnc_config_dir}"
+
+if ! [ -e "${local_wayvnc_config_dir}/config" ]; then
+cat << WAYVNCCONFIG > "${local_wayvnc_config_dir}/config"
+# only accept connections from localhost by default
+# see 'man wayvnc' for details
+address=localhost
+WAYVNCCONFIG
+fi
+
+unset local_wayvnc_config_dir
+
+echo "done"
