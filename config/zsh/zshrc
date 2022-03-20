@@ -107,13 +107,8 @@ export LC_TIME=en_US.UTF-8
 # else
 #   export EDITOR='vim'
 # fi
-if [ -n "$(command -v nvim)" ]; then
-	export EDITOR='nvim';
-        export DIFFPROG='nvim -d'
-else
-	export EDITOR='vim'
-        export DIFFPROG='vim -d'
-fi
+export EDITOR='nvim'
+export DIFFPROG='nvim -d'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"

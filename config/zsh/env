@@ -9,7 +9,7 @@ export XDG_DATA_HOME="${HOME}/.local/share"
 export XDG_PICTURES_DIR="${HOME}/Pictures"
 export GRIM_DEFAULT_DIR="${HOME}/Pictures/Screenshots"
 
-export TERM="xterm-256color"
+
 export ED_PROMPT="ed> "
 
 export GNUPGHOME="${HOME}/.config/gnupg"
