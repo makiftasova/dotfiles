@@ -1,0 +1,25 @@
+#!/bin/sh
+
+export _JAVA_AWT_WM_NONREPARENTING='1'
+export GDK_BACKEND='wayland'
+export XDG_SESSION_TYPE='wayland'
+export XCURSOR_THEME='Adwaita'
+export XDG_CURRENT_DESKTOP='sway'
+
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_DESKTOP_DIR="${HOME}/Desktop"
+export XDG_DOWNLOAD_DIR="${HOME}/Downloads"
+export XDG_DOCUMENTS_DIR="${HOME}/Documents"
+export XDG_MUSIC_DIR="${HOME}/Music"
+export XDG_PICTURES_DIR="${HOME}/Pictures"
+export XDG_VIDEOS_DIR="${HOME}/Videos"
+
+if [ -z "${XDG_RUNTIME_DIR}" ]; then
+	XDG_RUNTIME_DIR="/tmp/runtime/${USER}"
+	mkdir -p "${XDG_RUNTIME_DIR}"
+	export XDG_RUNTIME_DIR
+fi
+
+exec dbus-run-session sway
