@@ -225,7 +225,11 @@ for_window [app_id="firefox"] inhibit_idle fullscreen
 
 # export Wayland display info for gtk applications
 # https://github.com/swaywm/sway/wiki#gtk-applications-take-20-seconds-to-start
-exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway
+
+# start xdg-desktop-portal for screen capture etc.
+exec /usr/lib/xdg-desktop-portal -r
+exec /usr/lib/xdg-desktop-portal-wlr -r
 
 # Start gammastep
 exec gammastep -m wayland -l 41.0082:28.9784
