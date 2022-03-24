@@ -231,6 +231,9 @@ exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSO
 exec /usr/lib/xdg-desktop-portal -r
 exec /usr/lib/xdg-desktop-portal-wlr -r
 
+# start kde-connect
+exec kdeconnect-indicator
+
 # Start gammastep
 exec gammastep -m wayland -l 41.0082:28.9784
 
