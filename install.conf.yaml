@@ -40,6 +40,8 @@
                   wl-clipboard
                   wofi
                   xclip
+                  xdg-desktop-portal
+                  xdg-desktop-portal-wlr
                   xorg-bdftopcf
                   xorg-mkfontscale
                   xsel
