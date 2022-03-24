@@ -237,8 +237,11 @@ exec kdeconnect-indicator
 # Start gammastep
 exec gammastep -m wayland -l 41.0082:28.9784
 
-# start some helper apps
+# start mako notification daemon
 exec mako
+
+# start gnome polkit authentication agent
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
 # setup keybonds to dismiss mako notifications
 # TODO: find better keybinds

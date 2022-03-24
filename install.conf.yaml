@@ -9,6 +9,7 @@
         -
           command: >
                   sudo pacman -S --needed
+                  brasero
                   brightnessctl
                   clang
                   cscope
@@ -20,7 +21,13 @@
                   gammastep
                   git
                   glow
+                  gnome-disk-utility
                   grim
+                  gvfs
+                  gvfs-mtp
+                  gvfs-nfs
+                  gvfs-smb
+                  imv
                   jq
                   kdeconnect
                   kitty
@@ -29,6 +36,7 @@
                   otf-font-awesome
                   pamixer
                   playerctl
+                  polkit-gnome
                   python-pynvim
                   ripgrep
                   rust-analyzer
@@ -37,6 +45,10 @@
                   swayidle
                   swaylock
                   texlab
+                  thunar
+                  thunar-archive-plugin
+                  thunar-media-tags-plugin
+                  thunar-volman
                   waybar
                   wl-clipboard
                   wofi
