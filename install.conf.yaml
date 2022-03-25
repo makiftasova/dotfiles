@@ -34,6 +34,10 @@
                   mako
                   neovim
                   nm-connection-editor
+                  noto-fonts
+                  noto-fonts-cjk
+                  noto-fonts-emoji
+                  noto-fonts-extra
                   otf-font-awesome
                   pamixer
                   playerctl
