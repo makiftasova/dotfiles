@@ -27,13 +27,15 @@ battery="$(upower --show-info "$(upower --enumerate | grep 'BAT')" | grep -v 'fa
 if [ -n "$battery" ]; then
 	battery_charge=$(echo "$battery" | grep -E "percentage" | awk '{print $2}')
 	battery_status=$(echo "$battery" | grep -E "state" | awk '{print $2}')
-	battery_upower=$(echo "$battery" | grep -E "time to" | awk '{print $4}')
+	battery_time=$(echo "$battery" | grep -E "time to" | awk '{print $4, $5}')
+	# convert 'minutes'->'mins' and 'hours'->'hrs'
+	battery_time=$(echo "$battery_time" | tr -d 'oute')
 	if [ "$battery_status" = "discharging" ]; then
 		battery_pluggedin='⚠'
 	else
 		battery_pluggedin='⚡'
 	fi
-	battery_output="$battery_pluggedin $battery_charge $battery_upower hrs"
+	battery_output="$battery_pluggedin $battery_charge $battery_time"
 else
 	battery_output="No Battery"
 fi
