@@ -79,7 +79,6 @@ plugins=(
 	gitfast
 	gitignore
 	jsontools
-	command-not-found
 	rust
 	fzf
 	zsh-autosuggestions
