@@ -122,6 +122,9 @@
         ~/.clang-format:
                 path: config/clang-format/clang-format
                 create: true
+        ~/.config/chromium-flags.conf:
+                path: config/chromium-flags.conf
+                create: true
         ~/.config/environment.d:
                 path: config/environment.d/
                 create: true
