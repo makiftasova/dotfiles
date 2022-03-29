@@ -18,6 +18,7 @@
                   ctags
                   curl
                   dmenu
+                  ffmpeg
                   foot
                   fzf
                   gammastep
@@ -25,6 +26,14 @@
                   glow
                   gnome-disk-utility
                   grim
+                  gstreamer
+                  gstreamer-vaapi
+                  gst-libav
+                  gst-plugin-pipewire
+                  gst-plugins-bad
+                  gst-plugins-base
+                  gst-plugins-good
+                  gst-plugins-ugly
                   gvfs
                   gvfs-mtp
                   gvfs-nfs
