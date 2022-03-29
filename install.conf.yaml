@@ -9,6 +9,8 @@
         -
           command: >
                   sudo pacman -S --needed
+                  bluez
+                  bluez-utils
                   brasero
                   brightnessctl
                   clang
