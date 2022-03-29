@@ -119,27 +119,32 @@
           stdout: true
           stderr: true
 - link:
+        ~/.clang-format:
+                path: config/clang-format/clang-format
+                create: true
         ~/.config/environment.d:
                 path: config/environment.d/
                 create: true
-        ~/.clang-format: config/clang-format/clang-format
+        ~/.config/git:
+                path: config/git
+                create: true
+        ~/.config/glow:
+                path: config/glow
+                create: true
+        ~/.config/i3:
+                path: config/i3/
+                create: true
         ~/.config/kitty:
                 path: config/kitty/
                 create: true
         ~/.config/mako:
                 path: config/mako/
                 create: true
-        ~/.config/i3:
-                path: config/i3/
-                create: true
         ~/.config/mpv:
                 path: config/mpv
                 create: true
         ~/.config/nvim:
                 path: config/nvim
-                create: true
-        ~/.local/sbin:
-                path: sbin
                 create: true
         ~/.config/sway:
                 path: config/sway/
@@ -159,17 +164,15 @@
         ~/.config/zsh:
                 path: config/zsh
                 create: true
-                force: true
-        ~/.config/git:
-                path: config/git
+        ~/.local/sbin:
+                path: sbin
                 create: true
-                force: true
-        ~/.config/glow:
-                path: config/glow
+        ~/.zprofile:
+                path: config/zprofile
                 create: true
-                force: true
-        ~/.zprofile: config/zprofile
-        ~/.zshrc: config/zsh/zshrc
+        ~/.zshrc:
+                path: config/zsh/zshrc
+                create: true
 
 - shell:
         -
