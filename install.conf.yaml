@@ -40,6 +40,10 @@
                   noto-fonts-extra
                   otf-font-awesome
                   pamixer
+                  pipewire
+                  pipewire-alsa
+                  pipewire-pulse
+                  pipewire-jack
                   playerctl
                   polkit-gnome
                   python-pynvim
@@ -55,6 +59,7 @@
                   thunar-media-tags-plugin
                   thunar-volman
                   waybar
+                  wireplumber
                   wl-clipboard
                   wofi
                   xclip
