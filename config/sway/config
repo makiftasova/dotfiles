@@ -235,7 +235,6 @@ exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSO
 
 # start xdg-desktop-portal for screen capture etc.
 exec /usr/lib/xdg-desktop-portal -r
-exec /usr/lib/xdg-desktop-portal-wlr -r
 
 # start kde-connect
 exec kdeconnect-indicator
