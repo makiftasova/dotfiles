@@ -72,9 +72,11 @@ bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle all
 
 # toggle tiling / floating
+# TODO: side-effect: causes keyboard layout switch
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
+# TODO: side-effect: causes keyboard layout switch
 bindsym $mod+space focus mode_toggle
 
 # focus the parent container
@@ -135,7 +137,8 @@ bindsym --no-repeat $mod+Control+Print exec \
 	$grim -g -
 
 # take screenshot of focused output
-bindsym --no-repeat $mod+Mod1+Print exec $grim -o $(swaymsg -rt get_outputs | jq -r '.[] | select(.focused) | .name')
+bindsym --no-repeat $mod+Mod1+Print exec \
+	$grim -o $(swaymsg -rt get_outputs | jq -r '.[] | select(.focused) | .name')
 
 # take screenshot of selected region
 bindsym --no-repeat $mod+Shift+Print exec slurp | $grim -g -
@@ -154,7 +157,6 @@ mode $sysmenu {
 	bindsym Return mode "default"
 }
 bindsym $mod+Shift+e mode $sysmenu
-
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -235,7 +237,7 @@ for_window [app_id="^.*"] inhibit_idle fullscreen
 
 # export Wayland display info for gtk applications
 # https://github.com/swaywm/sway/wiki#gtk-applications-take-20-seconds-to-start
-exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
 
 # start xdg-desktop-portal for screen capture etc.
 exec /usr/lib/xdg-desktop-portal -r
@@ -250,10 +252,11 @@ exec gammastep -m wayland -l 41.0082:28.9784
 exec mako
 
 # start gnome polkit authentication agent
+# needed to run GUI applications with elevated priviledges
 exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 
 # setup keybonds to dismiss mako notifications
-# TODO: find better keybinds
+# TODO: side-effect: causes keyboard layout switch
 bindsym $mod+Control+Space exec makoctl dismiss
 bindsym $mod+Control+Shift+Space exec makoctl dismiss --all
 
