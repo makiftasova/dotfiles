@@ -181,9 +181,9 @@ bindsym $mod+Control+Right move workspace to output right
 # passthrough mode to allow using $mod in any window's shortcuts.
 # useful for things like VNC
 mode "passthrough" {
-	bindsym $mod+Pause mode default
+	bindsym $mod+Insert mode default
 }
-bindsym $mod+Pause mode "passthrough"
+bindsym $mod+Insert mode "passthrough"
 
 #
 # Scratchpad:
