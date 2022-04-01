@@ -1,0 +1,10 @@
+[Unit]
+Description=Headless Sway Session
+
+[Service]
+Type=simple
+ExecStart=sway-remote-run
+
+[Install]
+WantedBy=default.target
+Alias=sway-headless.service
