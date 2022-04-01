@@ -1,0 +1,14 @@
+# Default config for sway
+#
+# Copy this to ~/.config/sway/config and edit it to your liking.
+#
+# Read `man 5 sway` for a complete reference.
+#
+# set sway config dir
+set $config_dir $HOME/.config/sway
+set $local_config_dir $HOME/.local/config/sway
+
+include $config_dir/config_base
+
+# start wayvnc for vnc access
+exec wayvnc -C ~/.local/config/wayvnc/config
