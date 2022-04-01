@@ -10,5 +10,10 @@ set $local_config_dir $HOME/.local/config/sway
 
 include $config_dir/config_base
 
+output HEADLESS-1 resolution 1920x1080 position 0,0
+
+# make output background solid black to indicate remote session
+output * bg #000000 solid_color
+
 # start wayvnc for vnc access
 exec wayvnc -C ~/.local/config/wayvnc/config

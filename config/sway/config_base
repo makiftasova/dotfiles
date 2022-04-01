@@ -24,9 +24,6 @@ set $term kitty
 set $config_dir $HOME/.config/sway
 set $local_config_dir $HOME/.local/config/sway
 
-# set background
-output * bg  /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-
 focus_follows_mouse no
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod

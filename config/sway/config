@@ -10,6 +10,9 @@ set $local_config_dir $HOME/.local/config/sway
 
 include $config_dir/config_base
 
+# set background
+output * bg  /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+
 # setup swayidle to lock screen after set amount of time
 # swayidle will use config file at $XDG_CONFIG_HOME/swayidle/config by default.
 exec swayidle -w
