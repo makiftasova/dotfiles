@@ -4,6 +4,7 @@
 	defaultBranch = master
 [core]
 	editor = nvim
+	pager = delta
 [commit]
 	template = ~/.config/git/message
 [alias]
@@ -28,6 +29,7 @@
 [merge]
 	tool = vimdiff
 	renameLimit = 2048
+	conflictstyle = diff3
 [color]
 	ui = true
 [color "diff-highlight"]
@@ -50,3 +52,11 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	side-by-side = true
+	line-numbers = true
+[diff]
+	colorMoved = default
