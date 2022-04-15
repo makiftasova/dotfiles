@@ -58,5 +58,6 @@
 	navigate = true
 	side-by-side = true
 	line-numbers = true
+	tabs = 8
 [diff]
 	colorMoved = default
