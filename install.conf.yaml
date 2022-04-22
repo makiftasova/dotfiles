@@ -174,7 +174,7 @@
                 path: sbin
                 create: true
         ~/.zprofile:
-                path: config/zprofile
+                path: config/zsh/zprofile
                 create: true
         ~/.zshrc:
                 path: config/zsh/zshrc
