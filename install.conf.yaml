@@ -173,6 +173,9 @@
         ~/.local/sbin:
                 path: sbin
                 create: true
+        ~/.xinitrc:
+                path: config/xinit/xinitrc
+                create: true
         ~/.zprofile:
                 path: config/zsh/zprofile
                 create: true
