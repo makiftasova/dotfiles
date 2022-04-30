@@ -24,8 +24,8 @@ exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSO
 # start xdg-desktop-portal for screen capture etc.
 exec /usr/lib/xdg-desktop-portal -r
 
-# start kde-connect
-exec kdeconnect-indicator
+# start mconnect (cli based kdeconnect daemon)
+exec_always mconnect
 
 # Start gammastep
 exec gammastep -m wayland -l 41.0082:28.9784

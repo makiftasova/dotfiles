@@ -41,7 +41,6 @@
                   gvfs-smb
                   imv
                   jq
-                  kdeconnect
                   kitty
                   mako
                   mpv
@@ -145,6 +144,9 @@
                 create: true
         ~/.config/mako:
                 path: config/mako/
+                create: true
+        ~/.config/mconnect:
+                path: config/mconnect
                 create: true
         ~/.config/mpv:
                 path: config/mpv
