@@ -89,6 +89,12 @@
           stdout: true
           stderr: true
         -
+          command: scripts/setup_aurutils.sh
+          description: Setup aurtuils and local pacman repo for aur packages
+          stdin: true
+          stdout: true
+          stderr: true
+        -
           command: chsh -s /usr/bin/zsh
           description: Changing user shell to zsh
           stdin: true
