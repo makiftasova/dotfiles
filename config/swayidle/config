@@ -8,3 +8,8 @@ timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'
 
 # lock screen before sleep
 before-sleep 'swaylock'
+
+# logind lock and unlock
+lock 'swaylock'
+unlock 'pkill swaylock'
+
