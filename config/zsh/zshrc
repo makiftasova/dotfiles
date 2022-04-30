@@ -81,7 +81,7 @@ plugins=(
 	gitignore
 	jsontools
 	rust
-	fzf
+	vagrant
 	zsh-autosuggestions
 	zsh-syntax-highlighting
 )
