@@ -38,8 +38,9 @@ check_depends
 
 AURUTILS_URL='https://aur.archlinux.org/aurutils.git'
 
+AUR_CONF_FILE='/etc/pacman.d/aur'
 AUR_REPO_DIR='/var/cache/pacman/aur'
-AUR_REPO_DB_DIR="${AUR_REPO_DIR}/aur.db.tar"
+AUR_REPO_DB_DIR="${AUR_REPO_DIR}/aur.db.tar.gz"
 AUR_PKG_NAME='aurutils'
 PACMAN_CONF='/etc/pacman.conf'
 
@@ -66,16 +67,23 @@ check_command 'whoami' "${WHOAMI}"
 OWNER="$("${WHOAMI}")"
 
 append_aurconf () {
-"${AUTH}" "${TEE}" '-a' "${PACMAN_CONF}" << PACMANAURCONF
 
-# Local repository for aur packages
-[aur]
+"${AUTH}" "${TEE}" '-a' "${AUR_CONF_FILE}" << AURREPOCONF
 SigLevel = Optional TrustAll
 Server = file://${AUR_REPO_DIR}
+AURREPOCONF
+
+"${AUTH}" "${TEE}" '-a' "${PACMAN_CONF}" << PACMANAURCONF
+
+# Local repository for AUR packages
+[aur]
+Include = ${AUR_CONF_FILE}
 PACMANAURCONF
+
 return 0
 }
 
+echo "Using ${AUR_CONF_FILE} as local repository config file"
 echo "Using ${AUR_REPO_DIR} as local repository directory"
 echo "Using ${AUR_REPO_DB_DIR} as local repository database"
 
@@ -86,8 +94,9 @@ check_aur_repo () {
 	repo_config="$(grep -e '^\[aur\]$' "${PACMAN_CONF}")"
 	aur_cmd="$(command -v 'aur')"
 
-	if [[ -d "${AUR_REPO_DIR}" && -f "${AUR_REPO_DB_DIR}" &&
-	      -n "${aur_cmd}" && -n "${repo_config}" ]]; then
+	if [[ -f "${AUR_CONF_FILE}" && -d "${AUR_REPO_DIR}" &&
+	      -f "${AUR_REPO_DB_DIR}" && -n "${aur_cmd}" &&
+	      -n "${repo_config}" ]]; then
 		echo "It looks like local aur repo already configured"
 		exit 252
 	fi
