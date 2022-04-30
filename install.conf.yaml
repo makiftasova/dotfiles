@@ -7,6 +7,18 @@
 
 - shell:
         -
+          command: scripts/setup_aurutils.sh
+          description: Setup aurtuils and local pacman repo for aur packages
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: aur sync mconnect-git
+          description: Build mconnect from aur
+          stdin: true
+          stdout: true
+          stderr: true
+        -
           command: >
                   sudo pacman -S --needed
                   base-devel
@@ -44,6 +56,7 @@
                   jq
                   kitty
                   mako
+                  mconnect-git
                   mpv
                   mpv-mpris
                   neovim
@@ -85,12 +98,6 @@
                   xsel
                   zsh
           description: Installing utilities
-          stdin: true
-          stdout: true
-          stderr: true
-        -
-          command: scripts/setup_aurutils.sh
-          description: Setup aurtuils and local pacman repo for aur packages
           stdin: true
           stdout: true
           stderr: true
