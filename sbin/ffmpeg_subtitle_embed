@@ -1,0 +1,208 @@
+#!/usr/bin/env python3
+
+"""
+Simple sript to generate ffmpeg command for embedding subtitles.
+
+Run with -h or --help to see usage.
+"""
+
+import argparse
+import subprocess
+import sys
+
+__author__ = "Mehmet Akif Tasova"
+__copyright__ = "Copyright 2022, Mehmet Akif Tasova"
+__credits__ = ["Mehmet Akif Tasova"]
+__license__ = "GPL"
+__version__ = "1.0.0"
+__maintainer__ = "Mehmet Akif Tasova"
+__email__ = "makiftasova@gmail"
+__status__ = "Production"
+
+
+def parse_arguments() -> dict:
+    """Parse command line arguments and retun a dictory of them.
+
+    If no command line arguments are given, this function will return an empty
+    dictionary object.
+
+    example retun value:
+    {
+     'cmd': 'ffmpeg',
+     'input': 'test.mp4',
+     'output': 'out.mp4',
+     'quiet': False,
+     'run': False,
+     'subs': [
+               {
+                'file': 'test.srt',
+                'lang': 'eng',
+                'title': 'English'
+               },
+               {
+                'file': 'test2.srt',
+                'lang': 'eng',
+                'title': "'English SDH'"
+               }
+              ]
+    }
+    """
+    parser = argparse.ArgumentParser(
+        description="Generate ffmpeg command to embed subtitles"
+    )
+    parser.add_argument(
+        "-i",
+        "--input",
+        dest="input",
+        type=str,
+        required=True,
+        help="input file to embed subtitles",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        dest="output",
+        type=str,
+        required=True,
+        help="output file to put results",
+    )
+    parser.add_argument(
+        "-s",
+        "--sub",
+        dest="subs",
+        action="append",
+        nargs=3,
+        required=True,
+        metavar=("LANG", "TITLE", "FILE"),
+        help="subtitle info in 'lang_code title file_path'"
+        " format. e.g. '--sub eng English english.srt'",
+    )
+    parser.add_argument(
+        "-c",
+        "--command",
+        type=str,
+        default="ffmpeg",
+        dest="cmd",
+        help="ffmpeg command to run. e.g. 'ffmpeg', or '/usr/bin/ffmpeg'",
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        default=False,
+        dest="quiet",
+        action="store_true",
+        help="Do not print anything to stdout or stderr",
+    )
+    parser.add_argument(
+        "-r",
+        "--run",
+        default=False,
+        dest="run",
+        action="store_true",
+        help="Also run ffmpeg command after constructing it",
+    )
+
+    if len(sys.argv) < 2:
+        parser.print_help()
+        return dict()
+
+    args = vars(parser.parse_args())
+
+    # clean-up subtitle related arguments
+    subs = args.pop("subs")
+    args["subs"] = []
+    for sub in subs:
+        if " " in sub[1]:  # make sure we are handling spaces in subtitle title
+            sub[1] = f"'{sub[1]}'"
+        args["subs"].append({"lang": sub[0], "title": sub[1], "file": sub[2]})
+
+    return args
+
+
+def prepare_ffmpeg_cmdline(args: dict) -> list:
+    """
+    Return ffmpeg comman line as a list.
+
+    This list can be used as an argument for `subprocess.run()`.
+
+    example return value:
+    [
+     'ffmpeg',
+     '-i',
+     'test.mp4',
+     '-i',
+     'test.srt',
+     '-i',
+     'test2.srt',
+     '-c',
+     'copy',
+     '-c:s',
+     'mov_text',
+     '-metadata:s:s:0',
+     'language=eng',
+     '-metadata:s:s:0',
+     'title=English',
+     '-metadata:s:s:0',
+     'handler_name=English',
+     '-metadata:s:s:1',
+     'language=eng',
+     '-metadata:s:s:1',
+     "title='English SDH'",
+     '-metadata:s:s:1',
+     "handler_name='English SDH'",
+     'out.mp4'
+    ]
+    """
+    # ffmpeg command, usually 'ffmpeg' is enough
+    ffmpeg_cmdline = [args["cmd"]]
+
+    ffmpeg_cmdline.append("-i")
+    ffmpeg_cmdline.append(args["input"])
+
+    for sub in args["subs"]:
+        ffmpeg_cmdline.append("-i")
+        ffmpeg_cmdline.append(sub["file"])
+
+    # ffmpeg map codecs
+    ffmpeg_cmdline.append("-map")
+    ffmpeg_cmdline.append("0:v")
+    ffmpeg_cmdline.append("-map")
+    ffmpeg_cmdline.append("0:a")
+
+    for index, sub in enumerate(args["subs"]):
+        ffmpeg_cmdline.append("-map")
+        ffmpeg_cmdline.append(f"{index+1}")
+
+    # ffmpeg codec flags
+    ffmpeg_cmdline.append("-c")
+    ffmpeg_cmdline.append("copy")
+    ffmpeg_cmdline.append("-c:s")
+    ffmpeg_cmdline.append("mov_text")
+
+    # add metadata(s) for subtitles
+    for index, sub in enumerate(args["subs"]):
+        ffmpeg_cmdline.append(f"-metadata:s:s:{index}")
+        ffmpeg_cmdline.append(f"language={sub['lang']}")
+        ffmpeg_cmdline.append(f"-metadata:s:s:{index}")
+        ffmpeg_cmdline.append(f"title={sub['title']}")
+        ffmpeg_cmdline.append(f"-metadata:s:s:{index}")
+        ffmpeg_cmdline.append(f"handler_name={sub['title']}")
+
+    ffmpeg_cmdline.append(args["output"])
+    return ffmpeg_cmdline
+
+
+if __name__ == "__main__":
+    args = parse_arguments()
+    if not args:
+        sys.exit(-1)
+
+    ffmpeg_cmdline = prepare_ffmpeg_cmdline(args)
+
+    if not args["quiet"]:
+        print(" ".join(ffmpeg_cmdline))
+
+    if args["run"]:
+        if not args["quiet"]:
+            print("Running ffmpeg command")
+        subprocess.run(ffmpeg_cmdline)
