@@ -9,12 +9,13 @@ Run with -h or --help to see usage.
 import argparse
 import subprocess
 import sys
+import os
 
 __author__ = "Mehmet Akif Tasova"
 __copyright__ = "Copyright 2022, Mehmet Akif Tasova"
 __credits__ = ["Mehmet Akif Tasova"]
 __license__ = "GPL"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __maintainer__ = "Mehmet Akif Tasova"
 __email__ = "makiftasova@gmail"
 __status__ = "Production"
@@ -173,11 +174,19 @@ def prepare_ffmpeg_cmdline(args: dict) -> list:
         ffmpeg_cmdline.append("-map")
         ffmpeg_cmdline.append(f"{index+1}")
 
-    # ffmpeg codec flags
+    # ffmpeg subtitle codec flags
+    # Not all media containers support all the subtitle formats.
+    # We are using 'mov_text' if output container is '.mp4' and 'srt' if output
+    # container is '.mkv'. See below dict for for all supported containers and
+    # subtitle codecs
+    sub_codecs = {
+        ".mp4": "mov_text",
+        ".mkv": "srt",
+    }
     ffmpeg_cmdline.append("-c")
     ffmpeg_cmdline.append("copy")
     ffmpeg_cmdline.append("-c:s")
-    ffmpeg_cmdline.append("mov_text")
+    ffmpeg_cmdline.append(sub_codecs[os.path.splitext(args["output"])[1]])
 
     # add metadata(s) for subtitles
     for index, sub in enumerate(args["subs"]):
