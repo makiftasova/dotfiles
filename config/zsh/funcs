@@ -291,6 +291,50 @@ function ffmpeg_undefault_ytdl_subtitle {
 	setopt -o nomatch
 }
 
+# ffmpeg_sub_embed - embed given subtitles into given media file
+#
+# Usage:
+#   ffmpeg_sub_embed FILE SUBTITLE_DIR [SUBTITLE_EXT]
+#
+# Notes:
+#   * This function expects both media and subtitle file with name file names,
+#   and different extensions
+#
+#   * This function depends on `ffmpeg_subtitle_embed script from dotfiles/sbin.
+function ffmpeg_sub_embed {
+	local sub_dir
+	local sub_ext
+	local out_ext
+	local inp
+	local out
+
+	inp="$1"
+	sub_dir="$2"
+	sub_ext="$3"
+
+	if ! [ -f "${inp}" ]; then
+		echo "File ${inp} does not exits"
+		return 255
+	fi
+
+	if [ -z "${sub_dir}" ]; then
+		sub_dir="Subs"
+	fi
+
+	if [ -z "${sub_ext}" ]; then
+		sub_ext="srt"
+	fi
+
+	sub="Subs/${inp%.*}.${sub_ext}"
+
+	out_ext="${inp##*.}"
+	out="$(echo "${inp}" | grep -Eo '^.*S[0-9]+E[0-9]+' | tr '.' ' ').${out_ext}"
+
+	echo "${inp} + ${sub} -> ${out}"
+
+	ffmpeg_subtitle_embed --input "${inp}" --sub eng English "${sub}" --output "${out}" --run
+}
+
 #
 # lsifr - list installed packages from given pacman repo
 #
