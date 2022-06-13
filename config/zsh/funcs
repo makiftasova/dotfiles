@@ -294,7 +294,7 @@ function ffmpeg_undefault_ytdl_subtitle {
 # ffmpeg_sub_embed - embed given subtitles into given media file
 #
 # Usage:
-#   ffmpeg_sub_embed FILE SUBTITLE_DIR [SUBTITLE_EXT]
+#   ffmpeg_sub_embed FILE SUBTITLE_DIR [SUBTITLE_EXT] [OUTPUT_EXTENSION]
 #
 # Notes:
 #   * This function expects both media and subtitle file with name file names,
@@ -311,6 +311,7 @@ function ffmpeg_sub_embed {
 	inp="$1"
 	sub_dir="$2"
 	sub_ext="$3"
+	out_ext="$4"
 
 	if ! [ -f "${inp}" ]; then
 		echo "File ${inp} does not exits"
@@ -325,9 +326,12 @@ function ffmpeg_sub_embed {
 		sub_ext="srt"
 	fi
 
-	sub="Subs/${inp%.*}.${sub_ext}"
+	sub="${sub_dir}/${inp%.*}.${sub_ext}"
 
-	out_ext="${inp##*.}"
+	if [ -z "${out_ext}" ]; then
+		out_ext="${inp##*.}"
+	fi
+
 	out="$(echo "${inp}" | grep -Eo '^.*S[0-9]+E[0-9]+' | tr '.' ' ').${out_ext}"
 
 	echo "${inp} + ${sub} -> ${out}"
