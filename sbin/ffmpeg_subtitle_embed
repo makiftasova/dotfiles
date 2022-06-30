@@ -105,22 +105,22 @@ def parse_arguments() -> dict:
 
     if len(sys.argv) < 2:
         parser.print_help()
-        return dict()
+        return {}
 
-    args = vars(parser.parse_args())
+    _args = vars(parser.parse_args())
 
     # clean-up subtitle related arguments
-    subs = args.pop("subs")
-    args["subs"] = []
+    subs = _args.pop("subs")
+    _args["subs"] = []
     for sub in subs:
         if " " in sub[1]:  # make sure we are handling spaces in subtitle title
             sub[1] = f"'{sub[1]}'"
-        args["subs"].append({"lang": sub[0], "title": sub[1], "file": sub[2]})
+        _args["subs"].append({"lang": sub[0], "title": sub[1], "file": sub[2]})
 
-    return args
+    return _args
 
 
-def prepare_ffmpeg_cmdline(args: dict) -> list:
+def prepare_ffmpeg_cmdline(arguments: dict) -> list:
     """
     Return ffmpeg comman line as a list.
 
@@ -155,24 +155,24 @@ def prepare_ffmpeg_cmdline(args: dict) -> list:
     ]
     """
     # ffmpeg command, usually 'ffmpeg' is enough
-    ffmpeg_cmdline = [args["cmd"]]
+    _cmdline = [arguments["cmd"]]
 
-    ffmpeg_cmdline.append("-i")
-    ffmpeg_cmdline.append(args["input"])
+    _cmdline.append("-i")
+    _cmdline.append("'" + arguments["input"] + "'")
 
-    for sub in args["subs"]:
-        ffmpeg_cmdline.append("-i")
-        ffmpeg_cmdline.append(sub["file"])
+    for sub in arguments["subs"]:
+        _cmdline.append("-i")
+        _cmdline.append("'" + sub["file"] + "'")
 
     # ffmpeg map codecs
-    ffmpeg_cmdline.append("-map")
-    ffmpeg_cmdline.append("0:v")
-    ffmpeg_cmdline.append("-map")
-    ffmpeg_cmdline.append("0:a")
+    _cmdline.append("-map")
+    _cmdline.append("0:v")
+    _cmdline.append("-map")
+    _cmdline.append("0:a")
 
-    for index, sub in enumerate(args["subs"]):
-        ffmpeg_cmdline.append("-map")
-        ffmpeg_cmdline.append(f"{index+1}")
+    for index, sub in enumerate(arguments["subs"]):
+        _cmdline.append("-map")
+        _cmdline.append(f"{index+1}")
 
     # ffmpeg subtitle codec flags
     # Not all media containers support all the subtitle formats.
@@ -183,22 +183,22 @@ def prepare_ffmpeg_cmdline(args: dict) -> list:
         ".mp4": "mov_text",
         ".mkv": "srt",
     }
-    ffmpeg_cmdline.append("-c")
-    ffmpeg_cmdline.append("copy")
-    ffmpeg_cmdline.append("-c:s")
-    ffmpeg_cmdline.append(sub_codecs[os.path.splitext(args["output"])[1]])
+    _cmdline.append("-c")
+    _cmdline.append("copy")
+    _cmdline.append("-c:s")
+    _cmdline.append(sub_codecs[os.path.splitext(arguments["output"])[1]])
 
     # add metadata(s) for subtitles
-    for index, sub in enumerate(args["subs"]):
-        ffmpeg_cmdline.append(f"-metadata:s:s:{index}")
-        ffmpeg_cmdline.append(f"language={sub['lang']}")
-        ffmpeg_cmdline.append(f"-metadata:s:s:{index}")
-        ffmpeg_cmdline.append(f"title={sub['title']}")
-        ffmpeg_cmdline.append(f"-metadata:s:s:{index}")
-        ffmpeg_cmdline.append(f"handler_name={sub['title']}")
+    for index, sub in enumerate(arguments["subs"]):
+        _cmdline.append(f"-metadata:s:s:{index}")
+        _cmdline.append(f"language={sub['lang']}")
+        _cmdline.append(f"-metadata:s:s:{index}")
+        _cmdline.append(f"title={sub['title']}")
+        _cmdline.append(f"-metadata:s:s:{index}")
+        _cmdline.append(f"handler_name={sub['title']}")
 
-    ffmpeg_cmdline.append(args["output"])
-    return ffmpeg_cmdline
+    _cmdline.append("'" + arguments["output"] + "'")
+    return _cmdline
 
 
 if __name__ == "__main__":
@@ -214,4 +214,4 @@ if __name__ == "__main__":
     if args["run"]:
         if not args["quiet"]:
             print("Running ffmpeg command")
-        subprocess.run(ffmpeg_cmdline)
+        subprocess.run(ffmpeg_cmdline, check=True)
