@@ -15,7 +15,7 @@ __author__ = "Mehmet Akif Tasova"
 __copyright__ = "Copyright 2022, Mehmet Akif Tasova"
 __credits__ = ["Mehmet Akif Tasova"]
 __license__ = "GPL"
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __maintainer__ = "Mehmet Akif Tasova"
 __email__ = "makiftasova@gmail"
 __status__ = "Production"
@@ -120,7 +120,21 @@ def parse_arguments() -> dict:
     return _args
 
 
-def prepare_ffmpeg_cmdline(arguments: dict) -> list:
+def quote_string(string: str) -> str:
+    """
+    Put given string into single quotes if necessary
+    """
+
+    if not string.startswith("'"):
+        string = f"'{string}"
+
+    if not string.endswith("'"):
+        string = f"{string}'"
+
+    return string
+
+
+def prepare_ffmpeg_cmdline(arguments: dict, with_run: bool = False) -> list:
     """
     Return ffmpeg comman line as a list.
 
@@ -154,15 +168,23 @@ def prepare_ffmpeg_cmdline(arguments: dict) -> list:
      'out.mp4'
     ]
     """
+    # handle shell quoting before we begin doing stuff
+    if with_run is False:
+        arguments["input"] = quote_string(arguments["input"])
+        arguments["output"] = quote_string(arguments["output"])
+        for sub in arguments["subs"]:
+            sub["file"] = quote_string(sub["file"])
+
     # ffmpeg command, usually 'ffmpeg' is enough
     _cmdline = [arguments["cmd"]]
 
     _cmdline.append("-i")
-    _cmdline.append("'" + arguments["input"] + "'")
+    _cmdline.append(arguments["input"])
+
 
     for sub in arguments["subs"]:
         _cmdline.append("-i")
-        _cmdline.append("'" + sub["file"] + "'")
+        _cmdline.append(sub["file"])
 
     # ffmpeg map codecs
     _cmdline.append("-map")
@@ -181,7 +203,9 @@ def prepare_ffmpeg_cmdline(arguments: dict) -> list:
     # subtitle codecs
     sub_codecs = {
         ".mp4": "mov_text",
+        ".mp4'": "mov_text",
         ".mkv": "srt",
+        ".mkv'": "srt",
     }
     _cmdline.append("-c")
     _cmdline.append("copy")
@@ -197,7 +221,7 @@ def prepare_ffmpeg_cmdline(arguments: dict) -> list:
         _cmdline.append(f"-metadata:s:s:{index}")
         _cmdline.append(f"handler_name={sub['title']}")
 
-    _cmdline.append("'" + arguments["output"] + "'")
+    _cmdline.append(arguments["output"])
     return _cmdline
 
 
@@ -206,7 +230,7 @@ if __name__ == "__main__":
     if not args:
         sys.exit(-1)
 
-    ffmpeg_cmdline = prepare_ffmpeg_cmdline(args)
+    ffmpeg_cmdline = prepare_ffmpeg_cmdline(args, bool(args["run"]))
 
     if not args["quiet"]:
         print(" ".join(ffmpeg_cmdline))
