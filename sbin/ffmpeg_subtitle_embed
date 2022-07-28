@@ -7,9 +7,9 @@ Run with -h or --help to see usage.
 """
 
 import argparse
+import os
 import subprocess
 import sys
-import os
 
 __author__ = "Mehmet Akif Tasova"
 __copyright__ = "Copyright 2022, Mehmet Akif Tasova"
@@ -122,9 +122,10 @@ def parse_arguments() -> dict:
 
 def quote_string(string: str) -> str:
     """
-    Put given string into single quotes if necessary
-    """
+    Put given string into single quotes if necessary.
 
+    e.g. turn `my string` into `'my string'`
+    """
     if not string.startswith("'"):
         string = f"'{string}"
 
