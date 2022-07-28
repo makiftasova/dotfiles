@@ -15,7 +15,7 @@ __author__ = "Mehmet Akif Tasova"
 __copyright__ = "Copyright 2022, Mehmet Akif Tasova"
 __credits__ = ["Mehmet Akif Tasova"]
 __license__ = "GPL"
-__version__ = "1.0.2"
+__version__ = "1.1.0"
 __maintainer__ = "Mehmet Akif Tasova"
 __email__ = "makiftasova@gmail"
 __status__ = "Production"
@@ -102,6 +102,13 @@ def parse_arguments() -> dict:
         action="store_true",
         help="Also run ffmpeg command after constructing it",
     )
+    parser.add_argument(
+        "-t",
+        "--title",
+        dest="title",
+        type=str,
+        help="Overwrite file title metadata with given one",
+    )
 
     if len(sys.argv) < 2:
         parser.print_help()
@@ -182,10 +189,18 @@ def prepare_ffmpeg_cmdline(arguments: dict, with_run: bool = False) -> list:
     _cmdline.append("-i")
     _cmdline.append(arguments["input"])
 
-
     for sub in arguments["subs"]:
         _cmdline.append("-i")
         _cmdline.append(sub["file"])
+
+    # clean-up unnecessary metadata
+    _cmdline.append("-map_metadata")
+    _cmdline.append("-1")
+
+    # overwrite file's title metadata if user requested
+    if "title" in arguments and len(arguments["title"]) > 0:
+        _cmdline.append("-metadata")
+        _cmdline.append(f"title={arguments['title']}")
 
     # ffmpeg map codecs
     _cmdline.append("-map")
