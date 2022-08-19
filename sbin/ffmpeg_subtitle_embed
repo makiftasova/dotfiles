@@ -15,10 +15,25 @@ __author__ = "Mehmet Akif Tasova"
 __copyright__ = "Copyright 2022, Mehmet Akif Tasova"
 __credits__ = ["Mehmet Akif Tasova"]
 __license__ = "GPL"
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 __maintainer__ = "Mehmet Akif Tasova"
 __email__ = "makiftasova@gmail"
 __status__ = "Production"
+
+
+def quote_string(string: str) -> str:
+    """
+    Put given string into single quotes if necessary.
+
+    e.g. turn `my string` into `'my string'`
+    """
+    if not string.startswith("'"):
+        string = f"'{string}"
+
+    if not string.endswith("'"):
+        string = f"{string}'"
+
+    return string
 
 
 def parse_arguments() -> dict:
@@ -124,22 +139,12 @@ def parse_arguments() -> dict:
             sub[1] = f"'{sub[1]}'"
         _args["subs"].append({"lang": sub[0], "title": sub[1], "file": sub[2]})
 
+    # check if 'title' has any spaces in it
+    if "title" in _args and " " in _args["title"]:
+        _args["title"] = quote_string(_args["title"])
+
+
     return _args
-
-
-def quote_string(string: str) -> str:
-    """
-    Put given string into single quotes if necessary.
-
-    e.g. turn `my string` into `'my string'`
-    """
-    if not string.startswith("'"):
-        string = f"'{string}"
-
-    if not string.endswith("'"):
-        string = f"{string}'"
-
-    return string
 
 
 def prepare_ffmpeg_cmdline(arguments: dict, with_run: bool = False) -> list:
