@@ -15,7 +15,7 @@ __author__ = "Mehmet Akif Tasova"
 __copyright__ = "Copyright 2022, Mehmet Akif Tasova"
 __credits__ = ["Mehmet Akif Tasova"]
 __license__ = "GPL"
-__version__ = "1.1.1"
+__version__ = "1.2.0"
 __maintainer__ = "Mehmet Akif Tasova"
 __email__ = "makiftasova@gmail"
 __status__ = "Production"
@@ -124,6 +124,16 @@ def parse_arguments() -> dict:
         type=str,
         help="Overwrite file title metadata with given one",
     )
+    parser.add_argument(
+        "-a",
+        "--audio",
+        dest="audio",
+        type=str,
+        help="Overwrite audio stream language with given one",
+        action="append",
+        nargs=2,
+        metavar=("STREAM_NO", "LANG"),
+    )
 
     if len(sys.argv) < 2:
         parser.print_help()
@@ -143,6 +153,12 @@ def parse_arguments() -> dict:
     if "title" in _args and " " in _args["title"]:
         _args["title"] = quote_string(_args["title"])
 
+    # clean-up audio metadata stuff
+    audios = _args.pop("audio")
+    if audios:
+        _args["audio"] = []
+        for audio in audios:
+            _args["audio"].append({"stream_number": int(audio[0]), "lang": audio[1]})
 
     return _args
 
@@ -206,6 +222,12 @@ def prepare_ffmpeg_cmdline(arguments: dict, with_run: bool = False) -> list:
     if "title" in arguments and len(arguments["title"]) > 0:
         _cmdline.append("-metadata")
         _cmdline.append(f"title={arguments['title']}")
+
+    # overwrite audio metadata
+    if "audio" in arguments and len(arguments["audio"]) > 0:
+        for audio in arguments["audio"]:
+            _cmdline.append(f"-metadata:s:a:{audio['stream_number']}")
+            _cmdline.append(f"language={audio['lang']}")
 
     # ffmpeg map codecs
     _cmdline.append("-map")
