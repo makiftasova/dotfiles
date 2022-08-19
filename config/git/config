@@ -12,7 +12,7 @@
 	la = log --graph --decorate --oneline --all
 	lr = log --graph --decorate --oneline -n
 	lag = log --branches --remotes --tags --graph --oneline --decorate
-	par = "!f() { for r in $(git remote show); do git push -u $r $@; done }; f"
+	par = "!f() { for r in $(git remote show); do git push $r $@; done }; f"
 	branch-diff = "!f() { git log --oneline --cherry-pick $1...$2; }; f"
 	daemon-readonly = !git daemon --base-path=. --export-all --reuseaddr --informative-errors --verbose
 	daemon-writeable = !git daemon --base-path=. --export-all --enable=receive-pack --reuseaddr --informative-errors --verbose
