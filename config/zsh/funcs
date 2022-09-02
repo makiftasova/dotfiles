@@ -339,6 +339,100 @@ function ffmpeg_sub_embed {
 	ffmpeg_subtitle_embed --input "${inp}" --sub eng English "${sub}" --output "${out}" --run
 }
 
+# ffmpeg_to_x265 - Convert video stream to x265 while keeping all the other streams
+#
+# This function used to re-encode video stream to x265 without touching any other
+# stream(s) or metadata in given list of files.
+#
+# Usage:
+#   ffmpeg_to_x265 [-d vaapi_device] [-p x265_preset] [-q quality] [-f find_pattern] [-r replace_pattern] [-h] FILE_LIST
+#   options:
+#       -d vaapi_device (default=/dev/dri/renderD128)
+#       -f string: pattern to search in file names )default=x264)
+#       -h: show this help
+#       -p [ultrafast|superfast|veryfast|faster|fast|medium|slow|slower|veryslow|placebo]: x265 preset to use (default=slower)
+#       -q level: quality level (default=25, smaller number = better quaity)
+#       -r string: repalcement for patterns found in file names (default=x265)
+function ffmpeg_to_x265 {
+	local inp
+	local outp
+	local name
+	local ext
+	local find
+	local replace
+	local vaapi_dev
+	local preset
+	local quality
+	local OPTIND
+	local opt
+
+	find='x264'
+	replace='x265'
+	vaapi_dev='/dev/dri/renderD128'
+	preset="slower"
+	quality='25'
+
+	while getopts ":d:f:h:p:q:r:" opt; do
+		case "${opt}" in
+			d)
+				vaapi_dev="${OPTARG}"
+				;;
+			f)
+				find="${OPTARG}"
+				;;
+			p)
+				preset="${OPTARG}"
+				;;
+			q)
+				quality="${OPTARG}"
+				;;
+			r)
+				replace="${OPTARG}"
+				;;
+			h)
+				;&
+			*)
+				cat <<- 'HELP'
+ffmpeg_to_x265 [-d vaapi_device] [-p x265_preset] [-q quality] [-f find_pattern] [-r replace_pattern] [-h] FILE_LIST
+options:
+    -d vaapi_device (default=/dev/dri/renderD128)
+    -f string: pattern to search in file names (default=x264)
+    -h: show this help
+    -p [ultrafast|superfast|veryfast|faster|fast|medium|slow|slower|veryslow|placebo]: x265 preset to use (default=slower)
+    -q level: quality level (default=25, range=0-51, smaller=better)
+    -r string: repalcement for patterns found in file names (default=x265)
+HELP
+				;;
+		esac
+	done
+	shift $((OPTIND-1))
+
+	for f in "${@}"; do
+		inp="$(basename "${f}")"
+		name="${inp%.*}"
+		ext="${inp##*.}"
+
+		if [ -n "${find}" ]; then
+			name="${name//${find}/${replace}}"
+		fi
+
+		outp="${name}.${ext}"
+
+		ffmpeg					\
+			-vaapi_device "${vaapi_dev}"	\
+			-i "${f}"			\
+			-vf 'format=nv12,hwupload'	\
+			-map 0				\
+			-c copy				\
+			-c:v hevc_vaapi			\
+			-rc_mode CQP			\
+			-global_quality "${quality}"	\
+			-profile:v main			\
+			-preset "${preset}"		\
+			"${outp}"
+	done
+}
+
 #
 # lsifr - list installed packages from given pacman repo
 #
