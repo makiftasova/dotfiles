@@ -395,13 +395,14 @@ function ffmpeg_to_x265 {
 				cat <<- 'HELP'
 ffmpeg_to_x265 [-d vaapi_device] [-p x265_preset] [-q quality] [-f find_pattern] [-r replace_pattern] [-h] FILE_LIST
 options:
-    -d vaapi_device (default=/dev/dri/renderD128)
+    -d vaapi_device: hardware device to use for encoding (default=/dev/dri/renderD128)
     -f string: pattern to search in file names (default=x264)
     -h: show this help
     -p [ultrafast|superfast|veryfast|faster|fast|medium|slow|slower|veryslow|placebo]: x265 preset to use (default=slower)
     -q level: quality level (default=25, range=0-51, smaller=better)
     -r string: repalcement for patterns found in file names (default=x265)
 HELP
+				return 255
 				;;
 		esac
 	done
