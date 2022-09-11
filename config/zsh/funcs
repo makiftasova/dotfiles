@@ -344,6 +344,8 @@ function ffmpeg_sub_embed {
 # This function used to re-encode video stream to x265 without touching any other
 # stream(s) or metadata in given list of files.
 #
+# This functions depends on VAAPI hardware acceleration, and hevc_vaapi from ffmpeg
+#
 # Usage:
 #   ffmpeg_to_x265 [-d vaapi_device] [-p x265_preset] [-q quality] [-f find_pattern] [-r replace_pattern] [-h] FILE_LIST
 #   options:
@@ -365,12 +367,23 @@ function ffmpeg_to_x265 {
 	local quality
 	local OPTIND
 	local opt
+	local ret
 
 	find='x264'
 	replace='x265'
 	vaapi_dev='/dev/dri/renderD128'
 	preset="slower"
 	quality='25'
+
+	if [ -z "$(command -v ffmpeg)" ]; then
+		echo "ffmpeg not found in PATH"
+		return 255
+	fi
+
+	if ! ffmpeg -hide_banner -encoders | grep -q hevc_vaapi; then
+		echo "looks like ffmpeg does not support 'hevc_vaapi' encoder"
+		return 254
+	fi
 
 	while getopts ":d:f:h:p:q:r:" opt; do
 		case "${opt}" in
@@ -402,7 +415,7 @@ options:
     -q level: quality level (default=25, range=0-51, smaller=better)
     -r string: repalcement for patterns found in file names (default=x265)
 HELP
-				return 255
+				return 1
 				;;
 		esac
 	done
@@ -417,20 +430,34 @@ HELP
 			name="${name//${find}/${replace}}"
 		fi
 
+		if [ "${ext}" != 'mkv' ]; then
+			ext='mkv'
+		fi
+
 		outp="${name}.${ext}"
 
 		ffmpeg					\
+			-threads "$(nproc)"		\
+			-hwaccel vaapi			\
 			-vaapi_device "${vaapi_dev}"	\
 			-i "${f}"			\
 			-vf 'format=nv12,hwupload'	\
+			-aud true			\
 			-map 0				\
-			-c copy				\
+			-c:a copy			\
+			-c:s copy			\
 			-c:v hevc_vaapi			\
 			-rc_mode CQP			\
 			-global_quality "${quality}"	\
 			-profile:v main			\
 			-preset "${preset}"		\
+			-f 'matroska'			\
 			"${outp}"
+
+		ret="${?}"
+		if [ "${ret}" -ne '0' ]; then
+			return "${ret}"
+		fi
 	done
 }
 
