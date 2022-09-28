@@ -46,8 +46,7 @@ Plug 'rhysd/vim-clang-format'
 Plug 'tell-k/vim-autopep8'
 
 " rustlang
-Plug 'rust-lang/rust.vim'
-Plug 'racer-rust/vim-racer'
+" Plug 'rust-lang/rust.vim'
 
 " LISP
 Plug 'kovisoft/slimv'
@@ -454,17 +453,6 @@ let g:airline_mode_map = {
 			\ '' : 'S',
 			\ }
 """""
-
-"racer config
-let g:racer_cmd = "~/.cargo/bin/racer"
-"let g:racer_experimental_completer = 1
-let $RUST_SRC_PATH="~/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src"
-set omnifunc=syntaxcomplete#Complete
-
-au FileType rust nmap gd <Plug>(rust-def)
-au FileType rust nmap gs <Plug>(rust-def-split)
-au FileType rust nmap gx <Plug>(rust-def-vertical)
-au FileType rust nmap <leader>gd <Plug>(rust-doc)
 
 "multiplesearch config
 nnoremap <leader>s :exe "Search ".expand('<cword>')<CR>
