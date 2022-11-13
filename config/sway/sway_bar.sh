@@ -73,7 +73,7 @@ case "$player_status" in
 esac
 
 # Network
-network=$(ip route get 1.1.1.1 | grep -Po '(?<=dev\s)\w+')
+network=$(ip route get 1.1.1.1 | grep -Po '(?<=dev\s)[\w-]+')
 network_ip='0.0.0.0/0'
 #ping=$(ping -c 1 www.archlinux.org | tail -1| awk '{print $4}' | cut -d '/' -f 2 | cut -d '.' -f 1)
 network_info=$(nmcli dev show "$network")
