@@ -77,10 +77,19 @@ network=$(ip route get 1.1.1.1 | grep -Po '(?<=dev\s)[\w-]+')
 network_ip='0.0.0.0/0'
 #ping=$(ping -c 1 www.archlinux.org | tail -1| awk '{print $4}' | cut -d '/' -f 2 | cut -d '.' -f 1)
 network_info=$(nmcli dev show "$network")
+
 network_type=$(echo "$network_info" | grep "TYPE" | awk '{split($0,a,":"); gsub("(^[ \t]+)|([ \t]+$)", "", a[2]); print a[2]}')
-if [ "$network_type" = "wifi" ]; then
-	wifi_info="$(nmcli --fields 'IN-USE,SSID,SIGNAL' dev wifi list --rescan no | grep -e '^*.*$' | awk '{print $2 " " $3 "%"}')"
-fi
+case "$network_type" in
+	wifi)
+		network_extra_info="$(nmcli --fields 'IN-USE,SSID,SIGNAL' dev wifi list --rescan no | grep -e '^*.*$' | awk '{print $2 " " $3 "%"}')"
+		;;
+	wireguard)
+		network_extra_info="[wg]"
+		;;
+	*)
+		network_extra_info=''
+		;;
+esac
 
 if [ -n "$network" ]; then
 	network_active="⇆"
@@ -98,4 +107,4 @@ load="🏋"
 phones="🎧"
 kb="⌨"
 
-echo "$phones $song_status $media_artist - $media_song | $kb $language | $network_active $network $wifi_info ($network_ip) | $load [ $loadavg ] | $audio_active $audio_volume% | $battery_output | $date $current_time |"
+echo "$phones $song_status $media_artist - $media_song | $kb $language | $network_active $network $network_extra_info ($network_ip) | $load [ $loadavg ] | $audio_active $audio_volume% | $battery_output | $date $current_time |"
