@@ -281,12 +281,6 @@ nnoremap <F6> :NERDTreeToggle<CR>
 nnoremap <F7> :GundoToggle<CR>
 nmap <F8> :TagbarToggle<CR>
 
-"emacs like shortcuts for yankstack
-if !has('nvim')
-	set <m-p>=p   " rotate yanks forward
-	set <m-P>=P   " rotate yanks forward
-endif
-
 " Emmet configs just for html css files
 let g:user_emmet_install_global = 0
 autocmd FileType html,css EmmetInstall"
