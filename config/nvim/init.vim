@@ -184,30 +184,6 @@ filetype plugin indent on
 filetype plugin on
 set ofu=syntaxcomplete#Complete
 
-"config cscope
-if has('cscope')
-	"set cscopetag cscopeverbose "makes cscope plug to print verbose messages
-	set nosplitright
-	set cst
-	set nocscopeverbose
-
-	if has('quickfix')
-		set cscopequickfix=s-,c-,d-,i-,t-,e-,g-
-	endif
-
-	cnoreabbrev csa cs add
-	cnoreabbrev csf cs find
-	cnoreabbrev csk cs kill
-	cnoreabbrev csr cs reset
-	cnoreabbrev css cs show
-	cnoreabbrev csh cs help
-
-	if filereadable(".cscope/cscope.out")
-		cs add .cscope/cscope.out
-	endif
-
-endif
-
 "custom mappings
 let mapleader=","
 
@@ -223,16 +199,6 @@ map <leader>p "+p
 nnoremap <leader><space> :noh<cr>
 "remove trailing whitespace
 nnoremap <leader>W :%s/\s\+$//<cr>:let @/=''<CR>
-
-"cscope mappings
-nnoremap <leader>r :cs find 0 <C-R>=expand("<cword>")<CR><CR>z<CR> :cope<CR><CR>
-nnoremap <leader>d :cs find 1 <C-R>=expand("<cword>")<CR><CR>z<CR> :cope<CR><CR>
-nnoremap <leader>v :cs find 3 <C-R>=expand("<cword>")<CR><CR>z<CR> :cope<CR><CR>
-
-nnoremap <leader>R :vert scs find 0 <C-R>=expand("<cword>")<CR><CR>z<CR> :cope<CR><CR>
-nnoremap <leader>D :vert scs find 1 <C-R>=expand("<cword>")<CR><CR>z<CR> :cope<CR><CR>
-nnoremap <leader>V :vert scs find 3 <C-R>=expand("<cword>")<CR><CR>z<CR> :cope<CR><CR>
-nnoremap <leader>t :!rm -r .kscope; /usr/bin/vimscope ../<cr>:cs reset<cr>
 
 "disable f1
 inoremap <F1> <ESC>
