@@ -139,6 +139,9 @@
         ~/.clang-format:
                 path: config/clang-format/clang-format
                 create: true
+        ~/.config/alacritty:
+                path: config/alacritty/
+                create: true
         ~/.config/chromium-flags.conf:
                 path: config/chromium-flags.conf
                 create: true
