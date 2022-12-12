@@ -79,6 +79,7 @@ COMPLETION_WAITING_DOTS="true"
 # shellcheck disable=SC2034  # Unused variables left for readability
 plugins=(
 	fzf
+	gitfast
 	gitignore
 	rust
 	vagrant
