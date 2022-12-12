@@ -9,6 +9,9 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_FIND_NO_DUPS
 setopt HIST_SAVE_NO_DUPS
 
+# use fcntl locks when possible
+setopt HIST_FCNTL_LOCK
+
 # set config directories
 export ZSH_CONFIG_HOME="${HOME}/.config/zsh"
 export ZSH_CONFIG_LOCAL_HOME="${HOME}/.local/config/zsh"
