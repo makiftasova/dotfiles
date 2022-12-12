@@ -79,6 +79,7 @@ plugins=(
 	gitignore
 	rust
 	vagrant
+	term_tab
 	zsh-autosuggestions
 	zsh-syntax-highlighting
 )
