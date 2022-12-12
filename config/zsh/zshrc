@@ -76,15 +76,16 @@ COMPLETION_WAITING_DOTS="true"
 # shellcheck disable=SC2034  # Unused variables left for readability
 plugins=(
 	fzf
-	git-flow
-	gitfast
 	gitignore
-	jsontools
 	rust
 	vagrant
 	zsh-autosuggestions
 	zsh-syntax-highlighting
 )
+
+# Some other useful plugins:
+# git-flow
+# gitfast
 
 # override generic oh-my-zsh config with local one if found.
 # shellcheck source=/dev/null
