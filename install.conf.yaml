@@ -13,6 +13,12 @@
           stdout: true
           stderr: true
         -
+          command: aur sync wlr-randr
+          description: Build wlr-randr from AUR
+          stdin: true
+          stdout: true
+          stderr: true
+        -
           command: >
                   sudo pacman -S --needed
                   base-devel
@@ -76,6 +82,7 @@
                   waybar
                   wireplumber
                   wl-clipboard
+                  wlr-randr
                   wofi
                   xdg-desktop-portal
                   xdg-desktop-portal-wlr
