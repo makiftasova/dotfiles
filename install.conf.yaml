@@ -13,12 +13,6 @@
           stdout: true
           stderr: true
         -
-          command: aur sync mconnect-git
-          description: Build mconnect from aur
-          stdin: true
-          stdout: true
-          stderr: true
-        -
           command: >
                   sudo pacman -S --needed
                   base-devel
@@ -27,12 +21,9 @@
                   brasero
                   brightnessctl
                   clang
-                  cscope
                   ctags
                   curl
-                  dmenu
                   ffmpeg
-                  foot
                   fzf
                   gammastep
                   git
@@ -56,7 +47,6 @@
                   jq
                   kitty
                   mako
-                  mconnect-git
                   mpv
                   mpv-mpris
                   neovim
@@ -81,21 +71,15 @@
                   swayidle
                   swaylock
                   texlab
-                  thunar
-                  thunar-archive-plugin
-                  thunar-media-tags-plugin
-                  thunar-volman
                   vifm
                   waybar
                   wireplumber
                   wl-clipboard
                   wofi
-                  xclip
                   xdg-desktop-portal
                   xdg-desktop-portal-wlr
                   xorg-bdftopcf
                   xorg-mkfontscale
-                  xsel
                   zsh
           description: Installing utilities
           stdin: true
