@@ -130,3 +130,20 @@ fi
 unset local_wayvnc_config_dir
 
 echo "done"
+
+echo -n "Creating local config directory for user service configs..."
+
+local_user_service_config_dir="${HOME}/.local/config/services"
+
+mkdir -p "${local_user_service_config_dir}"
+
+if ! [ -e "${local_user_service_config_dir}/python-http-server.env" ]; then
+cat << PYHTTPCONF > "${local_user_service_config_dir}/python-http-server.env"
+PORT=80
+DIRECTORY=/srv/http
+PYHTTPCONF
+fi
+
+unset local_user_service_config_dir
+
+echo "done"

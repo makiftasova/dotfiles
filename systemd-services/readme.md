@@ -1,3 +1,9 @@
+## python-http-server.service
+* *depends*: python
+* copy into `~/.config/systemd/user` and enable with `systemctl enable --user python-http-server.service`
+* expects `${HOME}/.local/config/serivces/python-http-server.env` file to be present
+* can be configured using `${HOME}/.local/config/serivces/python-http-server.env` file
+
 ## sway-headless.service
 * *depends*: sbin/sway-remote-run
 * copy into `~/.config/systemd/user` and enable with `systemctl enable --user sway-headless.service`

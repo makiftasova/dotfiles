@@ -1,0 +1,11 @@
+[Unit]
+Description=Python Local HTTP Server
+
+[Service]
+Type=simple
+Restart=on-failure
+EnvironmentFile=%h/.local/config/services/python-http-server.env
+ExecStart=/usr/bin/python -m http.server $PORT --directory $DIRECTORY
+
+[Install]
+WantedBy=default.target
