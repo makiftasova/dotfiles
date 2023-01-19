@@ -1,5 +1,7 @@
 [Unit]
 Description=Headless Sway Session
+Wants=network-online.target
+After=network-online.target
 
 [Service]
 Type=simple
