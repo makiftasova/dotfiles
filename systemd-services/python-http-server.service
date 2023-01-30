@@ -6,7 +6,9 @@ After=network-online.target
 [Service]
 Type=simple
 Restart=on-failure
-EnvironmentFile=%h/.local/config/services/python-http-server.env
+Environment=PORT=8000
+Environment=DIRECTORY=/srv/http
+EnvironmentFile=-%h/.local/config/services/python-http-server.env
 ExecStart=/usr/bin/python -m http.server $PORT --directory $DIRECTORY
 
 [Install]
