@@ -9,7 +9,7 @@ Restart=on-failure
 Environment=PORT=8000
 Environment=DIRECTORY=/srv/http
 EnvironmentFile=-%h/.local/config/services/python-http-server.env
-ExecStart=/usr/bin/python -m http.server $PORT --directory $DIRECTORY
+ExecStart=/usr/bin/python -m http.server --bind :: --directory $DIRECTORY $PORT
 
 [Install]
 WantedBy=default.target
