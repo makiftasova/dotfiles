@@ -30,6 +30,7 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec $term
+bindsym $mod+KP_Enter exec $term
 
 # kill focused window
 bindsym $mod+Shift+q kill
