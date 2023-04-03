@@ -14,7 +14,14 @@ setopt HIST_FCNTL_LOCK
 
 # set config directories
 export ZSH_CONFIG_HOME="${HOME}/.config/zsh"
+export ZSH_CACHE_HOME="${HOME}/.cache/zsh"
 export ZSH_CONFIG_LOCAL_HOME="${HOME}/.local/config/zsh"
+export ZSH_COMPDUMP="${ZSH_CACHE_HOME}/.zcompdump-${HOST}-${ZSH_VERSION}"
+
+# make sure ZSH_CACHE_HOME directory exists
+if ! [ -d "${ZSH_CACHE_HOME}" ]; then
+    mkdir -p "${ZSH_CACHE_HOME}"
+fi
 
 # If you come from bash you might have to change your $PATH.
 # shellcheck source=/dev/null
