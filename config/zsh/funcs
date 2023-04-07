@@ -77,6 +77,13 @@ function mkcd {
 	mkdir -p "$1" && cd "$1" || return 255
 }
 
+# make a new temp directory via mktemp, and cd into it
+function mktdcd {
+	local tdir
+
+	tdir="$(mktemp -d)" && cd "${tdir}" || return 255
+}
+
 # rm files in cwd and all sub-directoriesolder than given number of days
 function rmolder {
 	local __num_days
