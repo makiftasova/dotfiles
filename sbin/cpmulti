@@ -16,14 +16,17 @@ function usage {
 }
 
 function cpmulti {
-	for f in "${@:2}"; do
-		cp "${1}" "${f}"
-	done
+	cp -t "${1}" "${@:2}"
 }
+
+if [ -z "$(command -v cp)" ]; then
+	echo "Comand not found: cp"
+	exit 255
+fi
 
 if [ "${#}" -lt 2 ]; then
 	usage "${0}"
-	exit 255
+	exit 254
 fi
 
 cpmulti "$@"
