@@ -36,4 +36,19 @@ if [ -z "${XDG_RUNTIME_DIR}" ]; then
 	export XDG_RUNTIME_DIR
 fi
 
-exec dbus-run-session -- sway
+# If $SWAY_DEBUG is non-empty string, save sway's logs to a file.
+# If SWAY_DEBUG_FILE is non-empty string use path provided in it for saving sway
+# logs.
+# By default, logs are put into file at $XDG_CACHE_HOME/sway_YYYYmmdd_HHMMSS.log
+# file.
+if [ -n "${SWAY_DEBUG}" ]; then
+	__SWAY_DEBUG_FILE="$XDG_CACHE_HOME/sway_$(date +%Y%m%d_%H%M%S).log"
+	if [ -n "${SWAY_DEBUG_FILE}" ]; then
+		__SWAY_DEBUG_FILE="${SWAY_DEBUG_FILE}"
+	fi
+
+	echo "Using ${__SWAY_DEBUG_FILE} for sway logs"
+	exec dbus-run-session -- sway --debug 2>"${__SWAY_DEBUG_FILE}"
+else
+	exec dbus-run-session -- sway
+fi
