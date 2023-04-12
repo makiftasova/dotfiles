@@ -22,4 +22,4 @@ if [ -z "${XDG_RUNTIME_DIR}" ]; then
 	export XDG_RUNTIME_DIR
 fi
 
-exec dbus-run-session sway
+exec dbus-run-session -- sway
