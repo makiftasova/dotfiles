@@ -12,6 +12,12 @@ setopt HIST_SAVE_NO_DUPS
 # use fcntl locks when possible
 setopt HIST_FCNTL_LOCK
 
+# Make sure zsh does not exit on EOF (CTRL+D in most terminal emulators)
+# if zsh is running in tmux session
+if [ -n "${TMUX}" ]; then
+	setopt IGNORE_EOF
+fi
+
 # set config directories
 export ZSH_CONFIG_HOME="${HOME}/.config/zsh"
 export ZSH_CACHE_HOME="${HOME}/.cache/zsh"
