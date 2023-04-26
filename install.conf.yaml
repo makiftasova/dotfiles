@@ -126,6 +126,20 @@
           stdin: true
           stdout: true
           stderr: true
+        -
+          command: mkdir -p ~/.local/config/tmux/plugins
+          description: Setup directories for tmux Plugin Manager
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: >
+                  git clone https://github.com/tmux-plugins/tpm
+                  ~/.local/config/tmux/plugins/tpm
+          description: Setup tmux Plugin Managre
+          stdin: true
+          stdout: true
+          stderr: true
 - link:
         ~/.clang-format:
                 path: config/clang-format/clang-format
@@ -171,6 +185,9 @@
                 create: true
         ~/.config/swayidle:
                 path: config/swayidle/
+                create: true
+        ~/.config/tmux:
+                path: config/tmux/
                 create: true
         ~/.config/waybar:
                 path: config/waybar/
