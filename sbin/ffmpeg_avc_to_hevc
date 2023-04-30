@@ -22,7 +22,7 @@
 # Default config options
 DEFAULT_VAAPI_DEV='/dev/dri/renderD128'
 DEFAULT_HEVC_PRESET='slower'
-DEFAULT_HEVC_QUALITY='22'
+DEFAULT_HEVC_QUALITY='25'
 
 function check_dependencies
 {
