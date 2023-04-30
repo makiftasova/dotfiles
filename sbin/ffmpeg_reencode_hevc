@@ -1,0 +1,147 @@
+#! /usr/bin/env bash
+#
+# SPDX-License-Identifier: GPL-3.0-only
+# vim: set ts=8 sw=8 sts=4 noet:
+#
+# A simple helper script to reencode all HEVC media in $(pwd) and it's
+# subdirectories in order to try reducing total file size,
+# utilizing ffmpeg and VA-API.
+#
+# Environment:
+#   VAAPI_DEV: VA-API device to use for hardware acceleration
+#   		(Default: /dev/dri/renderD128)
+#   HEVC_PRESET: HEVC preset to use for transcoding
+#   		(Default: slower)
+#   HEVC_QUALITY: HEVC quality to use for transcoding
+#   		(Default: 22, lower = better and longer)
+#
+# Author: Mehmet Akif TASOVA <makiftasova@gmail.com>
+#
+# Usage:
+#   ffmpeg_reencode_hevc
+
+# Default config options
+DEFAULT_VAAPI_DEV='/dev/dri/renderD128'
+DEFAULT_HEVC_PRESET='slower'
+DEFAULT_HEVC_QUALITY='25'
+
+function check_dependencies
+{
+	## shellcheck nags about "command -v ffmpeg"'s exit code
+	# shellcheck disable=SC2312
+	if [[ -z "$(command -v ffmpeg)" ]]
+	then
+		echo "'ffmpeg' not found in PATH"
+		return 255
+	fi
+
+	## shellcheck nags about masking "ffmpeg"'s exit code
+	# shellcheck disable=SC2312
+	if ! ffmpeg -hide_banner -encoders | grep -q hevc_vaapi
+	then
+		echo "looks like ffmpeg does not support 'hevc_vaapi' encoder"
+		return 253
+	fi
+}
+
+function transcode_to_hevc
+{
+	local inp
+	local outp
+	local temp_outp
+	local name
+	local ext
+	local format
+
+	inp="${1}"
+
+	name="${inp%.*}"
+
+	ext="${inp##*.}"
+
+	case "${ext}" in
+		mkv|MKV)
+			format='matroska'
+			;;
+		mp4|MP4)
+			format='mp4'
+			;;
+		*)
+			echo "Unknown file extension ${ext}"
+			return 210
+		;;
+	esac
+
+	outp="${name}.${ext}"
+	temp_outp="${outp}.new"
+
+	## shellcheck nags about "$(nproc)"'s exit code
+	# shellcheck disable=SC2312
+	if ! ffmpeg -threads "$(nproc)" -hwaccel vaapi \
+		    -vaapi_device "${VAAPI_DEV}" \
+		    -i "${inp}" -vf 'format=nv12,hwupload' -aud true -map 0 \
+		    -c:a copy -c:s copy -c:v hevc_vaapi -rc_mode CQP \
+		    -global_quality "${HEVC_QUALITY}" -profile:v main \
+		    -preset "${HEVC_PRESET}" -f "${format}" "${temp_outp}"
+	then
+		echo "ffmpeg failed to convert file '${inp}'"
+		return 200
+	fi
+
+	if ! mv "${temp_outp}" "${outp}"
+	then
+		echo "Cannot rename '${temp_outp}' -> '${outp}'"
+		return 199
+	fi
+
+	if [[ -f "${inp}" ]] && [[ "${inp}" != "${outp}" ]]
+	then
+		if ! rm -f "${inp}"
+		then
+			echo "Cannot remove original file '${inp}'"
+			return 198
+		fi
+	fi
+
+	return 0
+}
+
+if ! check_dependencies
+then
+	echo "Dependencies are not met"
+	exit 255
+fi
+
+if [[ -z "${VAAPI_DEV}" ]]
+then
+	VAAPI_DEV="${DEFAULT_VAAPI_DEV}"
+fi
+
+if [[ -z "${HEVC_PRESET}" ]]
+then
+	HEVC_PRESET="${DEFAULT_HEVC_PRESET}"
+fi
+
+if [[ -z "${HEVC_QUALITY}" ]]
+then
+	HEVC_QUALITY="${DEFAULT_HEVC_QUALITY}"
+fi
+
+shopt -s globstar
+for f in **/*.{mp4,mkv}
+do
+	if ! [[ -f "${f}" ]]
+	then
+		echo "'${f}' is no a valid file, skipping"...
+		continue
+	fi
+
+	echo "Transcoding '${f}' to HEVC"
+
+	if ! transcode_to_hevc "${f}"
+	then
+		echo "Failed to convert '${f}' to HEVC"
+		exit 254
+	fi
+done
+shopt -u globstar
