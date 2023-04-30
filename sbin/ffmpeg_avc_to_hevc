@@ -64,6 +64,7 @@ function transcode_to_hevc
 	local temp_outp
 	local name
 	local ext
+	local format
 
 	inp="${1}"
 
@@ -71,10 +72,19 @@ function transcode_to_hevc
 	name="${name//x264/x265}" # just to prevent filename from being misleading
 
 	ext="${inp##*.}"
-	if [[ "${ext}" != 'mkv' ]]
-	then
-		ext='mkv'
-	fi
+
+	case "${ext}" in
+		mkv|MKV)
+			format='matroska'
+			;;
+		mp4|MP4)
+			format='mp4'
+			;;
+		*)
+			echo "Unknown file extension ${ext}"
+			return 210
+		;;
+	esac
 
 	outp="${name}.${ext}"
 	temp_outp="${outp}.new"
@@ -86,7 +96,7 @@ function transcode_to_hevc
 		    -i "${inp}" -vf 'format=nv12,hwupload' -aud true -map 0 \
 		    -c:a copy -c:s copy -c:v hevc_vaapi -rc_mode CQP \
 		    -global_quality "${HEVC_QUALITY}" -profile:v main \
-		    -preset "${HEVC_PRESET}" -f 'matroska' "${temp_outp}"
+		    -preset "${HEVC_PRESET}" -f "${format}" "${temp_outp}"
 	then
 		echo "ffmpeg failed to convert file '${inp}'"
 		return 200
