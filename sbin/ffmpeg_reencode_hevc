@@ -127,21 +127,33 @@ then
 	HEVC_QUALITY="${DEFAULT_HEVC_QUALITY}"
 fi
 
+if [[ "${#}" == 0 ]]
+then
+	DIRS=( '.' )
+else
+	DIRS=( "${@}" )
+fi
+
+shopt -s nullglob
 shopt -s globstar
-for f in **/*.{mp4,mkv}
+for d in "${DIRS[@]}"
 do
-	if ! [[ -f "${f}" ]]
-	then
-		echo "'${f}' is no a valid file, skipping"...
-		continue
-	fi
+	for f in "${d}"/**/*.{mkv,mp4}
+	do
+		if ! [[ -f "${f}" ]]
+		then
+			echo "'${f}' is no a valid file, skipping"...
+			continue
+		fi
 
-	echo "Transcoding '${f}' to HEVC"
+		echo "Transcoding '${f}' to HEVC"
 
-	if ! transcode_to_hevc "${f}"
-	then
-		echo "Failed to convert '${f}' to HEVC"
-		exit 254
-	fi
+		if ! transcode_to_hevc "${f}"
+		then
+			echo "Failed to convert '${f}' to HEVC"
+			exit 254
+		fi
+	done
 done
 shopt -u globstar
+shopt -u nullglob
