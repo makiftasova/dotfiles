@@ -16,6 +16,7 @@ export XDG_PICTURES_DIR="${HOME}/Pictures"
 
 export GRIM_DEFAULT_DIR="${HOME}/Pictures/Screenshots"
 
+export LESSHISTFILE="${XDG_STATE_HOME}/less_history"
 
 export ED_PROMPT="ed> "
 
