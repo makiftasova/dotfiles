@@ -144,6 +144,12 @@ fi
 shopt -s globstar
 for f in **/*.{mp4,mkv}
 do
+	if ! [[ -f "${f}" ]]
+	then
+		echo "'${f}' is no a valid file, skipping"...
+		continue
+	fi
+
 	## shellcheck nags about "get_video_codec "${f}""'s exit code
 	# shellcheck disable=SC2312
 	if [[ "$(get_video_codec "${f}")" != 'h264' ]]
