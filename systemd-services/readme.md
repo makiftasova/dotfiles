@@ -13,3 +13,12 @@
 * *depends*: /usr/bin/tmux
 * copy into `~/.config/systemd/user` and enable with `systemctl enable --user tmux.service`
 * expects tmux configuration (`tmux.conf`) file in `${XDG_CONFIG_HOME}/tmux/tmux.conf` path
+
+## tmux@.service
+* *depends*: /usr/bin/tmux
+* system-wide systemd unit file for running detached tmux sessions
+* enable with `systemctl enable tmux@${USER}.service`
+* start with `systemctl start tmux@${USER}.service`
+* unlike `tmux.service` this unit file is not depends on user session
+* copy into `/etc/systemd/system` and enable with `systemctl enable tmux@${USER}.service`
+* expects tmux configuration (`tmux.conf`) file in `${XDG_CONFIG_HOME}/tmux/tmux.conf` path
