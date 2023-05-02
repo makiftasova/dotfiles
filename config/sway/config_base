@@ -250,3 +250,6 @@ bar {
 		inactive_workspace #323232 #323232 #676767
 	}
 }
+
+# make sure we are importing system's configuration snippets
+include /etc/sway/config.d/*
