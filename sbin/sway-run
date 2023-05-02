@@ -50,7 +50,7 @@ if [ -n "${SWAY_DEBUG}" ]; then
 	fi
 
 	echo "Using ${__SWAY_DEBUG_FILE} for sway logs"
-	exec dbus-run-session -- sway --debug 2>"${__SWAY_DEBUG_FILE}"
+	sway --debug 2>"${__SWAY_DEBUG_FILE}"
 else
-	exec dbus-run-session -- sway
+	sway
 fi
