@@ -172,6 +172,9 @@
         ~/.config/mconnect:
                 path: config/mconnect
                 create: true
+        ~/.config/mpd:
+                path: config/mpd
+                create: true
         ~/.config/mpv:
                 path: config/mpv
                 create: true
