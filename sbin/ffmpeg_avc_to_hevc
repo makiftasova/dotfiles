@@ -65,6 +65,13 @@ function transcode_to_hevc
 	local name
 	local ext
 	local format
+	local nthreads
+
+	nthreads="$(nproc)"
+	if [[ "${nthreads}" -gt 4 ]]
+	then
+		nthreads='4'
+	fi
 
 	inp="${1}"
 
@@ -91,12 +98,13 @@ function transcode_to_hevc
 
 	## shellcheck nags about "$(nproc)"'s exit code
 	# shellcheck disable=SC2312
-	if ! ffmpeg -threads "$(nproc)" -hwaccel vaapi \
+	if ! ffmpeg -threads "${nthreads}" -hwaccel vaapi \
 		    -vaapi_device "${VAAPI_DEV}" \
-		    -i "${inp}" -vf 'format=nv12,hwupload' -aud true -map 0 \
-		    -c:a copy -c:s copy -c:v hevc_vaapi -rc_mode CQP \
-		    -global_quality "${HEVC_QUALITY}" -profile:v main \
-		    -preset "${HEVC_PRESET}" -f "${format}" "${temp_outp}"
+		    -hwaccel_output_format vaapi \
+		    -i "${inp}" -map 0 -c:a copy -c:s copy -c:v hevc_vaapi \
+		    -rc_mode CQP -global_quality "${HEVC_QUALITY}" \
+		    -profile:v main -preset "${HEVC_PRESET}" \
+		    -f "${format}" "${temp_outp}"
 	then
 		echo "ffmpeg failed to convert file '${inp}'"
 		return 200
