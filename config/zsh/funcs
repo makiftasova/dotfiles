@@ -390,6 +390,7 @@ function ffmpeg_to_x265 {
 	local OPTIND
 	local opt
 	local ret
+	local threads
 
 	find='x264'
 	replace='x265'
@@ -443,6 +444,12 @@ HELP
 	done
 	shift $((OPTIND-1))
 
+	threads="$(nproc)"
+	if [ "${threads}" -gt '4' ]
+	then
+		threads='4'
+	fi
+
 	for f in "${@}"; do
 		inp="$(basename "${f}")"
 		name="${inp%.*}"
@@ -459,12 +466,11 @@ HELP
 		outp="${name}.${ext}"
 
 		ffmpeg					\
-			-threads "$(nproc)"		\
+			-threads "${threads}"		\
 			-hwaccel vaapi			\
 			-vaapi_device "${vaapi_dev}"	\
 			-i "${f}"			\
-			-vf 'format=nv12,hwupload'	\
-			-aud true			\
+			-hwaccel_output_format vaapi	\
 			-map 0				\
 			-c:a copy			\
 			-c:s copy			\
