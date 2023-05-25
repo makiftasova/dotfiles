@@ -469,8 +469,8 @@ HELP
 			-threads "${threads}"		\
 			-hwaccel vaapi			\
 			-vaapi_device "${vaapi_dev}"	\
-			-i "${f}"			\
 			-hwaccel_output_format vaapi	\
+			-i "${f}"			\
 			-map 0				\
 			-c:a copy			\
 			-c:s copy			\
