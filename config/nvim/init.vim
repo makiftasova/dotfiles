@@ -46,7 +46,7 @@ Plug 'rhysd/vim-clang-format'
 Plug 'tell-k/vim-autopep8'
 
 " rustlang
-" Plug 'rust-lang/rust.vim'
+Plug 'rust-lang/rust.vim'
 
 " LISP
 Plug 'kovisoft/slimv'
