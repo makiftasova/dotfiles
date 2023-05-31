@@ -474,10 +474,11 @@ HELP
 			-map 0				\
 			-c:a copy			\
 			-c:s copy			\
-			-c:v hevc_vaapi			\
+			-c:v copy			\
+			-c:v:0 hevc_vaapi		\
 			-rc_mode CQP			\
 			-global_quality "${quality}"	\
-			-profile:v main			\
+			-profile:v:0 main		\
 			-preset "${preset}"		\
 			-f 'matroska'			\
 			"${outp}"
