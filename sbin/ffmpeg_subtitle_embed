@@ -15,7 +15,7 @@ __author__ = "Mehmet Akif Tasova"
 __copyright__ = "Copyright 2022, Mehmet Akif Tasova"
 __credits__ = ["Mehmet Akif Tasova"]
 __license__ = "GPL"
-__version__ = "1.2.0"
+__version__ = "1.2.1"
 __maintainer__ = "Mehmet Akif Tasova"
 __email__ = "makiftasova@gmail"
 __status__ = "Production"
@@ -88,7 +88,6 @@ def parse_arguments() -> dict:
         dest="subs",
         action="append",
         nargs=3,
-        required=True,
         metavar=("LANG", "TITLE", "FILE"),
         help="subtitle info in 'lang_code title file_path'"
         " format. e.g. '--sub eng English english.srt'",
@@ -143,24 +142,43 @@ def parse_arguments() -> dict:
 
     # clean-up subtitle related arguments
     subs = _args.pop("subs")
-    _args["subs"] = []
-    for sub in subs:
-        if " " in sub[1]:  # make sure we are handling spaces in subtitle title
-            sub[1] = f"'{sub[1]}'"
-        _args["subs"].append({"lang": sub[0], "title": sub[1], "file": sub[2]})
-
-    # check if 'title' has any spaces in it
-    if "title" in _args and " " in _args["title"]:
-        _args["title"] = quote_string(_args["title"])
+    if subs:
+        _args["subs"] = []
+        for sub in subs:
+            _args["subs"].append(
+                {"lang": sub[0], "title": sub[1], "file": sub[2]})
 
     # clean-up audio metadata stuff
     audios = _args.pop("audio")
     if audios:
         _args["audio"] = []
         for audio in audios:
-            _args["audio"].append({"stream_number": int(audio[0]), "lang": audio[1]})
-
+            _args["audio"].append(
+                {"stream_number": int(audio[0]), "lang": audio[1]})
     return _args
+
+
+def get_sub_codec(fmt: str) -> str:
+    """
+    Get subtitle codec compatible with given file extension or ffmpeg format
+    name.
+    """
+    # ffmpeg subtitle codec flags
+    # Not all media containers support all the subtitle formats.
+    # We are using 'mov_text' if output container is '.mp4' and 'srt' if output
+    # container is '.mkv'. See below dict for for all supported containers and
+    # subtitle codecs
+    sub_codecs = {
+        ".mp4": "mov_text",
+        ".mp4'": "mov_text",
+        ".mkv": "srt",
+        ".mkv'": "srt",
+        "matroska": "srt",
+    }
+
+    if fmt in sub_codecs:
+        return sub_codecs[fmt]
+    sys.exit(f"Unknown format {fmt}")
 
 
 def prepare_ffmpeg_cmdline(arguments: dict, with_run: bool = False) -> list:
@@ -197,72 +215,77 @@ def prepare_ffmpeg_cmdline(arguments: dict, with_run: bool = False) -> list:
      'out.mp4'
     ]
     """
+    have_audio = "audio" in arguments and len(arguments["audio"]) > 0
+    have_subs = "subs" in arguments and len(arguments["subs"]) > 0
+    have_title = "title" in arguments and len(arguments["title"]) > 0
+
     # handle shell quoting before we begin doing stuff
+    # we don't need to fix quoting if we are going to run ffmpeg ourselves
     if with_run is False:
         arguments["input"] = quote_string(arguments["input"])
         arguments["output"] = quote_string(arguments["output"])
+        if have_subs:
+            for sub in arguments["subs"]:
+                sub["file"] = quote_string(sub["file"])
+                sub["title"] = quote_string(sub["title"])
+        if have_title:
+            arguments["title"] = quote_string(arguments["title"])
+
+    # construct a list of input files
+    input_files = [arguments["input"]]
+    if have_subs:
         for sub in arguments["subs"]:
-            sub["file"] = quote_string(sub["file"])
+            input_files.append(sub["file"])
 
     # ffmpeg command, usually 'ffmpeg' is enough
     _cmdline = [arguments["cmd"]]
 
-    _cmdline.append("-i")
-    _cmdline.append(arguments["input"])
-
-    for sub in arguments["subs"]:
+    # pass list of input files first
+    for file in input_files:
         _cmdline.append("-i")
-        _cmdline.append(sub["file"])
+        _cmdline.append(file)
+
+    # select all streams from input file
+    _cmdline.append("-map")
+    _cmdline.append("0")
+
+    # copy audio and video stream(s) as is
+    _cmdline.append("-c:a")
+    _cmdline.append("copy")
+    _cmdline.append("-c:v")
+    _cmdline.append("copy")
+
+    # set sutitle codec depending on output format
+    _cmdline.append("-c:s")
+    _cmdline.append(get_sub_codec(os.path.splitext(arguments["output"])[1]))
 
     # clean-up unnecessary metadata
     _cmdline.append("-map_metadata")
     _cmdline.append("-1")
 
     # overwrite file's title metadata if user requested
-    if "title" in arguments and len(arguments["title"]) > 0:
+    if have_title:
         _cmdline.append("-metadata")
         _cmdline.append(f"title={arguments['title']}")
 
-    # overwrite audio metadata
-    if "audio" in arguments and len(arguments["audio"]) > 0:
+    # overwrite audio metadata if user requested
+    if have_audio:
         for audio in arguments["audio"]:
             _cmdline.append(f"-metadata:s:a:{audio['stream_number']}")
             _cmdline.append(f"language={audio['lang']}")
 
-    # ffmpeg map codecs
-    _cmdline.append("-map")
-    _cmdline.append("0:v")
-    _cmdline.append("-map")
-    _cmdline.append("0:a")
-
-    for index, sub in enumerate(arguments["subs"]):
-        _cmdline.append("-map")
-        _cmdline.append(f"{index+1}")
-
-    # ffmpeg subtitle codec flags
-    # Not all media containers support all the subtitle formats.
-    # We are using 'mov_text' if output container is '.mp4' and 'srt' if output
-    # container is '.mkv'. See below dict for for all supported containers and
-    # subtitle codecs
-    sub_codecs = {
-        ".mp4": "mov_text",
-        ".mp4'": "mov_text",
-        ".mkv": "srt",
-        ".mkv'": "srt",
-    }
-    _cmdline.append("-c")
-    _cmdline.append("copy")
-    _cmdline.append("-c:s")
-    _cmdline.append(sub_codecs[os.path.splitext(arguments["output"])[1]])
-
-    # add metadata(s) for subtitles
-    for index, sub in enumerate(arguments["subs"]):
-        _cmdline.append(f"-metadata:s:s:{index}")
-        _cmdline.append(f"language={sub['lang']}")
-        _cmdline.append(f"-metadata:s:s:{index}")
-        _cmdline.append(f"title={sub['title']}")
-        _cmdline.append(f"-metadata:s:s:{index}")
-        _cmdline.append(f"handler_name={sub['title']}")
+    if have_subs:
+        for sub_index, sub in enumerate(arguments["subs"]):
+            input_index = input_files.index(sub["file"])
+            _cmdline.append("-map")
+            _cmdline.append(f"{sub_index+1}")
+           # add metadata(s) for subtitles
+            _cmdline.append(f"-metadata:s:s:{sub_index}")
+            _cmdline.append(f"language={sub['lang']}")
+            _cmdline.append(f"-metadata:s:s:{sub_index}")
+            _cmdline.append(f"title={sub['title']}")
+            _cmdline.append(f"-metadata:s:s:{sub_index}")
+            _cmdline.append(f"handler_name={sub['title']}")
 
     _cmdline.append(arguments["output"])
     return _cmdline
