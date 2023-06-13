@@ -12,6 +12,8 @@
 #   		(Default: /dev/dri/renderD128)
 #   HEVC_PRESET: HEVC preset to use for transcoding
 #   		(Default: slower)
+#   HEVC_PRESET: HEVC profile to use for transcoding
+#   		(Default: main)
 #   HEVC_QUALITY: HEVC quality to use for transcoding
 #   		(Default: 22, lower = better and longer)
 #
@@ -23,6 +25,7 @@
 # Default config options
 DEFAULT_VAAPI_DEV='/dev/dri/renderD128'
 DEFAULT_HEVC_PRESET='slower'
+DEFAULT_HEVC_PROFILE='main'
 DEFAULT_HEVC_QUALITY='25'
 
 function check_dependencies
@@ -89,7 +92,7 @@ function transcode_to_hevc
 		    -hwaccel_output_format vaapi \
 		    -i "${inp}" -map 0 -c:a copy -c:s copy -c:v hevc_vaapi \
 		    -rc_mode CQP -global_quality "${HEVC_QUALITY}" \
-		    -profile:v main -preset "${HEVC_PRESET}" \
+		    -profile:v "${HEVC_PROFILE}" -preset "${HEVC_PRESET}" \
 		    -f "${format}" "${temp_outp}"
 	then
 		echo "ffmpeg failed to convert file '${inp}'"
@@ -128,6 +131,11 @@ fi
 if [[ -z "${HEVC_PRESET}" ]]
 then
 	HEVC_PRESET="${DEFAULT_HEVC_PRESET}"
+fi
+
+if [[ -z "${HEVC_PROFILE}" ]]
+then
+	HEVC_PROFILE="${DEFAULT_HEVC_PROFILE}"
 fi
 
 if [[ -z "${HEVC_QUALITY}" ]]
