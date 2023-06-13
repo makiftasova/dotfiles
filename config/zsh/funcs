@@ -386,6 +386,7 @@ function ffmpeg_to_x265 {
 	local replace
 	local vaapi_dev
 	local preset
+	local profile
 	local quality
 	local OPTIND
 	local opt
@@ -395,7 +396,8 @@ function ffmpeg_to_x265 {
 	find='x264'
 	replace='x265'
 	vaapi_dev='/dev/dri/renderD128'
-	preset="slower"
+	preset='slower'
+	profile='main'
 	quality='25'
 
 	if [ -z "$(command -v ffmpeg)" ]; then
@@ -408,13 +410,16 @@ function ffmpeg_to_x265 {
 		return 254
 	fi
 
-	while getopts ":d:f:h:p:q:r:" opt; do
+	while getopts ":d:f:h:o:p:q:r:" opt; do
 		case "${opt}" in
 			d)
 				vaapi_dev="${OPTARG}"
 				;;
 			f)
 				find="${OPTARG}"
+				;;
+			o)
+				profile="${OPTARG}"
 				;;
 			p)
 				preset="${OPTARG}"
@@ -478,7 +483,7 @@ HELP
 			-c:v:0 hevc_vaapi		\
 			-rc_mode CQP			\
 			-global_quality "${quality}"	\
-			-profile:v:0 main		\
+			-profile:v:0 "${profile}"	\
 			-preset "${preset}"		\
 			-f 'matroska'			\
 			"${outp}"
