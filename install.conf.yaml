@@ -137,7 +137,7 @@
           command: >
                   git clone https://github.com/tmux-plugins/tpm
                   ~/.local/config/tmux/plugins/tpm
-          description: Setup tmux Plugin Managre
+          description: Setup tmux Plugin Manager
           stdin: true
           stdout: true
           stderr: true

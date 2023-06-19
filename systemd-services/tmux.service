@@ -4,7 +4,7 @@ Description=Start tmux in detached session
 [Service]
 Type=forking
 Restart=on-failure
-ExecStart=/usr/bin/tmux new-session -s %u -d -f %h/.config/tmux/tmux.conf
+ExecStart=/usr/bin/tmux -f %h/.config/tmux/tmux.conf new-session -s %u -d
 ExecStop=/usr/bin/tmux kill-session -t %u
 
 [Install]

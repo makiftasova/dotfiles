@@ -9,7 +9,7 @@ EnvironmentFile=-/etc/locale.conf
 WorkingDirectory=~
 User=%I
 Group=%I
-ExecStart=/usr/bin/tmux new-session -s %I -d -f /home/%I/.config/tmux/tmux.conf
+ExecStart=/usr/bin/tmux -f /home/%I/.config/tmux/tmux.conf new-session -s %I -d
 ExecStop=/usr/bin/tmux kill-session -t %I
 
 [Install]
