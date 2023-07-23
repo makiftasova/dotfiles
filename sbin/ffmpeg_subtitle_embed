@@ -215,9 +215,12 @@ def prepare_ffmpeg_cmdline(arguments: dict, with_run: bool = False) -> list:
      'out.mp4'
     ]
     """
-    have_audio = "audio" in arguments and len(arguments["audio"]) > 0
-    have_subs = "subs" in arguments and len(arguments["subs"]) > 0
-    have_title = "title" in arguments and len(arguments["title"]) > 0
+    have_audio = "audio" in arguments and arguments["audio"] and len(
+        arguments["audio"]) > 0
+    have_subs = "subs" in arguments and arguments["subs"] and len(
+        arguments["subs"]) > 0
+    have_title = "title" in arguments and arguments["title"] and len(
+        arguments["title"]) > 0
 
     # handle shell quoting before we begin doing stuff
     # we don't need to fix quoting if we are going to run ffmpeg ourselves
