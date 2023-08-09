@@ -44,7 +44,7 @@ export ZSH=${HOME}/.oh-my-zsh
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 # shellcheck disable=SC2034  # Unused variables left for readability
-ZSH_THEME="bira"
+ZSH_THEME="fino-time"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
