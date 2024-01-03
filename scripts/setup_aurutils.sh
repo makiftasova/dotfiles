@@ -46,9 +46,9 @@ check_depends
 
 AURUTILS_URL='https://aur.archlinux.org/aurutils.git'
 
-AUR_CONF_FILE='/etc/pacman.d/aur'
-AUR_REPO_DIR='/var/cache/pacman/aur'
-AUR_REPO_DB_DIR="${AUR_REPO_DIR}/aur.db.tar.gz"
+AUR_CONF_FILE='/etc/pacman.d/aurutils'
+AUR_REPO_DIR='/var/cache/pacman/aurutils'
+AUR_REPO_DB_DIR="${AUR_REPO_DIR}/aurutils.db.tar.gz"
 AUR_PKG_NAME='aurutils'
 PACMAN_CONF='/etc/pacman.conf'
 
@@ -84,7 +84,7 @@ AURREPOCONF
 "${AUTH}" "${TEE}" '-a' "${PACMAN_CONF}" << PACMANAURCONF
 
 # Local repository for AUR packages
-[aur]
+[aurutils]
 Include = ${AUR_CONF_FILE}
 PACMANAURCONF
 
