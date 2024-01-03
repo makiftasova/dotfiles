@@ -1,11 +1,19 @@
 #! /usr/bin/env bash
 
 # this script expect you to have a privilidged user account (e.g. with sudo access)
-
-if [[ "$(grep -e '^ID=' /etc/os-release | cut -d'=' -f2 || true)" != 'arch' ]]; then
-	echo 'Distros other than Arch Linux is not supported'
-	exit 253
-fi
+distro="$(grep -e '^ID=' /etc/os-release | cut -d'=' -f2)"
+case "${distro}" in
+	arch)
+		echo 'Distro is ArchLinux'
+		;;
+	archarm)
+		echo 'Distro is ArchLinuxARM'
+		;;
+	*)
+		echo 'Distros other than Arch Linux is not supported'
+		exit 253
+		;;
+esac
 
 if [[ "${EUID}" -eq '0' ]]; then
 	echo 'Running makepkg as root is not allowed.'
