@@ -79,21 +79,21 @@ bindsym $mod+p focus parent
 # focus the child container
 bindsym $mod+c focus child
 
-set $ws0  "1"
-set $ws1  "2"
-set $ws2  "3"
-set $ws3  "4"
-set $ws4  "5"
-set $ws5  "6"
-set $ws6  "7"
-set $ws7  "8"
-set $ws8  "9"
-set $ws9  "10"
-set $ws10 "11"
-set $ws11 "12"
-set $ws12 "13"
-set $ws13 "14"
-set $ws14 "15"
+set $ws0  1
+set $ws1  2
+set $ws2  3
+set $ws3  4
+set $ws4  5
+set $ws5  6
+set $ws6  7
+set $ws7  8
+set $ws8  9
+set $ws9  10
+set $ws10 11
+set $ws11 12
+set $ws12 13
+set $ws13 14
+set $ws14 15
 
 # switch to workspace
 bindsym $mod+1 workspace $ws0
