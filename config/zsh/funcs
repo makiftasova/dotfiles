@@ -74,6 +74,9 @@ function md_to_pdf {
 
 # make a new directory and cd into it
 function mkcd {
+	if [ -d "$1" ]; then
+		cd "$1" && return "$?"
+	fi
 	mkdir -p "$1" && cd "$1" || return 255
 }
 
