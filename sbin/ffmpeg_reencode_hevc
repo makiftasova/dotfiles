@@ -89,7 +89,7 @@ function transcode_to_hevc
 	# shellcheck disable=SC2312
 	if ! ffmpeg -threads "${nthreads}" -hwaccel vaapi \
 		    -vaapi_device "${VAAPI_DEV}" \
-		    -hwaccel_output_format vaapi \
+		    -hwaccel_output_format vaapi -extra_hw_frames 50 \
 		    -i "${inp}" -map 0 -c:a copy -c:s copy -c:v hevc_vaapi \
 		    -rc_mode CQP -global_quality "${HEVC_QUALITY}" \
 		    -profile:v "${HEVC_PROFILE}" -preset "${HEVC_PRESET}" \
