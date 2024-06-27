@@ -475,6 +475,7 @@ HELP
 			-hwaccel vaapi			\
 			-vaapi_device "${vaapi_dev}"	\
 			-hwaccel_output_format vaapi	\
+			-extra_hw_frames 50		\
 			-i "${f}"			\
 			-map 0				\
 			-c:a copy			\
