@@ -496,6 +496,19 @@ HELP
 	done
 }
 
+function ffmpeg_to_mkv {
+	for f in "${@}"; do
+		ffmpeg			\
+			-i "${f}"	\
+			-map 0		\
+			-c:a copy	\
+			-c:v copy	\
+			-c:s srt	\
+			-f matroska	\
+			"${f%.*}.mkv"
+	done
+}
+
 # heic_to_x - convert given heic image (hevc encoding) to desired format
 #
 # This functions depends on `magick` command from imagemagick
