@@ -316,11 +316,15 @@ function ffmpeg_undefault_ytdl_subtitle {
 # ffmpeg_sub_embed - embed given subtitles into given media file
 #
 # Usage:
-#   ffmpeg_sub_embed FILE SUBTITLE_DIR [SUBTITLE_EXT] [OUTPUT_EXTENSION]
+#   ffmpeg_sub_embed FILE SUBTITLE_DIR [SUBTITLE_EXT]
 #
 # Notes:
-#   * This function expects both media and subtitle file with name file names,
-#   and different extensions
+#   * This function expects subtitles file names to be in
+#   "${name}.${title}.${ang}.${ext}" format where
+#       - ${name}: name of the video file, without file extension
+#       - ${title}: name/title of the subtitle stream in mkv container
+#       - ${lang}: 2 or 3 letter ISO 3166 country code to use as language tag in mkv
+#       - ${ext}: file name extension, usually '.srt'
 #
 #   * This function depends on `ffmpeg_subtitle_embed script from dotfiles/sbin.
 function ffmpeg_sub_embed {
@@ -348,17 +352,20 @@ function ffmpeg_sub_embed {
 		sub_ext="srt"
 	fi
 
-	sub="${sub_dir}/${inp%.*}.${sub_ext}"
+	sub_params=()
+	for file in ${sub_dir}/*.${sub_ext}; do
+		__temp="${file%.${sub_ext}}"
+		lang="${__temp##*.}"
+		__temp="${__temp%.${lang}}"
+		name="${__temp##*.}"
+		sub_params+=('--sub' "${lang}" "${name}" "${file}")
+	done
 
-	if [ -z "${out_ext}" ]; then
-		out_ext="${inp##*.}"
-	fi
+	out="$(echo "${inp}" | grep -Eo '^.*S[0-9]+E[0-9]+' | tr '.' ' ').mkv"
 
-	out="$(echo "${inp}" | grep -Eo '^.*S[0-9]+E[0-9]+' | tr '.' ' ').${out_ext}"
+	echo "${inp} + subs -> ${out}"
 
-	echo "${inp} + ${sub} -> ${out}"
-
-	ffmpeg_subtitle_embed --input "${inp}" --sub eng English "${sub}" --output "${out}" --run
+	ffmpeg_subtitle_embed --input "${inp}" ${sub_params[@]} --output "${out}" --run
 }
 
 # ffmpeg_to_x265 - Convert video stream to x265 while keeping all the other streams
