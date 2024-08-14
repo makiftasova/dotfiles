@@ -77,6 +77,11 @@ function mkcd {
 	mkdir -p "$1" && cd "$1" || return 255
 }
 
+# make a new directory with today's date
+function mkcd_today {
+	mkcd "$(date +%F)"
+}
+
 # make a new temp directory via mktemp, and cd into it
 function mktdcd {
 	local tdir
