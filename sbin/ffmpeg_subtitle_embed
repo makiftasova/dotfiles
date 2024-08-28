@@ -15,7 +15,7 @@ __author__ = "Mehmet Akif Tasova"
 __copyright__ = "Copyright 2022, Mehmet Akif Tasova"
 __credits__ = ["Mehmet Akif Tasova"]
 __license__ = "GPL"
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 __maintainer__ = "Mehmet Akif Tasova"
 __email__ = "makiftasova@gmail"
 __status__ = "Production"
@@ -279,7 +279,6 @@ def prepare_ffmpeg_cmdline(arguments: dict, with_run: bool = False) -> list:
 
     if have_subs:
         for sub_index, sub in enumerate(arguments["subs"]):
-            input_index = input_files.index(sub["file"])
             _cmdline.append("-map")
             _cmdline.append(f"{sub_index+1}")
            # add metadata(s) for subtitles
@@ -287,8 +286,6 @@ def prepare_ffmpeg_cmdline(arguments: dict, with_run: bool = False) -> list:
             _cmdline.append(f"language={sub['lang']}")
             _cmdline.append(f"-metadata:s:s:{sub_index}")
             _cmdline.append(f"title={sub['title']}")
-            _cmdline.append(f"-metadata:s:s:{sub_index}")
-            _cmdline.append(f"handler_name={sub['title']}")
 
     _cmdline.append(arguments["output"])
     return _cmdline
