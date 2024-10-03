@@ -80,6 +80,9 @@ network_info=$(nmcli dev show "$network")
 
 network_type=$(echo "$network_info" | grep "TYPE" | awk '{split($0,a,":"); gsub("(^[ \t]+)|([ \t]+$)", "", a[2]); print a[2]}')
 case "$network_type" in
+	bridge)
+		network_extra_info='[br]'
+		;;
 	ethernet)
 		network_extra_info=' '
 		;;
