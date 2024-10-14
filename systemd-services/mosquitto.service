@@ -1,0 +1,17 @@
+[Unit]
+Description=Mosquitto MQTT Broker daemon as user service
+Wants=network-online.target
+
+[Service]
+Type=notify
+NotifyAccess=main
+ExecStart=/usr/bin/mosquitto -c %h/.config/mosquitto/mosquitto.conf
+ExecReload=/usr/bin/kill -HUP $MAINPID
+Restart=on-failure
+
+NoNewPrivileges=yes
+ProtectSystem=full
+PrivateDevices=true
+
+[Install]
+WantedBy=multi-user.target

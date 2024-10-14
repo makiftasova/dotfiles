@@ -1,3 +1,7 @@
+## mosquitto.service
+* copy into `~/.config/systemd/user` and enable with `systemctl enable --user mosquitto.service`
+* make sure you put a valid mosquitto configuration file to `${HOME}/.config/mosquitto/mosquitto.conf` path.
+
 ## python-http-server.service
 * *depends*: python
 * copy into `~/.config/systemd/user` and enable with `systemctl enable --user python-http-server.service`
