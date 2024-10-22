@@ -1,6 +1,15 @@
 #! /usr/bin/env bash
 
 ##############
+# Environment Variables
+##############
+
+__MAX_STRING_LEN='20'
+if [ -n "${SWAYBAR_MAX_STR_LEN}" ]; then
+	__MAX_STRING_LEN="${SWAYBAR_MAX_STR_LEN}"
+fi
+
+##############
 # Functions
 ##############
 
@@ -55,9 +64,7 @@ case "$audio_is_muted" in
 		;;
 esac
 
-media_artist=$(playerctl metadata artist 2>/dev/null)
-
-media_song=$(playerctl metadata title 2>/dev/null)
+media_info="$(playerctl --format="{{trunc(artist, ${__MAX_STRING_LEN})}} - {{trunc(title, ${__MAX_STRING_LEN})}}" metadata)"
 
 player_status=$(playerctl status 2>/dev/null)
 case "$player_status" in
@@ -116,4 +123,4 @@ load="🏋"
 phones="🎧"
 kb="⌨"
 
-echo "$phones $song_status $media_artist - $media_song | $kb $language | $network_active $network $network_extra_info ($network_ip) | $load [ $loadavg ] | $audio_active $audio_volume% | $battery_output | $date $current_time |"
+echo "$phones $song_status $media_info | $kb $language | $network_active $network $network_extra_info ($network_ip) | $load [ $loadavg ] | $audio_active $audio_volume% | $battery_output | $date $current_time |"
