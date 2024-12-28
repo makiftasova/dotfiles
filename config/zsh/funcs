@@ -521,6 +521,103 @@ function ffmpeg_to_mkv {
 	done
 }
 
+# $1 = file to process
+# $2 = name of track flag (enabled, default, original, forced etc.)
+# $3 = desired value of flag (1 = set/enabled, 0 = unset/disabled)
+function mkvpropedit_track_set_flag {
+	local n_tracks
+	local value
+	local file
+	local flag
+	local args
+	local all_flags
+	local valid_flags
+
+	declare -a args
+
+	all_flags="$(mkvpropedit -l | grep 'flag-' | sed 's/flag-//')"
+	valid_flags=(${(ps:\n:)"$(echo "${all_flags}" | cut -d ' ' -f1)"})
+
+	case "${1}" in
+		*l)
+			echo "${all_flags}"
+			return 0
+			;;
+		*h)
+			cat <<- 'HELP'
+mkvpropedit_track_set_flag: Set all occurences of given flag to given value for given file.
+mkvpropedit_track_set_flag -h
+mkvpropedit_track_set_flag -l
+mkvpropedit_track_set_flag FILE FLAG_NAME [FLAG_VALUE]
+arguments:
+    FILE: file to process
+    FLAG_NAME: name of flag to process
+    FLAG_VALUE: desired value of flag (0 or 1). defaults to 1 if omitted.
+options:
+    -h: show this help
+    -l: list all available flag names
+HELP
+			return 0
+			;;
+	esac
+
+	file="${1}"
+	flag="${2}"
+	value="${3}"
+
+	if ! [ -f "${file}" ]; then
+		echo "File ${file} does not exists or not a regular file"
+		return 255
+	fi
+
+	if [ -z "${flag}" ]; then
+		echo "Flag name is missing"
+		return 254
+	fi
+
+	if ! (( $valid_flags[(I)${flag}] )); then
+		echo "Flag name '${flag}' is not a valid one. Supported flags are:"
+		echo "${all_flags}"
+		return 253
+	fi
+
+	# set flag value to 1 by default
+	if [ -z "${value}" ]; then
+		value='1'
+	fi
+
+	case "${value}" in
+		0)
+			;;
+		1)
+			;;
+		*)
+			echo "Flag value '${value}' is not valid for ${flag}. use 0 or 1"
+			return 255
+			;;
+	esac
+
+	n_tracks="$(mkvmerge --identify "${file}" | grep 'Track ID' | wc -l)"
+	echo "number of tracks in file: ${n_tracks}"
+
+	for tid in {1.."${n_tracks}"..1}; do
+		args+='--edit'
+		args+="track:${tid}"
+		args+='--set'
+		args+="flag-${flag}=${value}"
+	done
+
+	args+="${file}"
+
+	mkvpropedit ${args}
+}
+
+# $1 file
+# $2 flag value
+function mkvpropedit_track_set_flagenabled {
+	mkvpropedit_track_set_flag "${1}" 'enabled' "${2}"
+}
+
 # heic_to_x - convert given heic image (hevc encoding) to desired format
 #
 # This functions depends on `magick` command from imagemagick
