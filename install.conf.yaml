@@ -13,12 +13,6 @@
           stdout: true
           stderr: true
         -
-          command: aur sync wlr-randr
-          description: Build wlr-randr from AUR
-          stdin: true
-          stdout: true
-          stderr: true
-        -
           command: >
                   sudo pacman -S --needed
                   base-devel
@@ -51,6 +45,7 @@
                   gvfs-smb
                   imv
                   jq
+                  kanshi
                   kitty
                   mako
                   mpv
@@ -79,6 +74,7 @@
                   tmux
                   vifm
                   waybar
+                  wlr-randr
                   wireplumber
                   wl-clipboard
                   wofi
