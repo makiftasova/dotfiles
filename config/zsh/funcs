@@ -777,7 +777,7 @@ function aur-remove {
 	repo-remove "${__db_path}" "$@"
 	for f in "$@"; do
 		echo "deleting files of package: ${f}"
-		find "${__db_path}" -name "${f}*" -print -delete
+		find "${__db_path}" -name "${f}-*" -print -delete
 	done
 
 	# shellcheck disable=SC2016  # we don't want to expand variables here
