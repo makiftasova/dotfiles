@@ -193,6 +193,9 @@
         ~/.config/wayvnc:
                 path: config/wayvnc/
                 create: true
+        ~/.config/wofi:
+                path: config/wofi
+                create: true
         ~/.config/zsh:
                 path: config/zsh
                 create: true
