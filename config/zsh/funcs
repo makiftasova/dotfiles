@@ -892,5 +892,100 @@ function update-git-repos {
 	done
 }
 
+# Adapted from: https://gist.github.com/dingzeyuli/f07c126b74371adba4b7dbe181cb57d2?permalink_comment_id=4679773#gistcomment-4679773
+# Depends on:
+#   * cURL: HTTP requests
+#   * jq: JSON parsing
+function github-get-repo-size
+{
+	local _url
+	local _owner
+	local _repo
+	local _domain
+	local _api_url
+	local _headers
+	local _response
+	local _resource
+
+	if [ -z "$(find_exec_in_path "curl")" ]; then
+		echo 'could not found "curl" on system. you should install it.'
+		return 255;
+	fi
+
+	if [ -z "$(find_exec_in_path "jq")" ]; then
+		echo 'could not found "jq" on system. you should install it.'
+		return 254;
+	fi
+
+	while getopts 'h' opt; do
+		case "${opt}" in
+			*)
+				echo "Unknown option ${opt}"
+				;&
+			h)
+				cat <<- HELP
+Usage: github-get-repo-size [OPTION]... [REPO_URL]...
+Retrieve and display the sizes of GitHub repositories.
+
+The function will automatically use the GITHUB_TOKEN if it's set as an
+environment variable.
+
+WARNING: GitHub API repository size information may not be reliable.
+
+GitHub support has indicated that due to Git Alternates and the way files are
+stored in GitHub repositories, the numbers returned from the GitHub API cannot
+be relied upon for the actual size. Therefore, the size values returned by this
+script should not be considered a reliable or accurate representation of the
+true repository size. The API size values may differ significantly from the
+actual repository size
+
+Options:
+  -h, Display this help message.
+
+Environment variables:
+  GITHUB_TOKEN   GitHub token for authentication.
+HELP
+				return 0
+				;;
+		esac
+	done
+
+	# Use the provided GitHub token if available
+	if [ -n "$GITHUB_TOKEN" ]; then
+		_headers="-H 'Authorization: Bearer $GITHUB_TOKEN'"
+	fi
+
+	for _i in "${@}" ; do
+		_url="${_i}"
+		_owner="$(basename "$(dirname "${_url}")")"
+		_repo="$(basename "${_url}")"
+		_domain="$(basename "$(dirname "$(dirname "${_url}")")")"
+		_api_url="https://api.${_domain}/repos/${_owner}/${_repo}"
+		_resource="${_domain}/${_owner}/${_repo}"
+
+		# Fetch repository info, including size, in a single request
+		_response="$(curl -sS $_headers "${_api_url}")"
+
+		# Check if the GitHub repo exists
+		if jq -e '.message' <<< "${_response}" >/dev/null; then
+			# The API response contains a message field (indicating an error)
+			local _message=$(jq -r '.message' <<< "${_response}")
+			>&2 echo "Error ${_resource}: Failed to retrieve information: ${_message:-dns or http connection error}"
+			return 253
+		fi
+
+		# The GitHub repo exists; fetch and format its size
+		local _size=$(jq '.size' <<< "${_response}")
+		if [ "$_size" = "null" ]; then
+			>&2 echo "Error ${_resource}: Invalid size data retrieved."
+			return 252
+		fi
+
+		echo "$(numfmt --to=iec --from-unit=1024 <<< "${_size}") ${_resource}"
+	done
+
+	>&2 echo '\nWarning: GitHub API repository size information may not be reliable (run with -h for details).'
+}
+
 # shellcheck source=/dev/null disable=SC2154
 [ -f "${ZSH_CONFIG_LOCAL_HOME}/funcs" ] && source "${ZSH_CONFIG_LOCAL_HOME}/funcs"
