@@ -730,6 +730,69 @@ function heic_to_png {
 }
 ## end of extra helpers for heic_to_x
 
+
+function _sha512sum_checksum_only {
+	echo "$(sha512sum 2>&1 ${1} | cut -d ' ' -f 1)"
+}
+
+# Check if all the files in first directory also exists in 2nd directory, and
+# their sha512sum checksums matches
+function check_present {
+	local file_path
+	local dir1
+	local dir2
+	local sum1
+	local sum2
+
+	dir1="${1}"
+	dir2="${2}"
+
+	if [ -z "$(find_exec_in_path "sha512sum")" ]
+	then
+		echo 'sha512sum not found in $PATH'
+		return 255
+	fi
+
+	if ! [[ -d "${dir1}" ]]
+	then
+		echo "'${dir1}' is not a directory"
+		return 254
+	fi
+
+	if ! [[ -d "${dir2}" ]]
+	then
+		echo "'${dir2}' is not a directory"
+		return 253
+	fi
+
+	if [[ "${dir1}" -ef "${dir2}" ]]
+	then
+		echo "${dir1} and ${dir2} are same directory"
+		return 252
+	fi
+
+	for file in "${dir1}"/**/*
+	do
+		if ! [[ -f "${file}" ]]
+		then
+			# not a file, skip it
+			continue
+		fi
+
+		file_path="${file#${dir1}}"
+
+		sum1="$(_sha512sum_checksum_only "${file}")"
+		sum2="$(_sha512sum_checksum_only "${dir2}/${file_path}")"
+
+		if [[ "${sum1}" != "${sum2}" ]]
+		then
+			echo "Checksum missmatch: ${file} - ${dir2}/${file_path}"
+		fi
+	done
+
+	echo "Done checking"
+}
+
 #
 # lsifr - list installed packages from given pacman repo
 #
