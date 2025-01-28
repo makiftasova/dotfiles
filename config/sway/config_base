@@ -35,7 +35,7 @@ bindsym $mod+KP_Enter exec $term
 # kill focused window
 bindsym $mod+Shift+q kill
 
-set $menu wofi --show run --localtion 0 --allow-images --insensitive
+set $menu wofi --show=drun --localtion=center --allow-images --insensitive
 # start app launcher
 bindsym $mod+d exec $menu
 
