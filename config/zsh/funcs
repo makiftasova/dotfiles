@@ -214,6 +214,29 @@ function sizeof {
 	cd "${__root}" || return 255
 }
 
+# Print average file size in given directory
+# calcuate average size for current directory if "${1}" is empty.
+function average_size {
+	local __dir
+	local __count
+	local __sum
+
+	__sum='0'
+
+	__dir='.'
+	if [ -n "${1}" ]; then
+		__dir="${1}"
+	fi
+
+	__count="$(ls -1 -- "${__dir}" | wc -l)"
+
+	for f in "${__dir}"/*; do
+		__sum=$(("${__sum}" + "$(stat --format '%s' -- "${f}")"))
+	done
+
+	echo $(("${__sum}" / "${__count}"))
+}
+
 # use `watch` and `grep` to monitor Dirty and Writeback bytes in /proc/meminfo
 function sync_progress {
 	local __period
