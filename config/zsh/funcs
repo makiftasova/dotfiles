@@ -978,6 +978,43 @@ function update-git-repos {
 	done
 }
 
+function cue_to_chd {
+	local inp
+	local outp
+
+	if [ -z "$(find_exec_in_path "chdman")" ]; then
+		echo 'This function depends on "chdman" from mame-tools'
+		return 255
+	fi
+
+	inp="${1}"
+
+	if ! [ -e "${inp}" ]; then
+		echo "${inp} is not found"
+		return 254
+	fi
+
+	case "${inp##*.}" in
+		"cue")
+			;&
+		"CUE")
+			;;
+		*)
+			echo "${inp} does not have .cue file extension"
+			return 253
+			;;
+	esac
+
+	outp="${inp%.cue}.chd"
+
+	if [ -e "${outp}" ]; then
+		echo "Output ${outp} already exists!"
+		return 252
+	fi
+
+	chdman createcd -i "${inp}" -o "${outp}"
+}
+
 # Adapted from: https://gist.github.com/dingzeyuli/f07c126b74371adba4b7dbe181cb57d2?permalink_comment_id=4679773#gistcomment-4679773
 # Depends on:
 #   * cURL: HTTP requests
