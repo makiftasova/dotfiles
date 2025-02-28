@@ -61,3 +61,6 @@
 	tabs = 8
 [diff]
 	colorMoved = default
+[include]
+	path = ~/.local/config/git/config
+
