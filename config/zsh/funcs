@@ -981,6 +981,7 @@ function update-git-repos {
 function cue_to_chd {
 	local inp
 	local outp
+	local ext
 
 	if [ -z "$(find_exec_in_path "chdman")" ]; then
 		echo 'This function depends on "chdman" from mame-tools'
@@ -994,18 +995,24 @@ function cue_to_chd {
 		return 254
 	fi
 
-	case "${inp##*.}" in
+	ext="${inp##*.}"
+
+	case "${ext}" in
 		"cue")
 			;&
 		"CUE")
+			;&
+		"gdi")
+			;&
+		"GDI")
 			;;
 		*)
-			echo "${inp} does not have .cue file extension"
+			echo "${inp} does not have .cue or .gdi file extension"
 			return 253
 			;;
 	esac
 
-	outp="${inp%.cue}.chd"
+	outp="${inp%.${ext}}.chd"
 
 	if [ -e "${outp}" ]; then
 		echo "Output ${outp} already exists!"
