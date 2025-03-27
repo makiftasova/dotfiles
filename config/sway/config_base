@@ -18,7 +18,7 @@ set $lock swaylock -f
 bindsym $mod+l exec $lock
 
 # set terminal
-set $term kitty
+set $term footclient
 
 # set sway config dir
 set $config_dir $HOME/.config/sway
