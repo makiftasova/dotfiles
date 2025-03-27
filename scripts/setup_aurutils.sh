@@ -73,6 +73,7 @@ check_command 'tee' "${TEE}"
 check_command 'whoami' "${WHOAMI}"
 
 OWNER="$("${WHOAMI}")"
+GROUP='alpm'
 
 append_aurconf () {
 
@@ -152,7 +153,7 @@ fi
 AUR="$(command -v 'aur')"
 check_command 'aur' "${AUR}"
 
-if ! "${AUTH}" "${INSTALL}" -d "${AUR_REPO_DIR}" -o "${OWNER}"; then
+if ! "${AUTH}" "${INSTALL}" -d "${AUR_REPO_DIR}" -o "${OWNER}" -g "${GROUP}"; then
 	echo "Could not create aur repo directory"
 	exit 245
 fi
