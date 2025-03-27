@@ -25,6 +25,7 @@
                   ctags
                   curl
                   ffmpeg
+                  foot
                   fzf
                   gammastep
                   git
@@ -89,6 +90,12 @@
           stdout: true
           stderr: true
         -
+          command: systemctl --user enable --now foot-server.socket
+          description: Enable and run foot server
+          stdin: true
+          stdout: true
+          stderr: true
+        -
           command: chsh -s /usr/bin/zsh
           description: Changing user shell to zsh
           stdin: true
@@ -148,6 +155,9 @@
                 create: true
         ~/.config/environment.d:
                 path: config/environment.d/
+                create: true
+        ~/.config/foot:
+                path: config/foot
                 create: true
         ~/.config/git:
                 path: config/git
