@@ -209,6 +209,10 @@ mode "passthrough" {
 }
 bindsym $mod+Insert mode "passthrough"
 
+# run cliphist
+exec wl-paste --watch cliphist store
+bindsym $mod+Shift+h exec cliphist list | wofi -S dmenu | cliphist decode | wl-copy
+
 #
 # Scratchpad:
 #
