@@ -73,6 +73,7 @@
                   swayidle
                   swaylock
                   tmux
+                  uwsm
                   vifm
                   waybar
                   wlr-randr

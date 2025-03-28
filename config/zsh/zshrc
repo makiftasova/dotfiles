@@ -154,12 +154,7 @@ alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 # shellcheck source=/dev/null
 [ -f "${ZSH_CONFIG_HOME}/aliases" ] && source "${ZSH_CONFIG_HOME}/aliases"
 
-# if swaywm is installed and we are running from tty1, start swaywm
-sway_bin="$(command -v sway-run)"
-if [ -z "${sway_bin}" ]; then
-	sway_bin="$(command -v sway)"
+# if swaywm is installed and we are running from tty1, start swaywm using uwsm
+if uwsm check may-start; then
+  exec uwsm start sway.desktop
 fi
-if [ -n "${sway_bin}" ] && [ "$(tty)" = '/dev/tty1' ]; then
-	exec "${sway_bin}"
-fi
-unset sway_bin
