@@ -249,9 +249,9 @@ input type:touchpad {
 default_border none
 default_floating_border none
 
-# use default border settings for kitty.
-for_window [app_id="kitty"] border normal 2
+# use sway's default border settings for terminal emulator(s).
 for_window [app_id="Alacritty"] border normal 2
+for_window [app_id="foot.*"] border normal 2
 
 # prevent firefox from stealing workspace for "sharing indicator" window
 for_window [app_id="firefox.*" title="Firefox.*— Sharing Indicator"] kill
