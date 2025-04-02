@@ -1,20 +1,16 @@
 {
     "layer": "top",
     "position": "top",
-    "modules-left": ["custom/media"],
-    "modules-right": ["custom/keyboard", "network", "battery", "pulseaudio", "clock", "custom/quit"],
-    "clock": {
-        "format": "{:%H:%M:%S}",
-        "format-alt": "{:%a %b %d}",
-        "tooltip": false
-    },
+    "height": 34,
+    "modules-left": ["sway/mode", "sway/workspaces", "mpris"],
+    "modules-center": ["idle_inhibitor", "clock"],
+    "modules-right": ["sway/language", "network", "temperature", "load", "wireplumber", "battery", "tray"],
     "battery": {
         "states": {
-            "good": 95,
+            "good": 90,
             "warning": 30,
             "critical": 15
         },
-        "bat":"BAT1",
         "format": "{icon} {capacity}%",
         "format-charging": " {capacity}%",
         "format-plugged": " {capacity}%",
@@ -22,42 +18,87 @@
         "format-alt": "{icon} {time}",
         "format-icons": ["", "", "", "", ""]
     },
+    "clock": {
+        "format": "{:%F %a %H:%M:%S}",
+        "interval": 1,
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+                    "mode"          : "year",
+                    "mode-mon-col"  : 3,
+                    "weeks-pos"     : "right",
+                    "on-scroll"     : 1,
+                    "format": {
+                              "months":     "<span color='#ffead3'><b>{}</b></span>",
+                              "days":       "<span color='#ecc6d9'><b>{}</b></span>",
+                              "weeks":      "<span color='#99ffdd'><b>W{}</b></span>",
+                              "weekdays":   "<span color='#ffcc66'><b>{}</b></span>",
+                              "today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
+                              }
+                    },
+        "actions":  {
+                    "on-click-right": "mode",
+                    "on-scroll-up": "tz_up",
+                    "on-scroll-down": "tz_down",
+                    "on-scroll-up": "shift_up",
+                    "on-scroll-down": "shift_down"
+                    }
+    },
+    "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+            "activated": "",
+            "deactivated": ""
+        }
+    },
+    "load": {
+        "format": "🏋 {load1} {load5} {load15}",
+        "interval": 1
+    },
+    "mpris": {
+        "dynamic-order": ["title", "artist"],
+        "title-len": 20,
+        "artist-len": 20,
+        "format": "{player_icon} {status_icon} {dynamic}",
+        "format-stopped": "{player_icon} {status_icon} - Stopped",
+        "player-icons": {
+            "default": "🎧",
+        },
+        "status-icons": {
+            "paused": "",
+            "playing": "",
+            "stopped": "⏹"
+        },
+     },
     "network": {
-        "format": "{ifname}",
-        "format-wifi": " {essid}",
-        "format-ethernet": " {ifname}",
+        "format": "🖧{ifname} ({ipaddr}/{cidr})",
+        "format-wifi": " {essid} ({ipaddr}/{cidr})",
+        "format-ethernet": " {ifname} ({ipaddr}/{cidr})",
         "format-disconnected": "",
         "tooltip-format-wifi": "{signalStrength}%",
-        "max-length": 20
     },
-    "custom/media": {
-        "format": "{}",
-        "interval": 1,
-        "exec": "$HOME/.config/waybar/get_media.sh"
+    "sway/language": {
+        "format": " {long}",
+        "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
     },
-    "custom/keyboard": {
-        "format": " {}",
-        "interval": 1,
-        "exec": "$HOME/.config/waybar/get_kbdlayout.sh"
+    "sway/mode": {
+        "format": "🎛 {}",
     },
-    "pulseaudio": {
+    "sway/workspaces": {
+        "all-outputs": false,
+        "disable-scroll": false,
+        "format": "{name}"
+    },
+    "temperature": {
+        "format": " {temperatureC}°C"
+    },
+    "tray": {
+        "icon-size": 20,
+        "spacing": 5
+    },
+    "wireplumber": {
         "format": "{icon} {volume}%",
-        "format-bluetooth": "{icon} {volume}%",
         "format-muted": "",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", ""]
-        },
-        "scroll-step": 1,
-        "on-click": "pavucontrol"
-    },
-    "custom/quit": {
-        "format": "",
-        "on-click": "swaynag -f 'Terminus (TTF)'  -t warning -m 'Do you really want to exit sway?' -b 'Yes, exit sway' 'swaymsg exit'"
+        "format-icons": ["", "", ""],
+        "on-click": "pavucontrol",
     }
 }

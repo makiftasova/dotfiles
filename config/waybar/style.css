@@ -1,69 +1,115 @@
+/* Global settings for waybar */
 * {
-  font-size: 12px;
-  font-family: "Terminus (TTF)";
+	border: none;
+	font-size: 12px;
+	font-family: "monospace";
+	min-height: 0;
+	padding: 0;
 }
 
 window#waybar {
-    background: rgba(0,0,0,0);
+	background-color: rgba(29, 31, 33, 0.5); /* #1d1f21 with 0.5 alpha */
+	color: #ffffff;
+	transition-property: background-color;
+	transition-duration: .5s;
 }
 
-#battery {
-  margin: 3px 0px 3px 0px;
-  background: #1d1f21;
-  padding: 5px;
-  color: #c5c8c6;
+/* middle items (i.e. no rounded borders) */
+#temperature
+{
+	background-color: #1d1f21;
+	color: #f0f8ff;
+	margin: 2px 0px 2px 0px;
+	padding: 4px 6px 4px 4px;
 }
 
-#custom-quit {
-  margin: 3px 3px 3px 0px;
-  padding: 5px 7px 5px 5px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border-right: 2px solid #1d1f21;
-  border-top: 2px solid #1d1f21;
-  border-bottom: 2px solid #1d1f21;
-  background: #F00;
-  color: #FFF;
+/* left edge items (i.e. rounded left side) */
+#network,
+#wireplumber
+{
+	background-color: #1d1f21;
+	color: #f0f8ff;
+	margin: 2px 0px 2px 2px;
+	padding: 4px 6px 4px 4px;
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
 }
 
-#clock {
-  margin: 3px 0px 3px 3px;
-  padding: 5px;
-  color: #FFF;
-  background: #1d1f21;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  color: #c5c8c6;
+/* right edge items (i.e. rounded right side) */
+#battery,
+#load
+{
+	background-color: #1d1f21;
+	color: #f0f8ff;
+	margin: 2px 2px 2px 0px;
+	padding: 4px 4px 4px 6px;
+	border-top-right-radius: 8px;
+	border-bottom-right-radius: 8px;
 }
 
-#custom-keyboard {
-  background: #1d1f21;
-  color: #c5c8c6;
-  padding: 5px 5px 5px 7px;
-  margin: 3px 0px 3px 3px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+/* island items (i.e. rounded both sides) */
+#clock,
+#idle_inhibitor,
+#language,
+#mpris,
+#tray,
+#workspces
+{
+	background-color: #1d1f21;
+	color: #f0f8ff;
+	margin: 2px;
+	padding: 6px;
+	border-radius: 8px;
 }
 
-#custom-media {
-  margin: 3px;
-  padding: 5px 7px 5px 7px;
-  border-radius: 10px;
-  background: #1d1f21;
-  color: #c5c8c6;
-}
-#pulseaudio {
-  margin: 3px 3px 3px 0px;
-  padding: 5px 7px 5px 5px;
-  background: #1d1f21;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  color: #c5c8c6;
+/*
+ * window manager modes should use same styling as "island items",
+ * but with different background color
+ */
+#mode {
+	background-color: #b22222;
+	color: #f0f8ff;
+	margin: 2px;
+	padding: 6px;
+	border-radius: 8px;
 }
 
-#network {
-  background: #1d1f21;
-  color: #c5c8c6;
-  margin: 3px 0px 3px 0px;
-  padding: 5px;
+/*
+ * workspaces needs a lot more detailed styling on top of the base one
+ * defined above
+ */
+#workspaces button {
+	background-color: rgba(29, 31, 33, 0.5); /* #1d1f21 with 0.5 alpha */
+	color: #f0f8ff;
+	margin: 2px;
+	padding: 6px;
+	border-radius: 8px;
+	min-width: 12px;
+}
+
+#workspaces button.focused {
+	background-color: #000000;
+	color: #f0f8ff;
+	margin: 2px;
+	padding: 6px;
+	border-radius: 8px;
+}
+
+#workspaces button.urgent {
+	background-color: #b22222;
+	color: #f0f8ff;
+	margin: 2px;
+	padding: 6px;
+	border-radius: 8px;
+}
+
+#workspaces button.empty,
+#workspaces button.hidden,
+#workspaces button.visible
+{
+	background-color: #1d1f21;
+	color: #f0f8ff;
+	margin: 2px;
+	padding: 6px;
+	border-radius: 8px;
 }
