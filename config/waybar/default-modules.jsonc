@@ -1,0 +1,104 @@
+{
+	"battery": {
+		"interval": 1,
+		"states": {
+			"good": 90,
+			"discharging": 55,
+			"warning": 30,
+			"critical": 15,
+			"empty": 0
+		},
+		"format": "{icon} {capacity} ({time})%",
+		"format-charging": " {capacity}% ({time})",
+		"format-plugged": " {capacity}%",
+		"format-discharging": "{icon} {capacity}% ({time})",
+		"format-alt": "{icon} {time}",
+		"format-icons": ["", "", "", "", ""]
+	},
+	"clock": {
+		"format": "{:%F %a %H:%M:%S}",
+		"interval": 1,
+		"tooltip-format": "<tt><small>{calendar}</small></tt>",
+		"calendar": {
+			"mode"          : "year",
+			"mode-mon-col"  : 3,
+			"weeks-pos"     : "right",
+			"on-scroll"     : 1,
+			"format": {
+				"months":     "<span color='#ffead3'><b>{}</b></span>",
+				"days":       "<span color='#ecc6d9'><b>{}</b></span>",
+				"weeks":      "<span color='#99ffdd'><b>W{}</b></span>",
+				"weekdays":   "<span color='#ffcc66'><b>{}</b></span>",
+				"today":      "<span color='#ff6699'><b><u>{}</u></b></span>"
+			}
+		},
+		"actions":  {
+			"on-click-right": "mode",
+			"on-scroll-up": "tz_up",
+			"on-scroll-down": "tz_down",
+			"on-scroll-up": "shift_up",
+			"on-scroll-down": "shift_down"
+		}
+	},
+	"idle_inhibitor": {
+		"format": "{icon}",
+		"format-icons": {
+			"activated": "",
+			"deactivated": ""
+		}
+	},
+	"load": {
+		"format": "🏋 {load1} {load5} {load15}",
+		"interval": 1
+	},
+	"mpris": {
+		"interval": 1,
+		"dynamic-order": ["title", "artist"],
+		"title-len": 20,
+		"artist-len": 20,
+		"format": "{player_icon} {status_icon} {dynamic}",
+		"format-stopped": "{player_icon} {status_icon} - Stopped",
+		"player-icons": {
+			"default": "🎧"
+		},
+		"status-icons": {
+			"paused": "",
+			"playing": "",
+			"stopped": "⏹"
+		}
+	},
+	"network": {
+		"interval": 1,
+		"format": "🖧{ifname} ({ipaddr}/{cidr})",
+		"format-wifi": " {essid} ({ipaddr}/{cidr})",
+		"format-ethernet": " {ifname} ({ipaddr}/{cidr})",
+		"format-disconnected": "",
+		"tooltip-format-wifi": "{signalStrength}%"
+	},
+	"sway/language": {
+		"format": " {long}",
+		"on-click": "swaymsg input type:keyboard xkb_switch_layout next"
+	},
+	"sway/mode": {
+		"format": "🎛 {}"
+	},
+	"sway/workspaces": {
+		"all-outputs": false,
+		"disable-scroll": false,
+		"format": "{name}"
+	},
+	"temperature": {
+		"format": " {temperatureC}°C",
+		"interval": 1
+	},
+	"tray": {
+		"icon-size": 20,
+		"spacing": 5
+	},
+	"wireplumber": {
+		"format": "{icon} {volume}%",
+		"format-muted": " Mute",
+		"format-icons": ["", "", ""],
+		"on-click": "pavucontrol"
+	}
+}
