@@ -262,23 +262,9 @@ for_window [app_id="^.*"] inhibit_idle fullscreen
 
 # Start waybar to display a workspace bar (plus the system information waybar
 # finds out, if available)
-# bar {
-# 	position top
-# 	swaybar_command waybar
-# }
-
-# Start swaybar
 bar {
 	position top
-	font "Terminus (TTF)"
-	status_command while $config_dir/sway_bar.sh; do sleep 1; done
-
-	colors {
-		statusline #FFFFFF
-		background #000000
-		active_workspace #767676 #767676 #FFFFFF
-		inactive_workspace #323232 #323232 #676767
-	}
+	swaybar_command waybar
 }
 
 # make sure we are importing system's configuration snippets
