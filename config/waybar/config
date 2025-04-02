@@ -6,15 +6,18 @@
     "modules-center": ["idle_inhibitor", "clock"],
     "modules-right": ["sway/language", "network", "temperature", "load", "wireplumber", "battery", "tray"],
     "battery": {
+        "interval": 1,
         "states": {
             "good": 90,
+            "discharging": 55,
             "warning": 30,
-            "critical": 15
+            "critical": 15,
+            "empty": 0
         },
-        "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
+        "format": "{icon} {capacity} ({time})%",
+        "format-charging": " {capacity}% ({time})",
         "format-plugged": " {capacity}%",
-        "format-discharging": " {capacity}%",
+        "format-discharging": "{icon} {capacity}% ({time})",
         "format-alt": "{icon} {time}",
         "format-icons": ["", "", "", "", ""]
     },
@@ -55,6 +58,7 @@
         "interval": 1
     },
     "mpris": {
+        "interval": 1,
         "dynamic-order": ["title", "artist"],
         "title-len": 20,
         "artist-len": 20,
@@ -70,6 +74,7 @@
         },
      },
     "network": {
+        "interval": 1,
         "format": "🖧{ifname} ({ipaddr}/{cidr})",
         "format-wifi": " {essid} ({ipaddr}/{cidr})",
         "format-ethernet": " {ifname} ({ipaddr}/{cidr})",
@@ -97,7 +102,7 @@
     },
     "wireplumber": {
         "format": "{icon} {volume}%",
-        "format-muted": "",
+        "format-muted": " Mute",
         "format-icons": ["", "", ""],
         "on-click": "pavucontrol",
     }
