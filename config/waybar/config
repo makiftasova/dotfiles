@@ -94,7 +94,8 @@
         "format": "{name}"
     },
     "temperature": {
-        "format": " {temperatureC}°C"
+        "format": " {temperatureC}°C",
+        "interval": 1
     },
     "tray": {
         "icon-size": 20,

@@ -15,7 +15,7 @@ window#waybar {
 }
 
 /* middle items (i.e. no rounded borders) */
-#temperature
+.center_items
 {
 	background-color: #1d1f21;
 	color: #f0f8ff;
@@ -24,8 +24,7 @@ window#waybar {
 }
 
 /* left edge items (i.e. rounded left side) */
-#network,
-#wireplumber
+#temperature
 {
 	background-color: #1d1f21;
 	color: #f0f8ff;
@@ -36,7 +35,6 @@ window#waybar {
 }
 
 /* right edge items (i.e. rounded right side) */
-#battery,
 #load
 {
 	background-color: #1d1f21;
@@ -48,11 +46,14 @@ window#waybar {
 }
 
 /* island items (i.e. rounded both sides) */
+#battery,
 #clock,
 #idle_inhibitor,
 #language,
 #mpris,
+#network,
 #tray,
+#wireplumber,
 #workspces
 {
 	background-color: #1d1f21;
