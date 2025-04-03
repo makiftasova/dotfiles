@@ -87,10 +87,6 @@
 		"disable-scroll": false,
 		"format": "{name}"
 	},
-	"temperature": {
-		"format": " {temperatureC}°C",
-		"interval": 1
-	},
 	"tray": {
 		"icon-size": 20,
 		"spacing": 5

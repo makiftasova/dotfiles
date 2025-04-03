@@ -113,6 +113,29 @@ unset local_sway_config_dir
 
 echo "done"
 
+echo -n "Creating local modules config for waybar..."
+
+local_waybar_config_dir="${HOME}/.local/config/waybar"
+local_waybar_modules_file="${local_waybar_config_dir}/local-modules.jsonc"
+
+mkdir -p "${local_waybar_config_dir}"
+
+if ! [ -e "${local_waybar_modules_file}" ]; then
+cat << WAYBARCONFIG > "${local_waybar_modules_file}"
+{
+	"temperature": {
+		"format": " {temperatureC}°C",
+		"interval": 1
+	}
+}
+WAYBARCONFIG
+fi
+
+unset local_waybar_modules_file
+unset local_waybar_config_dir
+
+echo "done"
+
 echo -n "Creating sample config for wayvnc..."
 
 local_wayvnc_config_dir="${HOME}/.local/config/wayvnc"
