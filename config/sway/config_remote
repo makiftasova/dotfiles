@@ -15,7 +15,7 @@ output HEADLESS-1 resolution 1920x1080 position 0,0
 # make output background solid black to indicate remote session
 output * bg #000000 solid_color
 
-exec systemctl --user start foot-server.socket
+exec foot --server
 
 # start wayvnc for vnc access
 exec wayvnc -C ~/.local/config/wayvnc/config
