@@ -531,6 +531,140 @@ HELP
 	done
 }
 
+# ffmpeg_to_hevc10 - Convert video stream to x265 while keeping all the other streams
+#
+# This function used to re-encode video stream to HEVC 10-bit without touching any other
+# stream(s) or metadata in given list of files.
+#
+# This functions depends on VAAPI hardware acceleration, and hevc_vaapi from ffmpeg
+#
+# Usage:
+#   ffmpeg_to_hevc10 [-d vaapi_device] [-p x265_preset] [-q quality] [-f find_pattern] [-r replace_pattern] [-h] FILE_LIST
+#   options:
+#       -d vaapi_device (default=/dev/dri/renderD128)
+#       -f string: pattern to search in file names (default=x264)
+#       -h: show this help
+#       -p [ultrafast|superfast|veryfast|faster|fast|medium|slow|slower|veryslow|placebo]: x265 preset to use (default=slower)
+#       -q level: quality level (default=25, smaller number = better quaity)
+#       -r string: repalcement for patterns found in file names (default=x265)
+function ffmpeg_to_hevc10 {
+	local inp
+	local outp
+	local name
+	local ext
+	local find
+	local replace
+	local vaapi_dev
+	local preset
+	local profile
+	local quality
+	local OPTIND
+	local opt
+	local ret
+	local threads
+
+	find='x264'
+	replace='x265'
+	vaapi_dev='/dev/dri/renderD128'
+	preset='slower'
+	profile='main10'
+	quality='25'
+
+	if [ -z "$(command -v ffmpeg)" ]; then
+		echo "ffmpeg not found in PATH"
+		return 255
+	fi
+
+	if ! ffmpeg -hide_banner -encoders | grep -q hevc_vaapi; then
+		echo "looks like ffmpeg does not support 'hevc_vaapi' encoder"
+		return 254
+	fi
+
+	while getopts ":d:f:h:o:p:q:r:" opt; do
+		case "${opt}" in
+			d)
+				vaapi_dev="${OPTARG}"
+				;;
+			f)
+				find="${OPTARG}"
+				;;
+			o)
+				profile="${OPTARG}"
+				;;
+			p)
+				preset="${OPTARG}"
+				;;
+			q)
+				quality="${OPTARG}"
+				;;
+			r)
+				replace="${OPTARG}"
+				;;
+			h)
+				;&
+			*)
+				cat <<- 'HELP'
+ffmpeg_to_hevc10 [-d vaapi_device] [-p x265_preset] [-q quality] [-f find_pattern] [-r replace_pattern] [-h] FILE_LIST
+options:
+    -d vaapi_device: hardware device to use for encoding (default=/dev/dri/renderD128)
+    -f string: pattern to search in file names (default=x264)
+    -h: show this help
+    -p [ultrafast|superfast|veryfast|faster|fast|medium|slow|slower|veryslow|placebo]: x265 preset to use (default=slower)
+    -q level: quality level (default=25, range=0-51, smaller=better)
+    -r string: repalcement for patterns found in file names (default=x265)
+HELP
+				return 1
+				;;
+		esac
+	done
+	shift $((OPTIND-1))
+
+	threads="$(nproc)"
+	if [ "${threads}" -gt '4' ]
+	then
+		threads='4'
+	fi
+
+	for f in "${@}"; do
+		inp="$(basename "${f}")"
+		name="${inp%.*}"
+		ext="${inp##*.}"
+
+		if [ -n "${find}" ]; then
+			name="${name//${find}/${replace}}"
+		fi
+
+		if [ "${ext}" != 'mkv' ]; then
+			ext='mkv'
+		fi
+
+		outp="${name}.${ext}"
+
+		ffmpeg					\
+			-threads "${threads}"		\
+			-vaapi_device "${vaapi_dev}"	\
+			-extra_hw_frames 50		\
+			-i "${f}"			\
+			-vf 'hwupload'			\
+			-map 0				\
+			-c:a copy			\
+			-c:s copy			\
+			-c:v copy			\
+			-c:v:0 hevc_vaapi		\
+			-rc_mode CQP			\
+			-global_quality "${quality}"	\
+			-profile:v:0 "${profile}"	\
+			-preset "${preset}"		\
+			-f 'matroska'			\
+			"${outp}"
+
+		ret="${?}"
+		if [ "${ret}" -ne '0' ]; then
+			return "${ret}"
+		fi
+	done
+}
+
 function ffmpeg_to_mkv {
 	for f in "${@}"; do
 		ffmpeg			\
