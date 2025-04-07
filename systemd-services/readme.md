@@ -26,3 +26,8 @@
 * unlike `tmux.service` this unit file is not depends on user session
 * copy into `/etc/systemd/system` and enable with `systemctl enable tmux@${USER}.service`
 * expects tmux configuration (`tmux.conf`) file in `${XDG_CONFIG_HOME}/tmux/tmux.conf` path
+
+## wayvnc-user.service
+* *depends*: /usr/bin/wayvnc
+* copy into `~/.config/systemd/user` and enable with `systemctl enable --user wayvnc-user.service`
+* expects wayvnc configuration file in `${HOME}/.local/config/wayvnc/config` path

@@ -1,0 +1,11 @@
+[Unit]
+Description=Start wayvnc server in user session
+
+[Service]
+Type=simple
+Restart=on-failure
+ExecStart=/usr/bin/wayvnc --transient-seat --config %h/.local/config/wayvnc/config
+TimeoutStopSec=10
+
+[Install]
+WantedBy=graphical-session.target
