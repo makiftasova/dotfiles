@@ -85,6 +85,8 @@
 	"sway/workspaces": {
 		"all-outputs": false,
 		"disable-scroll": false,
+		"disable-scroll-wraparound": true,
+		"enable-bar-scroll": true,
 		"format": "{name}"
 	},
 	"tray": {
