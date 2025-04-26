@@ -679,6 +679,64 @@ function ffmpeg_to_mkv {
 }
 
 # $1 = file to process
+# $2 = type of track. "Attachment" or "Track"
+function mkv_num_tracks {
+	if [ -z "${1}" ]
+	then
+		echo "No input file!" >&2
+		return 255
+	fi
+
+	if [ -z "${2}" ]
+	then
+		echo "Missing track type. Use 'Attachment' or 'Track'" >&2
+		return 254
+	fi
+
+	case "${2}" in
+		"Attachment")
+			;&
+		"Track")
+			;;
+		*)
+			echo "Invalid track type ${2}. Use 'Attachment' or 'Track'" >&2
+			return 253
+			;;
+	esac
+
+	echo "$(mkvmerge --identify "${1}" | grep "${2} ID" | wc -l)"
+}
+
+function mkvpropedit_clear_attachments {
+	local n_attachments
+	local file
+	local args
+
+	declare -a args
+
+	file="${1}"
+	if ! [ -f "${file}" ]
+	then
+		echo "File ${file} is not exists or not a regular file"
+		return 255
+	fi
+
+	n_attachments="$(mkv_num_tracks "${file}" 'Attachment')"
+	if [ -z "${n_attachments}" -o "${n_attachments}" = "0" ]
+	then
+		echo "File ${file} have no attachments"
+		return 0
+	fi
+
+	for aid in {1.."${n_attachments}"..1}; do
+		args+='--delete-attachment'
+		args+="${aid}"
+	done
+
+	mkvpropedit "${file}" ${args}
+}
+
+# $1 = file to process
 # $2 = name of track flag (enabled, default, original, forced etc.)
 # $3 = desired value of flag (1 = set/enabled, 0 = unset/disabled)
 function mkvpropedit_track_set_flag {
