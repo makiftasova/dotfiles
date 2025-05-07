@@ -15,7 +15,7 @@ window#waybar {
 }
 
 /* middle items (i.e. no rounded borders) */
-.center_items
+#temperature.gpu
 {
 	background-color: #1d1f21;
 	color: #f0f8ff;
@@ -24,7 +24,7 @@ window#waybar {
 }
 
 /* left edge items (i.e. rounded left side) */
-#temperature
+#temperature.cpu
 {
 	background-color: #1d1f21;
 	color: #f0f8ff;
@@ -61,6 +61,13 @@ window#waybar {
 	margin: 2px;
 	padding: 6px;
 	border-radius: 8px;
+}
+
+/* use white text on red backlground for items in "critical" state */
+#temperature.critical
+{
+	background-color: #b22222;
+	color: #f0f8ff;
 }
 
 /*

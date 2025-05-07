@@ -123,8 +123,14 @@ mkdir -p "${local_waybar_config_dir}"
 if ! [ -e "${local_waybar_modules_file}" ]; then
 cat << WAYBARCONFIG > "${local_waybar_modules_file}"
 {
-	"temperature": {
-		"format": " {temperatureC}°C",
+	"temperature#cpu": {
+		"format": "CPU: {temperatureC}°C",
+		"critical-threshold": 80,
+		"interval": 1
+	},
+	"temperature#gpu": {
+		"format": "GPU: {temperatureC}°C",
+		"critical-threshold": 80,
 		"interval": 1
 	}
 }

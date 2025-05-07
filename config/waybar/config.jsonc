@@ -7,5 +7,5 @@
 	],
 	"modules-left": ["sway/mode", "sway/workspaces", "mpris"],
 	"modules-center": ["idle_inhibitor", "clock"],
-	"modules-right": ["sway/language", "network", "temperature", "load", "wireplumber", "battery", "tray"]
+	"modules-right": ["sway/language", "network", "temperature#cpu", "temperature#gpu", "load", "wireplumber", "battery", "tray"]
 }
