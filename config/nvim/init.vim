@@ -70,6 +70,9 @@ Plug 'junegunn/fzf.vim'
 " LSP (neovim 0.5.0+)
 Plug 'neovim/nvim-lspconfig'
 
+" distant, for remote editing
+Plug 'chipsenkbeil/distant.nvim', {'branch': 'v0.3'}
+
 call plug#end()
 
 """""""""""""""""""""""""""""""
@@ -429,11 +432,15 @@ nnoremap <c-p> :FZF<cr>
 
 let g:tex_flavor = 'latex'
 
-" Enable language servers for for LSP
+" Run setup functions for lua plugins
 lua << EOF
+--- Enable language servers for for LSP
 require'lspconfig'.clangd.setup{} -- C/C++
 require'lspconfig'.rust_analyzer.setup{} -- rustlang
 require'lspconfig'.texlab.setup{} -- (La)TeX
+
+--- Run distant setup
+require("distant"):setup()
 EOF
 
 source $HOME/.local/config/nvim/init.vim
