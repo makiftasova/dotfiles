@@ -407,7 +407,7 @@ function ffmpeg_sub_embed {
 #   ffmpeg_to_x265 [-d vaapi_device] [-p x265_preset] [-q quality] [-f find_pattern] [-r replace_pattern] [-h] FILE_LIST
 #   options:
 #       -d vaapi_device (default=/dev/dri/renderD128)
-#       -f string: pattern to search in file names )default=x264)
+#       -f string: pattern to search in file names (default=x264)
 #       -h: show this help
 #       -p [ultrafast|superfast|veryfast|faster|fast|medium|slow|slower|veryslow|placebo]: x265 preset to use (default=slower)
 #       -q level: quality level (default=25, smaller number = better quaity)

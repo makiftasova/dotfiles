@@ -17,7 +17,7 @@
 #   HEVC_PRESET: HEVC profile to use for transcoding
 #   		(Default: main10)
 #   HEVC_QUALITY: HEVC quality to use for transcoding
-#   		(Default: 22, lower = better and longer)
+#   		(Default: 25, lower = better and longer)
 #
 # Author: Mehmet Akif TASOVA <makiftasova@gmail.com>
 #
