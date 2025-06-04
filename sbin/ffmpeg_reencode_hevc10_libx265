@@ -1,0 +1,173 @@
+#! /usr/bin/env bash
+#
+# SPDX-License-Identifier: GPL-3.0-only
+# vim: set ts=8 sw=8 sts=4 noet:
+#
+# A simple helper script to reencode all HEVC media in $(pwd) and it's
+# subdirectories in order to try reducing total file size,
+# utilizing ffmpeg and libx265.
+#
+# Environment:
+#   HEVC_PRESET: HEVC preset to use for transcoding
+#   		(Default: medium)
+#   HEVC_PROFILE: HEVC profile to use for transcoding
+#   		(Default: main)
+#   HEVC_QUALITY: HEVC quality to use for transcoding
+#   		(Default: 20, lower = better and longer)
+#   HEVC_EXTRA_PARAMS: Extra paramters to pass to libx265 (e.g. -tune etc.)
+#
+# Author: Mehmet Akif TASOVA <makiftasova@gmail.com>
+#
+# Usage:
+#   ffmpeg_reencode_hevc
+
+# Default config options
+DEFAULT_HEVC_PRESET='medium'
+DEFAULT_HEVC_PROFILE='main10'
+DEFAULT_HEVC_QUALITY='20'
+DEFAULT_HEVC_EXTRA_PARAMS=''
+
+function check_dependencies
+{
+	## shellcheck nags about "command -v ffmpeg"'s exit code
+	# shellcheck disable=SC2312
+	if [[ -z "$(command -v ffmpeg)" ]]
+	then
+		echo "'ffmpeg' not found in PATH"
+		return 255
+	fi
+
+	## shellcheck nags about masking "ffmpeg"'s exit code
+	# shellcheck disable=SC2312
+	if ! ffmpeg -hide_banner -encoders | grep -q hevc_vaapi
+	then
+		echo "looks like ffmpeg does not support 'hevc_vaapi' encoder"
+		return 253
+	fi
+}
+
+function transcode_to_hevc
+{
+	local inp
+	local outp
+	local temp_outp
+	local name
+	local ext
+	local format
+	local nthreads
+
+	nthreads="$(nproc)"
+	if [[ "${nthreads}" -gt 4 ]]
+	then
+		nthreads='4'
+	fi
+
+	inp="${1}"
+
+	name="${inp%.*}"
+
+	ext="${inp##*.}"
+
+	case "${ext}" in
+		mkv|MKV)
+			format='matroska'
+			;;
+		mp4|MP4)
+			format='mp4'
+			;;
+		*)
+			echo "Unknown file extension ${ext}"
+			return 210
+		;;
+	esac
+
+	outp="${name}.${ext}"
+	temp_outp="${outp}.new"
+
+	## shellcheck nags about "$(nproc)"'s exit code (SC2312)
+	## We want word splitting for "${HEVC_EXTRA_PARAMS}"
+	# shellcheck disable=SC2312,SC2086
+	if ! ffmpeg -threads "${nthreads}" -i "${inp}" \
+		    -map 0 -c:v libx265 -crf "${HEVC_QUALITY}" \
+		    -preset "${HEVC_PRESET}" -profile:v "${HEVC_PROFILE}" \
+		     ${HEVC_EXTRA_PARAMS} -c:a copy -c:s copy \
+		    -f "${format}" "${temp_outp}"
+	then
+		echo "ffmpeg failed to convert file '${inp}'"
+		return 200
+	fi
+
+	if ! mv "${temp_outp}" "${outp}"
+	then
+		echo "Cannot rename '${temp_outp}' -> '${outp}'"
+		return 199
+	fi
+
+	if [[ -f "${inp}" ]] && [[ "${inp}" != "${outp}" ]]
+	then
+		if ! rm -f "${inp}"
+		then
+			echo "Cannot remove original file '${inp}'"
+			return 198
+		fi
+	fi
+
+	return 0
+}
+
+if ! check_dependencies
+then
+	echo "Dependencies are not met"
+	exit 255
+fi
+
+if [[ -z "${HEVC_PRESET}" ]]
+then
+	HEVC_PRESET="${DEFAULT_HEVC_PRESET}"
+fi
+
+if [[ -z "${HEVC_PROFILE}" ]]
+then
+	HEVC_PROFILE="${DEFAULT_HEVC_PROFILE}"
+fi
+
+if [[ -z "${HEVC_QUALITY}" ]]
+then
+	HEVC_QUALITY="${DEFAULT_HEVC_QUALITY}"
+fi
+
+if [[ -z "${HEVC_EXTRA_PARAMS}" ]]
+then
+	HEVC_EXTRA_PARAMS="${DEFAULT_HEVC_EXTRA_PARAMS}"
+fi
+
+if [[ "${#}" == 0 ]]
+then
+	DIRS=( '.' )
+else
+	DIRS=( "${@}" )
+fi
+
+shopt -s nullglob
+shopt -s globstar
+for d in "${DIRS[@]}"
+do
+	for f in "${d}"/**/*.{mkv,mp4}
+	do
+		if ! [[ -f "${f}" ]]
+		then
+			echo "'${f}' is no a valid file, skipping"...
+			continue
+		fi
+
+		echo "Transcoding '${f}' to HEVC"
+
+		if ! transcode_to_hevc "${f}"
+		then
+			echo "Failed to convert '${f}' to HEVC"
+			exit 254
+		fi
+	done
+done
+shopt -u globstar
+shopt -u nullglob
