@@ -707,6 +707,10 @@ function mkv_num_tracks {
 	echo "$(mkvmerge --identify "${1}" | grep "${2} ID" | wc -l)"
 }
 
+function mkv_get_title {
+	mkvinfo "${1}" | grep -oP '(?<=Title\:\s).*$'
+}
+
 function mkvpropedit_clear_attachments {
 	local n_attachments
 	local file
