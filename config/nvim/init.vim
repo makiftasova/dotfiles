@@ -431,9 +431,9 @@ let g:tex_flavor = 'latex'
 
 " Enable language servers for for LSP
 lua << EOF
-require'lspconfig'.clangd.setup{} -- C/C++
-require'lspconfig'.rust_analyzer.setup{} -- rustlang
-require'lspconfig'.texlab.setup{} -- (La)TeX
+vim.lsp.enable('clangd')
+vim.lsp.enable('rust_analyzer')
+vim.lsp.enable('texlab')
 EOF
 
 source $HOME/.local/config/nvim/init.vim
