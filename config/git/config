@@ -7,6 +7,7 @@
 	pager = delta
 [commit]
 	template = ~/.config/git/message
+	gpgSign = true
 [alias]
 	l = log --graph --decorate --oneline
 	la = log --graph --decorate --oneline --all
@@ -64,3 +65,7 @@
 [include]
 	path = ~/.local/config/git/config
 
+[gpg]
+	format = ssh
+[user]
+	signingKey = /home/makiftasova/.ssh/id_ed25519.pub
