@@ -118,6 +118,10 @@ source "${ZSH}/oh-my-zsh.sh"
 
 # You may need to manually set your language environment
 export LANG=en_US.UTF-8
+export LANGUAGE=en_US:en_DK:en:C:tr_TR
+export LC_MEASUREMENT=en_DK.UTF-8
+export LC_NUMERIC=en_DK.UTF-8
+export LC_PAPER=en_DK.UTF-8
 export LC_TIME=en_DK.UTF-8
 
 # Preferred editor for local and remote sessions
