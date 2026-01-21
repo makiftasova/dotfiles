@@ -11,7 +11,7 @@
 #   HEVC_PRESET: HEVC preset to use for transcoding
 #   		(Default: medium)
 #   HEVC_PROFILE: HEVC profile to use for transcoding
-#   		(Default: main)
+#   		(Default: main10)
 #   HEVC_QUALITY: HEVC quality to use for transcoding
 #   		(Default: 20, lower = better and longer)
 #   HEVC_EXTRA_PARAMS: Extra paramters to pass to libx265 (e.g. -tune etc.)
@@ -91,7 +91,7 @@ function transcode_to_hevc
 		    -map 0 -c:v libx265 -crf "${HEVC_QUALITY}" \
 		    -preset "${HEVC_PRESET}" -profile:v "${HEVC_PROFILE}" \
 		     ${HEVC_EXTRA_PARAMS} -c:a copy -c:s copy \
-		    -f "${format}" "${temp_outp}"
+		    -pix_fmt yuv420p10le -f "${format}" "${temp_outp}"
 	then
 		echo "ffmpeg failed to convert file '${inp}'"
 		return 200
