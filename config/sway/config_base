@@ -153,7 +153,7 @@ bindsym --no-repeat $mod+Print exec $grim
 # take screenshot of focused window
 bindsym --no-repeat $mod+Control+Print exec \
 	swaymsg -rt get_tree | \
-	jq -j '.. | select(.type?) | select(.focused).rect | \"\(.x),\(.y) \(.width)x\(.height)\"' | \
+	jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"' | \
 	$grim -g -
 
 # take screenshot of focused output
