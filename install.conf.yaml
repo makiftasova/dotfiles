@@ -65,7 +65,7 @@
                   pipewire-pulse
                   pipewire-jack
                   playerctl
-                  polkit-gnome
+                  polkit-kde-agent
                   python-pynvim
                   ripgrep
                   slurp

@@ -32,7 +32,7 @@ exec mako
 
 # start gnome polkit authentication agent
 # needed to run GUI applications with elevated priviledges
-exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec /usr/lib/polkit-kde-authentication-agent-1
 
 # setup keybonds to dismiss mako notifications
 # TODO: side-effect: causes keyboard layout switch
