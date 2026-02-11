@@ -4,7 +4,7 @@
 timeout 300 'swaylock'
 
 # wait 300 seconds more (toatl of 600 seconds) before closing off outputs
-timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'
+timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"'
 
 # lock screen before sleep
 before-sleep 'swaylock'
