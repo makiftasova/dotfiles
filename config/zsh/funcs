@@ -202,6 +202,10 @@ function grep_symbols {
 	__grep_generic "$1" "$2" "nm" "-a" "-l" "-C"
 }
 
+function grep_needed {
+	readelf -d "$1" | grep NEEDED
+}
+
 function sizeof {
 	local __dir
 	local __root
