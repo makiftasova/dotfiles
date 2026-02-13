@@ -160,5 +160,7 @@ alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 
 # if we are running from tty1,  and uwsm and swaywm is installed, try to start swaywm using uwsm
 if [ "$(tty)" = '/dev/tty1' ] && uwsm check may-start; then
+  # Make sure Java AWT does not mess up with WM detection
+  export _JAVA_AWT_WM_NONREPARENTING=1
   exec uwsm start sway.desktop
 fi
