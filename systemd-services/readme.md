@@ -31,3 +31,11 @@
 * *depends*: /usr/bin/wayvnc
 * copy into `~/.config/systemd/user` and enable with `systemctl enable --user wayvnc-user.service`
 * expects wayvnc configuration file in `${HOME}/.local/config/wayvnc/config` path
+
+## cron-lan-check.service && cron-lan-check.timer
+* *depends*: /usr/bin/nmcli
+* *depends*: systemd lingering services (e.g. `loginctl enable-linger ${USER}`)
+* both `cron-lan-check.service` and `cron-lan-check.timer` files must be copied into `~/.config/systemd/user` together
+* enable with `systemctl enable --user cron-lan-check.timer`.
+* runs script at `"${HOME}/.local/bin/cron-lan-check"` on a set timer.
+* an example script for `cron-lan-check` is available at `sbin` directory in this repo.

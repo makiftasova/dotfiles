@@ -1,0 +1,10 @@
+[Unit]
+Description=LAN Connectivity Check Script
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/%h/.local/bin/cron-lan-check
+
+[Install]
+WantedBy=default.target

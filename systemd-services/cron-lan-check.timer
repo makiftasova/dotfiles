@@ -1,0 +1,10 @@
+[Unit]
+Description=Run LAN Check every hour
+
+[Timer]
+OnStartupSec=10min
+OnUnitInactiveSec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

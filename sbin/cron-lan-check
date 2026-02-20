@@ -1,0 +1,39 @@
+#! /usr/bin/env bash
+
+IFNAMES=('eth0' 'wlan0')
+
+# "${1}" -> netdevice name
+get_nmcli_conn_name() {
+	case "${1}" in
+		eth0)
+			echo -n 'My Ethernet Connection'
+			;;
+		wlan0)
+			echo -n 'My Wi-Fi Connection'
+			;;
+		*)
+			;;
+	esac
+}
+
+# "${1}" -> netdevice name
+read_operstate() {
+	local path
+
+	path="/sys/class/net/${1}/operstate"
+
+	if ! [[ -f "${path}" ]]; then
+		return
+	fi
+
+	cat "${path}" 2>/dev/null
+}
+
+for iface in "${IFNAMES[@]}"; do
+	state="$(read_operstate "${iface}")"
+	if [[ -n "${state}" ]] && [[ "${state}" != 'up' ]]; then
+		nmcli connection up "$(get_nmcli_conn_name "${iface}" || true)"
+	else
+		echo "skipping interface ${iface} because of its state (read state: |${state}|)"
+	fi
+done
