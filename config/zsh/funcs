@@ -9,6 +9,26 @@ function find_exec_in_path {
 	which -a "$1" | grep -e "^/" | head -1
 }
 
+# add given prefix to start of given string if it is missing
+# $1 string to check
+# $2 prefix
+function add_prefix {
+	local string
+	local prefix
+
+	string="${1}"
+	prefix="${2}"
+
+	case "${string}" in
+		"${prefix}"*)
+			echo "${string}"
+			;;
+		*)
+			echo "${prefix}${string}"
+			;;
+	esac
+}
+
 # check if given argument is numeric or not
 function is_numeric {
 	case "${1#[+-]}" in
@@ -22,6 +42,27 @@ function is_numeric {
 			return 0
 			;;
 	esac
+}
+
+# get color code of given file extension from LS_COLORS variable
+# $1 file extension
+function get_ls_color_for_extension {
+	local prefix
+	local target
+
+	prefix='*.'
+
+	target="$(add_prefix ${1} ${prefix})"
+	if [ "${prefix}" = "${target}" ]; then
+		target='*.tar';
+	fi
+
+	while read -d ':' -r ext; do
+		if [ "${ext%%=*}" = "${target}" ]; then
+			echo -n "${ext##*=}"
+			break
+		fi
+	done <<< "${LS_COLORS}"
 }
 
 # wrapper for ed(1) to change ed's prompt.

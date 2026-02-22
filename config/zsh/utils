@@ -1,2 +1,7 @@
 # shellcheck disable=SC2148
 # Do not warn for "unknown shell" since this file will be included from zshrc
+
+# append colors for .zstd and .tzstd files
+ext_color="$(get_ls_color_for_extension 'tar')"
+LS_COLORS="${LS_COLORS}:*.zstd=${ext_color}:*.tzstd=${ext_color}"
+export LS_COLORS

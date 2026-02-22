@@ -152,9 +152,9 @@ alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 #source ~/.profile
 
 # shellcheck source=/dev/null
-[ -f "${ZSH_CONFIG_HOME}/utils" ] && source "${ZSH_CONFIG_HOME}/utils"
-# shellcheck source=/dev/null
 [ -f "${ZSH_CONFIG_HOME}/funcs" ] && source "${ZSH_CONFIG_HOME}/funcs"
+# shellcheck source=/dev/null
+[ -f "${ZSH_CONFIG_HOME}/utils" ] && source "${ZSH_CONFIG_HOME}/utils"
 # shellcheck source=/dev/null
 [ -f "${ZSH_CONFIG_HOME}/aliases" ] && source "${ZSH_CONFIG_HOME}/aliases"
 
