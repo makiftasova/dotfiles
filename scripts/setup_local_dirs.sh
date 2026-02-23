@@ -54,8 +54,8 @@ GITUSERINFO
 fi
 
 ## git local config (e.g. machine specific config)
-if ! [ -e "${local_gitconfig_dir}/localconfig" ]; then
-cat << GITLOCALCONF >> "${local_gitconfig_dir}/localconfig"
+if ! [ -e "${local_gitconfig_dir}/config" ]; then
+cat << GITLOCALCONF >> "${local_gitconfig_dir}/config"
 GITLOCALCONF
 fi
 
