@@ -1,5 +1,10 @@
 [include]
 	path = ~/.local/config/git/userinfo
+	path = ~/.local/config/git/sendemail
+[user]
+	signingKey = ~/.ssh/id_ed25519.pub
+[gpg]
+	format = ssh
 [init]
 	defaultBranch = master
 [core]
@@ -45,9 +50,6 @@
 	old = red bold
 	new = green bold
 	whitespace = red reverse
-[include]
-	path = ~/.local/config/git/sendemail
-	path = ~/.local/config/git/localconfig
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -64,8 +66,3 @@
 	colorMoved = default
 [include]
 	path = ~/.local/config/git/config
-
-[gpg]
-	format = ssh
-[user]
-	signingKey = /home/makiftasova/.ssh/id_ed25519.pub
