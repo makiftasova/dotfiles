@@ -1,0 +1,19 @@
+[Unit]
+Description=Open WebUI Container
+After=network-online.target
+
+[Container]
+Image=ghcr.io/open-webui/open-webui:main
+ContainerName=open-webui
+PublishPort=3000:8080
+Volume=open-webui:/app/backend/data
+
+# Networking: Pasta is used by default in Podman 5+
+# If you need to access host services (like Ollama on the host):
+AddHost=host.containers.internal:host-gateway
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
