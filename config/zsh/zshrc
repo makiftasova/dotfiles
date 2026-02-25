@@ -91,12 +91,13 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 # shellcheck disable=SC2034  # Unused variables left for readability
 plugins=(
+	colored-man-pages
 	fzf
 	gitfast
 	gitignore
 	rust
-	vagrant
 	term_tab
+	vagrant
 	zsh-autosuggestions
 	zsh-syntax-highlighting
 )
