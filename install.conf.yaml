@@ -58,6 +58,7 @@
                   noto-fonts-cjk
                   noto-fonts-emoji
                   noto-fonts-extra
+                  openssh
                   otf-font-awesome
                   pamixer
                   pipewire
@@ -86,6 +87,12 @@
                   xorg-mkfontscale
                   zsh
           description: Installing utilities
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: systemctl --user enable --now ssh-agent.service
+          description: Enable and run ssh-agent from openssh
           stdin: true
           stdout: true
           stderr: true
