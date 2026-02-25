@@ -25,9 +25,7 @@ export GNUPGHOME="${HOME}/.config/gnupg"
 MAKEFLAGS="-j$(nproc)"
 export MAKEFLAGS
 
-if [ -z "${SSH_CONNECTION}" ]; then
-	export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
-fi
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
 
 # add rubygems' bin directory to path if rubygems is installed
 if [ -n "$(command -v gem)" ]; then
