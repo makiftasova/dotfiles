@@ -153,6 +153,9 @@
         ~/.config/chromium-flags.conf:
                 path: config/chromium-flags.conf
                 create: true
+        ~/.config/containers:
+                path: config/containers/
+                create: true
         ~/.config/environment.d:
                 path: config/environment.d/
                 create: true
@@ -222,8 +225,13 @@
         ~/.zshrc:
                 path: config/zsh/zshrc
                 create: true
-
 - shell:
+        -
+          command: systemctl --user daemon-reload
+          description: reload systemd deamon for user session
+          stdin: true
+          stdout: true
+          stderr: true
         -
           command: >
                   curl -fLo ~/.local/share/nvim/site/autoload/plug.vim
