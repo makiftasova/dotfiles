@@ -248,15 +248,7 @@ function grep_needed {
 }
 
 function sizeof {
-	local __dir
-	local __root
-
-	__dir=$(readlink -f "$1")
-	__root=$(pwd)
-
-	cd "${__dir}" || return 255
-	du -csh ./*
-	cd "${__root}" || return 255
+	du -csh "$(readlink -f "$1")"/*
 }
 
 # Print average file size in given directory
