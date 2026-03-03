@@ -166,6 +166,9 @@
         ~/.config/environment.d:
                 path: config/environment.d/
                 create: true
+        ~/.config/fluidsynth:
+                path: config/fluidsynth
+                create: true
         ~/.config/foot:
                 path: config/foot
                 create: true
