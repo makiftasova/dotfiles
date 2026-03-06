@@ -22,6 +22,15 @@ create_empty_file_if_not_exists "${local_zsh_config_dir}/env"
 create_empty_file_if_not_exists "${local_zsh_config_dir}/ohmyzshrc"
 create_empty_file_if_not_exists "${local_zsh_config_dir}/funcs"
 create_empty_file_if_not_exists "${local_zsh_config_dir}/aliases"
+if ! [ -e "${local_zsh_config_dir}/localservices" ]; then
+cat << 'LOCALSERVICESFILE' > "${local_zsh_config_dir}/localservices"
+CHECK_FILE="/tmp/${USER}-localservices.disabled"
+if ! [ -f "${CHECK_FILE}" ]; then
+	# call your \`systemctl --user\` commands here
+	touch "${CHECK_FILE}"
+fi
+LOCALSERVICESFILE
+fi
 unset local_zsh_config_dir
 
 echo "done"

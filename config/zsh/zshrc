@@ -159,6 +159,10 @@ alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 # shellcheck source=/dev/null
 [ -f "${ZSH_CONFIG_HOME}/aliases" ] && source "${ZSH_CONFIG_HOME}/aliases"
 
+# last minute fine tuning to systemd services before doing anything else
+# shellcheck source=/dev/null
+[ -f "${ZSH_CONFIG_LOCAL_HOME}/localservices" ] && source "${ZSH_CONFIG_LOCAL_HOME}/localservices"
+
 # if we are running from tty1,  and uwsm and swaywm is installed, try to start swaywm using uwsm
 if [ "$(tty)" = '/dev/tty1' ] && uwsm check may-start; then
   # Make sure Java AWT does not mess up with WM detection
