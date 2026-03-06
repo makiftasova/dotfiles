@@ -1,4 +1,9 @@
 # searxng.container
+[Unit]
+Description=SearXNG Container
+After=network-online.target
+Wants=network-online.target
+
 [Container]
 ContainerName=searxng
 Image=ghcr.io/searxng/searxng:latest
@@ -12,6 +17,7 @@ AddHost=host.containers.internal:host-gateway
 
 [Service]
 Restart=always
+RestartSec=10s
 
 [Install]
 WantedBy=default.target

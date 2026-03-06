@@ -1,6 +1,8 @@
+# open-webui.container
 [Unit]
 Description=Open WebUI Container
 After=network-online.target
+Wants=network-online.target
 
 [Container]
 Image=ghcr.io/open-webui/open-webui:main
@@ -14,6 +16,7 @@ AddHost=host.containers.internal:host-gateway
 
 [Service]
 Restart=always
+RestartSec=10s
 
 [Install]
 WantedBy=default.target
