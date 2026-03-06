@@ -1,0 +1,18 @@
+# tika.container
+[Unit]
+Description=Apache Tika Container
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+ContainerName=tika
+Image=docker.io/apache/tika:latest-full
+PublishPort=9998:9998
+AddHost=host.containers.internal:host-gateway
+
+[Service]
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=default.target
