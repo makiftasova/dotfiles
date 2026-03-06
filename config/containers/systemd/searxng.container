@@ -3,7 +3,7 @@
 ContainerName=searxng
 Image=ghcr.io/searxng/searxng:latest
 PublishPort=8081:8080
-Volume=/home/makiftasova/.config/searxng:/etc/searxng
+Volume=%h/.config/searxng:/etc/searxng
 Volume=searngx:/var/cache/searxng/
 
 # Networking: Pasta is used by default in Podman 5+
