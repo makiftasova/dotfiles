@@ -1,7 +1,17 @@
 # searxng.container
 [Container]
 ContainerName=searxng
-Image=docker.io/searxng/searxng:latest
+Image=ghcr.io/searxng/searxng:latest
 PublishPort=8081:8080
 Volume=/home/makiftasova/.config/searxng:/etc/searxng
 Volume=searngx:/var/cache/searxng/
+
+# Networking: Pasta is used by default in Podman 5+
+# If you need to access host services (like Ollama on the host):
+AddHost=host.containers.internal:host-gateway
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
