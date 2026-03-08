@@ -1,0 +1,20 @@
+# open-terminal.container
+[Unit]
+Description=Open Terminal Container
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+ContainerName=open-terminal
+Environment=OPEN_TERMINAL_API_KEY=open-terminal-123123
+Image=ghcr.io/open-webui/open-terminal
+PublishPort=3001:8000
+Volume=open-terminal:/home/user
+AddHost=host.containers.internal:host-gateway
+
+[Service]
+Restart=always
+RestartSec=10s
+
+[Install]
+WantedBy=default.target
