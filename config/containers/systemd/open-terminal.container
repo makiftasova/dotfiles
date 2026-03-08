@@ -14,7 +14,7 @@ EnvironmentFile=%h/.local/config/services/open-terminal.env
 # if you don't want to deal with environment file(s)
 # make sure to replace "your-secret-key" with something else too.
 #Environment=OPEN_TERMINAL_API_KEY=your-secret-key
-Environment=OPEN_TERMINAL_PACKAGES='ffmpeg'
+Environment=OPEN_TERMINAL_PACKAGES='ffmpeg rust-all golang lilypond'
 Environment=OPEN_TERMINAL_PIP_PACKAGES=""
 Image=ghcr.io/open-webui/open-terminal
 PublishPort=3001:8000
