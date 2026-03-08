@@ -9,6 +9,21 @@ function find_exec_in_path {
 	which -a "$1" | grep -e "^/" | head -1
 }
 
+# generate a base64 string with random "seed"
+# $1 length of generated string
+# $2 prefix for string
+function rand_str () {
+	local __string
+
+	__string="$(dd if=/dev/random bs="${1:-32}" count=1 status=none | base64 -w 0 | tr '+/' '-_'| head -c "${1:-32}")"
+
+	if [ -n "${2}" ]; then
+		echo "${2}${__string}"
+	else
+		echo "${__string}"
+	fi
+}
+
 # add given prefix to start of given string if it is missing
 # $1 string to check
 # $2 prefix
