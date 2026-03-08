@@ -5,8 +5,8 @@ After=network-online.target
 Wants=network-online.target
 
 [Container]
-Image=ghcr.io/open-webui/open-webui:main
 ContainerName=open-webui
+Image=ghcr.io/open-webui/open-webui:main
 PublishPort=3000:8080
 Volume=open-webui:/app/backend/data
 AddHost=host.containers.internal:host-gateway
