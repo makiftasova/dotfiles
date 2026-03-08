@@ -20,10 +20,14 @@ Image=ghcr.io/open-webui/open-terminal
 PublishPort=3001:8000
 Volume=open-terminal:/home/user
 AddHost=host.containers.internal:host-gateway
+# alternative for CPUQuota and MemoryMax in "Service" section below
+#PodmanArgs=--cpus=2 --memory=4G
 
 [Service]
 Restart=always
 RestartSec=10s
+CPUQuota=200%
+MemoryMax=4G
 
 [Install]
 WantedBy=default.target

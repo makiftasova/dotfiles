@@ -9,10 +9,14 @@ ContainerName=tika
 Image=docker.io/apache/tika:latest-full
 PublishPort=9998:9998
 AddHost=host.containers.internal:host-gateway
+# alternative for CPUQuota and MemoryMax in "Service" section below
+#PodmanArgs=--cpus=2 --memory=4G
 
 [Service]
 Restart=always
 RestartSec=10s
+CPUQuota=200%
+MemoryMax=4G
 
 [Install]
 WantedBy=default.target
