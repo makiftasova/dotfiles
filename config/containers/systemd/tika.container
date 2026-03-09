@@ -7,6 +7,7 @@ Wants=network-online.target
 [Container]
 ContainerName=tika
 Image=docker.io/apache/tika:latest-full
+AutoUpdate=registry
 PublishPort=9998:9998
 AddHost=host.containers.internal:host-gateway
 # alternative for CPUQuota and MemoryMax in "Service" section below
@@ -15,6 +16,7 @@ AddHost=host.containers.internal:host-gateway
 [Service]
 Restart=always
 RestartSec=10s
+TimeoutStartSec=300
 CPUQuota=200%
 MemoryMax=4G
 

@@ -17,6 +17,7 @@ EnvironmentFile=%h/.local/config/services/open-terminal.env
 Environment=OPEN_TERMINAL_PACKAGES='ffmpeg rustup golang lilypond'
 Environment=OPEN_TERMINAL_PIP_PACKAGES=""
 Image=ghcr.io/open-webui/open-terminal
+AutoUpdate=registry
 PublishPort=3001:8000
 Volume=open-terminal:/home/user
 AddHost=host.containers.internal:host-gateway
@@ -26,6 +27,7 @@ AddHost=host.containers.internal:host-gateway
 [Service]
 Restart=always
 RestartSec=10s
+TimeoutStartSec=300
 CPUQuota=200%
 MemoryMax=4G
 

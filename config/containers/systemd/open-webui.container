@@ -7,6 +7,7 @@ Wants=network-online.target
 [Container]
 ContainerName=open-webui
 Image=ghcr.io/open-webui/open-webui:main
+AutoUpdate=registry
 PublishPort=3000:8080
 Volume=open-webui:/app/backend/data
 AddHost=host.containers.internal:host-gateway
@@ -16,6 +17,7 @@ AddHost=host.containers.internal:host-gateway
 [Service]
 Restart=always
 RestartSec=10s
+TimeoutStartSec=300
 CPUQuota=200%
 MemoryMax=4G
 
