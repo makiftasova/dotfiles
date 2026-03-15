@@ -123,11 +123,6 @@ function tex_to_pdf {
 	pdflatex "$1"
 }
 
-# convert given markdown file into a pdf document
-function md_to_pdf {
-	pandoc --pdf-engine=pdflatex -V geometry:"top=2cm, bottom=1.5cm, left=2.cm, right=2cm" -o "$1.pdf" "$1"
-}
-
 # make a new directory and cd into it
 function mkcd {
 	mkdir -p "$1" && cd "$1" || return 255
