@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+
+set -o pipefail
+
+PANDOC_CSS="$(cat <<'EOF'
+/* A4 Paper Setup */
+@page {
+    size: A4;
+    margin: 1cm;
+}
+
+body {
+    background-color: white;
+    color: black;
+    line-height: 1.6;
+    /* Serif Stack: Georgia (Win/Mac), Palatino/Times (Mac/iOS), Liberation Serif (Linux), Noto Serif (Android) */
+    font-family: Georgia, "Palatino Linotype", "Book Antiqua", Palatino, "Times New Roman", Times, "Liberation Serif", serif;
+    font-size: 11pt;
+    max-width: 100%; /* Limits width to ~70 characters per line */
+    margin: 0 auto;  /* Centers the text block horizontally */
+    text-align: justify; /* Novel-style alignment */
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+    font-family: inherit;
+    font-weight: bold;
+    line-height: 1.2;
+    text-align: left; /* Keep headings left-aligned */
+    margin-top: 1.5em;
+}
+
+h1 { border-bottom: 1px solid #eee; padding-bottom: 0.3em; }
+
+/* Monospace Stack: Menlo/Monaco (Mac), Consolas/Courier New (Win), Liberation Mono (Linux) */
+code, pre {
+    font-family: Menlo, Monaco, Consolas, "Courier New", "Liberation Mono", "DejaVu Sans Mono", monospace;
+    font-size: 0.95em;
+    background-color: #f9f9f9;
+}
+
+pre {
+    padding: 1em;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Basic Syntax Highlighting for Pandoc classes */
+.kw { color: #0000ff; font-weight: bold; } /* Keywords - Blue */
+.dt { color: #008080; }                   /* Data Types - Teal */
+.st { color: #d14; }                      /* Strings - Red/Pink */
+.co { color: #999988; font-style: italic; } /* Comments - Grey */
+.ot { color: #0086b3; }                   /* Other - Light Blue */
+.fu { color: #900; font-weight: bold; }    /* Functions - Dark Red */
+
+/* Table Formatting */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th { background-color: #f2f2f2; }
+EOF
+)"
+
+find_exec_in_path () {
+	command -v "$1" | grep -e "^/" | head -1
+}
+
+check_depends () {
+	local -A deps=(
+		["pandoc"]="pandoc-cli"
+		["weasyprint"]="python-weasyprint"
+	)
+	local missing_dep
+	missing_dep='no'
+
+	for cmd in "${!deps[@]}"; do
+		local cmd_path
+		cmd_path=$(find_exec_in_path "${cmd}")
+
+		if [[ -z "${cmd_path}" ]]; then
+			echo "Error: ${cmd} not found. Please install ${deps[${cmd}]}."
+			missing_dep='yes'
+		fi
+	done
+
+	if [[ "${missing_dep}" = 'yes' ]]; then
+		echo "Missing dependencies found. Please install them before continuing."
+		exit 254
+	fi
+}
+
+convert_to_pdf () {
+	local inp
+	local out
+	local ext
+	local name
+
+	inp="${1}"
+	name="${inp%.*}"
+	ext="${inp##*.}"
+	out="${name}.pdf"
+
+	if [[ "${ext,,}" != 'md' ]]; then
+		echo "WARNING: File ${inp} has no '.md' extension. Skipping..."
+		return
+	fi
+
+	pandoc "${inp}" --from='markdown+smart' --metadata='charset=utf-8' \
+		--to=html5 --standalone \
+		--metadata title="${name}" \
+		--include-in-header=<(echo "<meta charset='utf-8'>") \
+		--include-in-header=<(echo "<style>${PANDOC_CSS}</style>") | \
+		weasyprint -q - --encoding=utf-8 "${out}"
+	}
+
+
+check_depends
+
+if [[ ${#} -eq 0 ]]; then
+	echo "Usage: ${0} <input.md>"
+	exit 1
+fi
+
+for file in "${@}"; do
+	if [[ -f "${file}" ]]; then
+		echo "Converting: ${file}"
+		convert_to_pdf "${file}"
+	else
+		echo "WARNING: File ${file} is not found or not a regular file. Skipping..."
+	fi
+done
