@@ -184,6 +184,9 @@
         ~/.config/kitty:
                 path: config/kitty/
                 create: true
+        ~/.config/looking-glass:
+                path: config/looking-glass
+                create: true
         ~/.config/mako:
                 path: config/mako/
                 create: true
