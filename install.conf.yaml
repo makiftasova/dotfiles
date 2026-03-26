@@ -190,6 +190,9 @@
         ~/.config/kitty:
                 path: config/kitty/
                 create: true
+        ~/.config/libglabels:
+                path: config/libglabels
+                create: true
         ~/.config/looking-glass:
                 path: config/looking-glass
                 create: true
