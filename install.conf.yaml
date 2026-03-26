@@ -178,6 +178,12 @@
         ~/.config/glow:
                 path: config/glow
                 create: true
+        ~/.config/gtk-3.0:
+                path: config/gtk-3.0
+                create: true
+        ~/.config/gtk-4.0:
+                path: config/gtk-4.0
+                create: true
         ~/.config/i3:
                 path: config/i3/
                 create: true
