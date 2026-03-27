@@ -1,0 +1,9 @@
+<!DOCTYPE Glabels-templates>
+<Glabels-templates>
+ <Template brand="Avansas" description="A4 2x8 Labels" part="AV-1016" size="A4">
+  <Label-rectangle height="96.378pt" id="0" round="4.25197pt" width="280.63pt" x_waste="8.50394pt" y_waste="0pt">
+   <Markup-margin size="0pt"/>
+   <Layout dx="297.638pt" dy="96.378pt" nx="2" ny="8" x0="8.50394pt" y0="36.8504pt"/>
+  </Label-rectangle>
+ </Template>
+</Glabels-templates>

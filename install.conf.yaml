@@ -175,6 +175,9 @@
         ~/.config/git:
                 path: config/git
                 create: true
+        ~/.config/glabels.org:
+                path: config/glabels.org
+                create: true
         ~/.config/glow:
                 path: config/glow
                 create: true
