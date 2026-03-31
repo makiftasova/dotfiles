@@ -1,0 +1,103 @@
+#! /usr/bin/env bash
+
+# $1 wireguard config file
+# $2 network namespace name
+CONFIG_PATH="${1}"
+NETNS_NAME="${2}"
+
+if ! [[ -r "${CONFIG_PATH}" ]]; then
+	echo "${CONFIG_PATH} does not exists or not accessible!"
+	exit 255
+fi
+
+if [[ -z "${NETNS_NAME}" ]]; then
+	NETNS_NAME='wgvpn'
+fi
+
+WG_IFACE="${NETNS_NAME}0"
+
+CONFIG_FILE="$(<"${CONFIG_PATH}")"
+
+ADDR_LINE="$(echo "${CONFIG_FILE}" | grep '^Address' || true)"
+ADDR_4=$(echo "${ADDR_LINE}" | awk -F'[ =,]' '{print $4}' || true)
+ADDR_6=$(echo "${ADDR_LINE}" | awk -F'[ =,]' '{print $5}' || true)
+
+DNS="$(echo "${CONFIG_FILE}" | grep '^DNS' | awk -F'[ =,]' '{print $4}' || true)"
+if [[ -z "${DNS}" ]]; then
+	DNS='1.1.1.1'
+fi
+
+ENDPOINT="$(echo "${CONFIG_FILE}" | grep '^Endpoint' | awk -F'[ =,]' '{print $4}' || true)"
+
+BASE_CONFIG="$(echo "${CONFIG_FILE}" | sed '/^Address/d' | sed '/^DNS/d' || true)"
+
+echo "Namespace: ${NETNS_NAME}"
+echo "IPv4: ${ADDR_4}"
+echo "IPv6: ${ADDR_6}"
+echo "DNS: ${DNS}"
+echo "ENDPOINT: ${ENDPOINT}"
+
+NETNS_DIR="/etc/netns/${NETNS_NAME}"
+mkdir -p "${NETNS_DIR}"
+
+cat <<EOF > "${NETNS_DIR}/resolv.conf"
+nameserver ${DNS}
+EOF
+
+ip netns del "${NETNS_NAME}" || true
+
+if ! ip netns add "${NETNS_NAME}"; then
+	echo "Cannot create netns ${NETNS_NAME}"
+	exit 255
+fi
+
+if ! ip netns exec "${NETNS_NAME}" ip link set lo up; then
+	echo "Cannot bringup loopback interface in netns ${NETNS_NAME}"
+	exit 255
+fi
+
+if ! ip link add dev "${WG_IFACE}" type wireguard; then
+	echo "Cannot setup wireguard interface ${WG_IFACE}"
+	exit 255
+fi
+
+if ! ip link set "${WG_IFACE}" netns "${NETNS_NAME}"; then
+	echo "Cannot move ${WG_IFACE} into netns ${NETNS_NAME}"
+	exit 255
+fi
+
+if ! ip netns exec "${NETNS_NAME}" wg setconf "${WG_IFACE}" <(echo "${BASE_CONFIG}"); then
+	echo "Cannot set wireguard config for interface ${WG_IFACE} in ${NETNS_NAME}"
+	exit 255
+fi
+
+if ! ip netns exec "${NETNS_NAME}" ip addr add "${ADDR_4}" dev "${WG_IFACE}"; then
+	echo "Cannot set wireguard IPv4 address for ${WG_IFACE} in ${NETNS_NAME}"
+	exit 255
+fi
+
+if [[ -n "${ADDR_6}" ]]; then
+	if ! ip netns exec "${NETNS_NAME}" ip -6 addr add "${ADDR_6}" dev "${WG_IFACE}"; then
+		echo "Cannot set wireguard IPv6 address for ${WG_IFACE} in ${NETNS_NAME}"
+		exit 255
+	fi
+fi
+
+if ! ip netns exec "${NETNS_NAME}" ip link set "${WG_IFACE}" up; then
+	echo "Cannot bring ${WG_IFACE} up in ${NETNS_NAME}"
+	exit 255
+fi
+
+if ! ip netns exec "${NETNS_NAME}" ip route add default dev "${WG_IFACE}"; then
+	echo "Cannot set ${WG_IFACE} as default IPv4 route in ${NETNS_NAME}"
+	exit 255
+fi
+
+if [[ -n "${ADDR_6}" ]]; then
+	if ! ip netns exec "${NETNS_NAME}" ip -6 route add default dev "${WG_IFACE}"; then
+		echo "Cannot set ${WG_IFACE} as default IPv6 route in ${NETNS_NAME}"
+		exit 255
+	fi
+fi
+
+exit 0
