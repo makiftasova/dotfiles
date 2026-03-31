@@ -1,0 +1,17 @@
+[Unit]
+Description=Split Tunnel wireguard VPN with config %i
+After=network.target
+# replace the below lines according to your needs/config
+#After=wg-vpn-start@%i.service
+#Requires=wg-vpn-start@%i.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/sudo /usr/local/bin/wg_netns_start /etc/wireguard/%I.conf stvpn
+Restart=on-failure
+# Ensure the app doesn't hang on logout
+KillMode=process
+ExecStop=/usr/bin/sudo /usr/bin/ip netns del stvpn
+
+[Install]
+WantedBy=default.target

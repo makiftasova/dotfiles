@@ -1,0 +1,15 @@
+[Unit]
+Description=VPN Isolated App: %i
+After=network.target
+
+[Service]
+Type=simple
+# %i represents the string after the @ (e.g., 'firefox')
+# %I is the same but unescaped (better for paths/args)
+ExecStart=/usr/bin/sudo /usr/local/bin/wg_netns_run stvpn %I
+Restart=on-failure
+# Ensure the app doesn't hang on logout
+KillMode=process
+
+[Install]
+WantedBy=default.target
