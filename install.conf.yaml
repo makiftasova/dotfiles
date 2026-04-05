@@ -235,6 +235,9 @@
         ~/.config/wofi:
                 path: config/wofi
                 create: true
+        ~/.config/xdg-desktop-portal:
+                path: config/xdg-desktop-portal
+                create: true
         ~/.config/zsh:
                 path: config/zsh
                 create: true
