@@ -1,0 +1,58 @@
+#! /usr/bin/env bash
+
+if [[ -z "$(command -v ollama)" ]]; then
+	echo "'ollama' not found in PATH!"
+	exit 255
+fi
+
+if [[ -z "${CONFIG_DIR}" ]]; then
+	CONFIG_DIR="${HOME}/.local/config/ollama-pull"
+fi
+
+if ! [[ -d "${CONFIG_DIR}" ]]; then
+	mkdir -p "${CONFIG_DIR}"
+fi
+
+CONFIG_FILE="${CONFIG_DIR}/ollama-pull-list"
+TIMESTAMP_FILE="${CONFIG_DIR}/ollama-last-pull"
+
+if ! [[ -f "${CONFIG_FILE}" ]]; then
+	touch "${CONFIG_FILE}"
+fi
+
+if ! [[ -f "${TIMESTAMP_FILE}" ]]; then
+	echo '0' > "${TIMESTAMP_FILE}";
+fi
+
+models_list="$(<"${CONFIG_FILE}")"
+
+if [[ -z "${models_list}" ]]; then
+	echo "File ${CONFIG_FILE} is empty"
+	exit 0
+fi
+
+last_pull_time="$(<"${TIMESTAMP_FILE}")"
+one_day_ago_time="$(date -d '-23 hours -55 minutes' +%s)"
+
+current_time="$(date +%s)"
+echo "${current_time}" > "${TIMESTAMP_FILE}"
+
+elapsed_time=$(( current_time - last_pull_time ))
+echo "Time since last pull: $(date -u -d @"${elapsed_time}" +"%T")"
+
+if [[ "${last_pull_time}" -ge "${one_day_ago_time}" ]]; then
+	echo "No need to pull yet"
+	exit 0
+fi
+
+for model in ${models_list}; do
+	echo "pulling ${model}"
+	if ollama pull "${model}"; then
+		echo "Succesfully pulled ${model}, removing from list"
+		sed -i "/${model}/d" "${CONFIG_FILE}"
+	else
+		echo "Failed to pull ${model}"
+	fi
+done
+
+exit 0

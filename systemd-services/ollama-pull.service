@@ -1,0 +1,12 @@
+[Unit]
+Description=Pull pending ollama models
+After=network.target
+
+[Service]
+Type=simple
+# Environment=CONFIG_DIR=%h/.local/config/ollama-pull
+ExecStart=/%h/.local/sbin/ollama-pull
+RuntimeMaxSec=3h
+
+[Install]
+WantedBy=default.target
