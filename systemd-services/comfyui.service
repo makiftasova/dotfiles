@@ -1,0 +1,16 @@
+[Unit]
+Description=ComfyUI Instance
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/ComfyUI
+Environment=BINDADDR=127.0.0.1
+Environment=PORT=8188
+ExecStart=%h/ComfyUI/venv/bin/python main.py --listen $BINDADDR --port $PORT --lowvram
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
