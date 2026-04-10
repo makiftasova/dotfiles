@@ -1,0 +1,16 @@
+[Unit]
+Description= SD.next Stable Diffusion Web UI
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/sdnext
+Environment=PYTHON=/usr/bin/python3.12
+Environment=PORT=3001
+EnvironmentFile=-%h/.local/config/services/sdnext.env
+ExecStart=/usr/bin/bash webui.sh --use-rocm --use-xformers --api --listen --port $PORT
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target
