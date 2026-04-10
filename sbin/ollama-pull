@@ -47,7 +47,7 @@ fi
 
 for model in ${models_list}; do
 	echo "pulling ${model}"
-	if ollama pull "${model}"; then
+	if ollama pull "${model}" 2>/dev/null; then
 		echo "Succesfully pulled ${model}, removing from list"
 		sed -i "/${model}/d" "${CONFIG_FILE}"
 	else
