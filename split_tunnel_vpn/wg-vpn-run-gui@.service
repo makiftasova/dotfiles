@@ -1,5 +1,6 @@
 [Unit]
-Description=VPN Isolated App: %i
+Description=VPN Isolated GUI App: %i
+After=graphical.target
 After=wg-vpn-start@wg0.service
 Requires=wg-vpn-start@wg0.service
 
@@ -13,4 +14,4 @@ Restart=on-failure
 KillMode=process
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=graphical-session.target

@@ -1,14 +1,16 @@
 [Unit]
 Description=Split Tunnel wireguard VPN with config %i
+Wants=network.target
 After=network.target
 
 [Service]
-Type=simple
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/usr/bin/bash -c 'until ping -c 1 -W 1 1.1.1.1; do sleep 1; done'
 ExecStart=/usr/bin/sudo /usr/local/bin/wg_netns_start /etc/wireguard/%I.conf stvpn
 Restart=on-failure
 # Ensure the app doesn't hang on logout
 KillMode=process
-ExecStop=/usr/bin/sudo /usr/bin/ip netns del stvpn
 
 [Install]
 WantedBy=default.target

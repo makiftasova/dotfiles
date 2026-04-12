@@ -9,4 +9,4 @@ if ! ip netns list | grep -q "${NETNS_NAME}"; then
     exit 1
 fi
 
-exec ip netns exec "${NETNS_NAME}" sudo -u "${SUDO_USER}" "${@}"
+exec ip netns exec "${NETNS_NAME}" sudo -u "${SUDO_USER}" WAYLAND_DISPLAY="${WAYLAND_DISPLAY}" XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR}" "${@}"
