@@ -34,7 +34,6 @@
                   gnome-disk-utility
                   grim
                   gstreamer
-                  gstreamer-vaapi
                   gst-libav
                   gst-plugin-pipewire
                   gst-plugins-bad
