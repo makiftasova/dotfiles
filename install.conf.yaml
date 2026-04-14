@@ -86,6 +86,9 @@
                   xorg-bdftopcf
                   xorg-mkfontscale
                   zsh
+                  zsh-autosuggestions
+                  zsh-completions
+                  zsh-syntax-highlighting
           description: Installing utilities
           stdin: true
           stdout: true
@@ -117,22 +120,6 @@
         -
           command: sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
           description: Installing oh-my-zsh
-          stdin: true
-          stdout: true
-          stderr: true
-        -
-          command: >
-                  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
-                  ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-          description: Installing zsh-syntax-highlighting plugin for oh-my-zsh
-          stdin: true
-          stdout: true
-          stderr: true
-        -
-          command: >
-                  git clone https://github.com/zsh-users/zsh-autosuggestions.git
-                  ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-          description: Installing zsh-autosuggestions plugin for oh-my-zsh
           stdin: true
           stdout: true
           stderr: true

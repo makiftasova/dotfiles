@@ -98,8 +98,6 @@ plugins=(
 	rust
 	term_tab
 	vagrant
-	zsh-autosuggestions
-	zsh-syntax-highlighting
 )
 
 # Some other useful plugins:
@@ -163,6 +161,11 @@ alias ohmyzsh='$EDITOR ~/.oh-my-zsh'
 # last minute fine tuning to systemd services before doing anything else
 # shellcheck source=/dev/null
 [ -f "${ZSH_CONFIG_LOCAL_HOME}/localservices" ] && source "${ZSH_CONFIG_LOCAL_HOME}/localservices"
+
+# load zsh plugins from distro's packages:
+export ZSH_SYSTEM_PLUGINS_HOME='/usr/share/zsh/plugins'
+[ -f "${ZSH_SYSTEM_PLUGINS_HOME}/zsh-autosuggestions/zsh-autosuggestions.zsh" ] && source "${ZSH_SYSTEM_PLUGINS_HOME}/zsh-autosuggestions/zsh-autosuggestions.zsh"
+[ -f "${ZSH_SYSTEM_PLUGINS_HOME}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ] && source "${ZSH_SYSTEM_PLUGINS_HOME}/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 # if we are running from tty1,  and uwsm and swaywm is installed, try to start swaywm using uwsm
 if [ "$(tty)" = '/dev/tty1' ] && uwsm check may-start; then
