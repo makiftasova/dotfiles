@@ -1,6 +1,6 @@
 [Unit]
 Description=VPN Isolated GUI App: %i
-After=graphical.target
+After=graphical-session.target
 After=wg-vpn-start@wg0.service
 Requires=wg-vpn-start@wg0.service
 
