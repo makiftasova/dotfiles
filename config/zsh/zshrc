@@ -96,6 +96,7 @@ plugins=(
 	gitfast
 	gitignore
 	rust
+	tailscale
 	term_tab
 	vagrant
 )
