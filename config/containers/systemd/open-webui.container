@@ -11,6 +11,7 @@ AutoUpdate=registry
 PublishPort=3000:8080
 Volume=open-webui:/app/backend/data
 AddHost=host.containers.internal:host-gateway
+Environment="ENABLE_RAG_LOCAL_WEB_FETCH=true"
 # alternative for CPUQuota and MemoryMax in "Service" section below
 #PodmanArgs=--cpus=2 --memory=4G
 
