@@ -200,6 +200,9 @@
         ~/.config/nvim:
                 path: config/nvim
                 create: true
+        ~/.config/opencode:
+                path: config/opencode
+                create: true
         ~/.config/sway:
                 path: config/sway/
                 create: true
