@@ -1193,6 +1193,8 @@ function update-git-repos {
 	# "(f)" in "${(f)repo_list}" used to convert string into array, split
 	# from newline characters
 	for repo_path in "${(f)repo_list}"; do
+		[[ "${repo_path}" == \#* ]] && continue
+
 		repo="$(basename "${repo_path}")"
 
 		echo "Processing ${repo} @ ${repo_path}"
