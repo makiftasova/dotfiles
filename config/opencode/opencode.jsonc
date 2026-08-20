@@ -19,6 +19,19 @@
       "type": "remote",
       "url": "https://gitlab.com/api/v4/mcp",
       "enabled": false
+    },
+    "playwright": {
+      "type": "local",
+      "command": [
+        "playwright-mcp",
+        "--isolated",
+        "--ignore-https-errors",
+        "--headless",
+        "--sandbox",
+        "--executable-path",
+        "/usr/bin/chromium"
+      ],
+      "enabled": false
     }
   }
 }
