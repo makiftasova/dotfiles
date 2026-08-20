@@ -6,7 +6,10 @@ import os
 import sys
 from pathlib import Path
 
-import playwright
+try:
+    import playwright
+except ImportError:
+    raise SystemExit("Please install 'python-playwright' module.")
 
 driver = Path(playwright.__file__).resolve().parent / "driver"
 node = driver / "node"
