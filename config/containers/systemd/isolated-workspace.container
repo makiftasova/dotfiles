@@ -1,0 +1,27 @@
+[Unit]
+Description=Isolated Workspace Container
+After=network-online.target
+
+[Container]
+Image=isolated-workspace:latest
+ContainerName=isolated-workspace
+HostName=makiftasova-remote
+Exec=/lib/systemd/systemd
+
+# Required permissions for isolated Tailscale network
+AddCapability=CAP_NET_ADMIN
+AddCapability=CAP_NET_RAW
+AddDevice=/dev/net/tun:/dev/net/tun
+
+# Enable cgroups for systemd inside the container
+Volume=/sys/fs/cgroup:/sys/fs/cgroup:rw
+
+# Persist Tailscale state across container restarts
+Volume=tailscale-state:/var/lib/tailscale
+
+# Keeps the container running cleanly under systemd
+Environment=container=podman
+
+[Install]
+# Auto-start on user login
+WantedBy=default.target

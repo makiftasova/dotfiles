@@ -1,0 +1,58 @@
+FROM debian:stable-slim
+
+# Avoid warnings by switching to noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
+
+# try to preserve tailscale login
+VOLUME ["/var/lib/tailscale"]
+
+ARG SSH_PUBKEY=""
+ARG USER="makiftasova"
+
+RUN apt-get update && apt-get -y full-upgrade
+
+RUN apt-get -y install --no-install-recommends \
+	curl fzf git-all openssh-client openssh-server python3 python3-yaml \
+	sudo tigervnc-viewer tmux zsh
+
+# install tailscale
+RUN sh -c "$(curl -fsSL https://tailscale.com/install.sh)"
+
+# clean-up space
+RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+# create regular user
+RUN useradd -m -U -s /bin/zsh $USER && usermod -aG sudo $USER && echo "$USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USER
+
+# make sure to regenerate host keys
+RUN ssh-keygen -A
+
+# make sure tailscale can route packages
+RUN echo "net.ipv4.ip_forward=1\nnet.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
+
+# start tailscale daemon
+RUN systemctl enable tailscaled
+RUN systemctl enable ssh
+
+# setup user files
+USER $USER
+WORKDIR /home/$USER
+
+RUN [ -n "$SSH_PUBKEY" ] && mkdir -p '.ssh' && echo "$SSH_PUBKEY" > .ssh/authorized_keys || true
+
+RUN git clone --depth 1 https://codeberg.org/makiftasova/dotfiles.git dotfiles
+
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+# make sure `.zshrc from dotfiles is used
+RUN rm .zshrc && ./dotfiles/install --only link
+
+# Switch back to root so systemd can boot as PID 1
+USER root
+WORKDIR /
+
+# Tell systemd it is running in Podman
+ENV container=podman
+
+# Start systemd init
+CMD ["/lib/systemd/systemd"]
