@@ -3,9 +3,6 @@ FROM debian:stable-slim
 # Avoid warnings by switching to noninteractive
 ENV DEBIAN_FRONTEND=noninteractive
 
-# try to preserve tailscale login
-VOLUME ["/var/lib/tailscale"]
-
 ARG SSH_PUBKEY=""
 ARG USER="makiftasova"
 
@@ -53,6 +50,10 @@ WORKDIR /
 
 # Tell systemd it is running in Podman
 ENV container=podman
+
+# try to preserve user home directory and tailscale login
+VOLUME ["/home/$USER"]
+VOLUME ["/var/lib/tailscale"]
 
 # Start systemd init
 CMD ["/lib/systemd/systemd"]
