@@ -1,0 +1,297 @@
+#!/bin/sh
+#
+# List or delete OpenCode root sessions whose recorded working directory is
+# missing or is no longer a directory.
+#
+# Runtime dependencies:
+#   - A POSIX-compliant /bin/sh
+#   - opencode with the `db` and `session delete` commands (tested with 1.18.18)
+#   - jq
+#
+# Close other OpenCode instances before deleting sessions.
+
+usage()
+{
+	printf 'Usage:\n'
+	printf '  %s [-l|--list] [-o|--older DAYS]\n' "${0##*/}"
+	printf '  %s (-d|--delete) [-o|--older DAYS] ROW...\n' "${0##*/}"
+	printf '  %s (-d|--delete) [-o|--older DAYS] --all\n' "${0##*/}"
+	printf '  %s -h|--help\n' "${0##*/}"
+	printf '\n'
+	printf 'List or delete OpenCode sessions whose working directory is missing.\n'
+	printf '\n'
+	printf 'Options:\n'
+	printf '  -l, --list        list stale sessions (default)\n'
+	printf '  -d, --delete      delete stale sessions selected by row number\n'
+	printf '  -o, --older DAYS  include sessions last updated before local midnight DAYS ago\n'
+	printf '      --all         delete every listed session; requires --delete\n'
+	printf '  -h, --help        display this help and exit\n'
+	printf '\n'
+	printf 'Repeat the same --older filter when deleting rows from a previous listing.\n'
+}
+
+usage_error()
+{
+	printf '%s\n\n' "$1" >&2
+	usage >&2
+	exit 2
+}
+
+set_older_days()
+{
+	if [ -n "$older_days" ]; then
+		usage_error 'The --older option may only be specified once.'
+	fi
+	case "$1" in
+		''|*[!0-9]*)
+			usage_error "Invalid number of days: $1"
+			;;
+	esac
+	older_days="$1"
+}
+
+add_delete_row()
+{
+	case "$1" in
+		''|0*|*[!0-9]*)
+			usage_error "Invalid row number: $1"
+			;;
+	esac
+	case " $delete_rows " in
+		*" $1 "*)
+			;;
+		*)
+			delete_rows="${delete_rows}${delete_rows:+ }$1"
+			;;
+	esac
+}
+
+mode='list'
+mode_set=0
+older_days=''
+delete_all=0
+delete_rows=''
+
+while [ "$#" -gt 0 ]; do
+	case "$1" in
+		-l|--list)
+			if [ "$mode_set" -eq 1 ] && [ "$mode" != 'list' ]; then
+				usage_error 'The --list and --delete options cannot be combined.'
+			fi
+			mode='list'
+			mode_set=1
+			;;
+		-d|--delete)
+			if [ "$mode_set" -eq 1 ] && [ "$mode" != 'delete' ]; then
+				usage_error 'The --list and --delete options cannot be combined.'
+			fi
+			mode='delete'
+			mode_set=1
+			;;
+		-o|--older)
+			shift
+			if [ "$#" -eq 0 ]; then
+				usage_error 'The --older option requires a number of days.'
+			fi
+			set_older_days "$1"
+			;;
+		--older=*)
+			set_older_days "${1#*=}"
+			;;
+		--all)
+			delete_all=1
+			;;
+		-h|--help)
+			usage
+			exit 0
+			;;
+		--)
+			shift
+			while [ "$#" -gt 0 ]; do
+				add_delete_row "$1"
+				shift
+			done
+			break
+			;;
+		-*)
+			usage_error "Unknown option: $1"
+			;;
+		*)
+			add_delete_row "$1"
+			;;
+	esac
+	shift
+done
+
+if [ "$mode" = 'list' ] && [ -n "$delete_rows" ]; then
+	usage_error 'Row numbers require --delete.'
+fi
+if [ "$mode" = 'list' ] && [ "$delete_all" -eq 1 ]; then
+	usage_error 'The --all option requires --delete.'
+fi
+if [ "$mode" = 'delete' ] && [ "$delete_all" -eq 1 ] && [ -n "$delete_rows" ]; then
+	usage_error 'Row numbers cannot be combined with --all.'
+fi
+if [ "$mode" = 'delete' ] && [ "$delete_all" -eq 0 ] && [ -z "$delete_rows" ]; then
+	usage_error 'The --delete option requires row numbers or --all.'
+fi
+
+for dependency in opencode jq
+do
+	if ! command -v "$dependency" >/dev/null 2>&1; then
+		printf 'Required command not found: %s\n' "$dependency" >&2
+		exit 127
+	fi
+done
+
+age_filter=''
+if [ -n "$older_days" ]; then
+	age_filter="
+AND time_updated < strftime('%s', 'now', 'localtime', 'start of day', '-$older_days days', 'utc') * 1000"
+fi
+
+query="SELECT id,
+       directory,
+       title,
+       strftime('%Y-%m-%dT%H:%M:%S', time_updated / 1000, 'unixepoch', 'localtime') AS updated
+FROM session
+WHERE parent_id IS NULL
+$age_filter
+ORDER BY time_updated ASC, id ASC"
+
+if ! sessions=$(opencode db "$query" --format json); then
+	printf 'Failed to query OpenCode sessions.\n' >&2
+	exit 1
+fi
+
+if ! rows=$(printf '%s\n' "$sessions" | jq -c '.[] | {id, directory, title, updated}'); then
+	printf 'Failed to parse OpenCode session data.\n' >&2
+	exit 1
+fi
+
+found=0
+deleted=0
+failed=0
+stale_rows=''
+
+if [ -n "$rows" ]; then
+	while IFS= read -r row
+	do
+		if ! id=$(printf '%s\n' "$row" | jq -er '.id'); then
+			printf 'Failed to parse a session ID.\n' >&2
+			failed=1
+			continue
+		fi
+		if ! directory=$(printf '%s\n' "$row" | jq -er '.directory'); then
+			printf 'Failed to parse the directory for session %s.\n' "$id" >&2
+			failed=1
+			continue
+		fi
+		if [ ! -d "$directory" ]; then
+			found=$((found + 1))
+			if [ -n "$stale_rows" ]; then
+				stale_rows="$stale_rows
+$row"
+			else
+				stale_rows="$row"
+			fi
+		fi
+	done <<EOF
+$rows
+EOF
+fi
+
+if [ "$mode" = 'delete' ] && [ "$failed" -ne 0 ]; then
+	printf 'Refusing to delete sessions because session data could not be parsed.\n' >&2
+	exit 1
+fi
+
+if [ "$mode" = 'delete' ] && [ "$delete_all" -eq 0 ]; then
+	for requested_row in $delete_rows; do
+		if ! jq -en --arg row "$requested_row" --argjson found "$found" \
+			'($row | tonumber) <= $found' >/dev/null; then
+			printf 'Row number is outside the current table: %s\n' "$requested_row" >&2
+			exit 2
+		fi
+	done
+fi
+
+print_table()
+{
+	printf '%s\n' "$stale_rows" | jq -rs '
+		def pad($width): tostring | . + (" " * ($width - length));
+
+		to_entries as $rows |
+		(["ROW"] + ($rows | map((.key + 1) | tostring)) | map(length) | max) as $row_width |
+		(["UPDATED"] + ($rows | map(.value.updated)) | map(length) | max) as $updated_width |
+		(["SESSION ID"] + ($rows | map(.value.id)) | map(length) | max) as $id_width |
+		(["WORKING DIRECTORY"] + ($rows | map(.value.directory)) | map(length) | max) as $directory_width |
+		(
+			[
+				("ROW" | pad($row_width)),
+				("UPDATED" | pad($updated_width)),
+				("SESSION ID" | pad($id_width)),
+				("WORKING DIRECTORY" | pad($directory_width)),
+				"TITLE"
+			] |
+			@tsv
+		),
+		(
+			$rows[] |
+			[
+				((.key + 1) | pad($row_width)),
+				(.value.updated | pad($updated_width)),
+				(.value.id | pad($id_width)),
+				(.value.directory | pad($directory_width)),
+				.value.title
+			] |
+			@tsv
+		)
+	'
+}
+
+if [ "$found" -eq 0 ]; then
+	printf 'No stale OpenCode sessions found.\n'
+elif [ "$mode" = 'list' ]; then
+	if ! print_table; then
+		printf 'Failed to format stale OpenCode sessions.\n' >&2
+		exit 1
+	fi
+	printf '\nFound %d stale OpenCode root session(s).\n' "$found"
+else
+	selected=0
+	row_number=0
+	while IFS= read -r row
+	do
+		row_number=$((row_number + 1))
+		delete_row=0
+		if [ "$delete_all" -eq 1 ]; then
+			delete_row=1
+		else
+			case " $delete_rows " in
+				*" $row_number "*)
+					delete_row=1
+					;;
+			esac
+		fi
+
+		if [ "$delete_row" -eq 1 ]; then
+			selected=$((selected + 1))
+			id=$(printf '%s\n' "$row" | jq -r '.id')
+			directory=$(printf '%s\n' "$row" | jq -r '.directory')
+			title=$(printf '%s\n' "$row" | jq -r '.title')
+			printf 'Deleting row %d, %s: %s [%s]\n' "$row_number" "$id" "$title" "$directory"
+			if opencode session delete "$id"; then
+				deleted=$((deleted + 1))
+			else
+				printf 'Failed to delete session %s.\n' "$id" >&2
+				failed=1
+			fi
+		fi
+	done <<EOF
+$stale_rows
+EOF
+	printf '\nDeleted %d of %d selected stale OpenCode root session(s).\n' "$deleted" "$selected"
+fi
+
+exit "$failed"
