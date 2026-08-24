@@ -8,6 +8,9 @@ ContainerName=isolated-workspace
 HostName=makiftasova-remote
 Exec=/lib/systemd/systemd
 
+# Enable UID/GID mapping for rootless user mounts
+UserNS=keep-id:uid=1000,gid=1000
+
 # Required permissions for isolated Tailscale network
 AddCapability=CAP_NET_ADMIN
 AddCapability=CAP_NET_RAW
@@ -21,6 +24,13 @@ Volume=tailscale-state:/var/lib/tailscale
 
 # Keeps the container running cleanly under systemd
 Environment=container=podman
+
+# Mount wayland socket for gui apps
+Volume=%t/wayland-1:%t/wayland-1:ro
+Environment=XDG_RUNTIME_DIR=%t
+Environment=WAYLAND_DISPLAY=wayland-1
+Environment=QT_QPA_PLATFORM=wayland
+Environment=GDK_BACKEND=wayland
 
 [Install]
 # Auto-start on user login
