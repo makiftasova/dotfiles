@@ -22,10 +22,13 @@ Volume=/sys/fs/cgroup:/sys/fs/cgroup:rw
 
 # Persist Tailscale state across container restarts
 Volume=isolated-workspace-home:/home/makiftasova:rw
-Volume=isolated-workspace-tailscale:/var/lib/tailscale
+Volume=isolated-workspace-tailscale:/var/lib/tailscale:rw
 
 # Mount wayland socket for gui apps
 Volume=%t/wayland-1:%t/wayland-1:ro
+
+# Mount Xwayland socket for X11 gui apps
+Volume=%T/.X11-unix:%T/.X11-unix:ro
 
 # Mount a "file exhange" directory between host and container
 Volume=/tmp/isolated-workspace:/exchange:rw
@@ -34,10 +37,11 @@ Volume=/tmp/isolated-workspace:/exchange:rw
 Environment=container=podman
 
 # Environment variables needed for running GUI apps in container
-Environment=XDG_RUNTIME_DIR=%t
-Environment=WAYLAND_DISPLAY=wayland-1
-Environment=QT_QPA_PLATFORM=wayland
+Environment=DISPLAY=:0
 Environment=GDK_BACKEND=wayland
+Environment=QT_QPA_PLATFORM=wayland
+Environment=WAYLAND_DISPLAY=wayland-1
+Environment=XDG_RUNTIME_DIR=%t
 
 [Service]
 ExecStartPre=/usr/bin/install -d -m 0700 /tmp/isolated-workspace
