@@ -9,8 +9,13 @@ ARG USER="makiftasova"
 RUN apt-get update && apt-get -y full-upgrade
 
 RUN apt-get -y install --no-install-recommends \
-	curl fzf git-all openssh-client openssh-server python3 python3-yaml \
-	remmina remmina-plugin-vnc sudo tigervnc-viewer tmux wayvnc zsh
+	curl fzf foot-extra-terminfo ncurses-term git-all locales \
+	openssh-client openssh-server python3 python3-yaml remmina \
+	remmina-plugin-vnc sudo tigervnc-viewer tmux vim wayvnc zsh
+
+# generate the proper locales first and use them.
+RUN sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
+ENV LANG=en_US.UTF-8
 
 # install tailscale
 RUN sh -c "$(curl -fsSL https://tailscale.com/install.sh)"
