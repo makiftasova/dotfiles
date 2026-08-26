@@ -172,5 +172,17 @@ export ZSH_SYSTEM_PLUGINS_HOME='/usr/share/zsh/plugins'
 if [ "$(tty)" = '/dev/tty1' ] && uwsm check may-start; then
   # Make sure Java AWT does not mess up with WM detection
   export _JAVA_AWT_WM_NONREPARENTING=1
+
+  # Check if any physical DRM connector is status "connected"
+  # If there is no monitor(s) connected, start in headless mode
+  if grep -q "^connected$" /sys/class/drm/card*-*/status 2>/dev/null; then
+    unset WLR_BACKENDS
+    unset WLR_LIBINPUT_NO_DEVICES
+  else
+    export WLR_BACKENDS="drm,libinput,headless"
+    export WLR_LIBINPUT_NO_DEVICES=1
+    echo "No monitor(s) detected, starting sway in headless mode..."
+  fi
+
   exec uwsm start sway.desktop
 fi
