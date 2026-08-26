@@ -1,63 +1,81 @@
 FROM debian:stable-slim
 
 # Avoid warnings by switching to noninteractive
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 ARG SSH_PUBKEY=""
-ARG USER="makiftasova"
+ARG USERNAME="makiftasova"
 
-RUN apt-get update && apt-get -y full-upgrade
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+        ca-certificates curl fzf foot-extra-terminfo git locales ncurses-term \
+        openssh-client openssh-server python3 python3-yaml remmina \
+        remmina-plugin-vnc sudo tigervnc-viewer tmux vim wayvnc zsh \
+ && sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen \
+ && locale-gen \
+ && curl -fsSL https://tailscale.com/install.sh \
+        -o /tmp/install-tailscale.sh \
+ && sh /tmp/install-tailscale.sh \
+ && rm -f /tmp/install-tailscale.sh \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get -y install --no-install-recommends \
-	curl fzf foot-extra-terminfo ncurses-term git-all locales \
-	openssh-client openssh-server python3 python3-yaml remmina \
-	remmina-plugin-vnc sudo tigervnc-viewer tmux vim wayvnc zsh
+# Set the default locale and tell systemd it is running in Podman
+ENV LANG=en_US.UTF-8 \
+    container=podman
 
-# generate the proper locales first and use them.
-RUN sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && locale-gen
-ENV LANG=en_US.UTF-8
+# Make sure correct locales are generated and in use.
+RUN test "$(locale charmap)" = "UTF-8"
 
-# install tailscale
-RUN sh -c "$(curl -fsSL https://tailscale.com/install.sh)"
+# Create a regular user and give it sudo rights
+RUN useradd --create-home --user-group --shell /bin/zsh "$USERNAME" \
+ && usermod --append --groups sudo "$USERNAME" \
+ && printf '%s ALL=(ALL:ALL) NOPASSWD:ALL\n' "$USERNAME" > "/etc/sudoers.d/$USERNAME" \
+ && chmod 0440 "/etc/sudoers.d/$USERNAME" \
+ && visudo --check --strict
 
-# clean-up space
-RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+# Generate host keys, configure sshd, validate it, and enable services
+RUN ssh-keygen -A \
+ && printf '%s\n' \
+        'PermitRootLogin no' 'PasswordAuthentication no' \
+        'KbdInteractiveAuthentication no' 'PubkeyAuthentication yes' \
+        'AuthenticationMethods publickey' "AllowUsers ${USERNAME}" \
+        'AllowTcpForwarding local' \
+        > /etc/ssh/sshd_config.d/00-isolated-workspace.conf \
+ && chmod 0644 /etc/ssh/sshd_config.d/00-isolated-workspace.conf \
+ && /usr/sbin/sshd -t \
+ && systemctl enable tailscaled.service ssh.service
 
-# create regular user
-RUN useradd -m -U -s /bin/zsh $USER && usermod -aG sudo $USER && echo "$USER ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USER
 
-# make sure to regenerate host keys
-RUN ssh-keygen -A
+# Set up user files
+USER $USERNAME
+WORKDIR /home/$USERNAME
 
-# make sure tailscale can route packages
-RUN echo "net.ipv4.ip_forward=1\nnet.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
-
-# start tailscale daemon
-RUN systemctl enable tailscaled
-RUN systemctl enable ssh
-
-# setup user files
-USER $USER
-WORKDIR /home/$USER
-
-RUN [ -n "$SSH_PUBKEY" ] && mkdir -p '.ssh' && echo "$SSH_PUBKEY" > .ssh/authorized_keys || true
+# Add provided ssh pubkey to user's authorized_keys
+RUN if [ -n "$SSH_PUBKEY" ]; then \
+        install -d -m 0700 .ssh; \
+        printf '%s\n' "$SSH_PUBKEY" > .ssh/authorized_keys; \
+        chmod 0600 .ssh/authorized_keys; \
+    fi
 
 RUN git clone --depth 1 https://codeberg.org/makiftasova/dotfiles.git dotfiles
 
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+# Install oh-my-zsh
+RUN curl -fsSL \
+        https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh \
+        -o /tmp/install-oh-my-zsh.sh \
+ && RUNZSH=no CHSH=no sh /tmp/install-oh-my-zsh.sh \
+ && rm -f /tmp/install-oh-my-zsh.sh
 
-# make sure `.zshrc from dotfiles is used
-RUN rm .zshrc && ./dotfiles/install --only link
+# Make sure `.zshrc from `dotfiles` is used
+RUN rm -f .zshrc && ./dotfiles/install --only link
 
 # Switch back to root so systemd can boot as PID 1
 USER root
 WORKDIR /
 
-# Tell systemd it is running in Podman
-ENV container=podman
-
-# try to preserve user home directory and tailscale login
-VOLUME ["/home/$USER"]
+# Try to preserve user home directory and tailscale login
+VOLUME ["/home/$USERNAME"]
 VOLUME ["/var/lib/tailscale"]
 
 # Start systemd init
