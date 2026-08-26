@@ -30,7 +30,7 @@ Volume=%t/wayland-1:%t/wayland-1:ro
 # Mount Xwayland socket for X11 gui apps
 Volume=%T/.X11-unix:%T/.X11-unix:ro
 
-# Mount a "file exhange" directory between host and container
+# Mount a "file exchange" directory between host and container
 Volume=/tmp/isolated-workspace:/exchange:rw
 
 # Keeps the container running cleanly under systemd
