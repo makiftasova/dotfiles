@@ -8,8 +8,8 @@ qt_qpa_platform="${QT_QPA_PLATFORM:-wayland}"
 wayland_display="${WAYLAND_DISPLAY:-wayland-1}"
 xdg_runtime_dir="${XDG_RUNTIME_DIR:-/run/user/1000}"
 
-wayland_socket="${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"
-xwayland_socket='/tmp/.X11-unix/X0'
+wayland_socket="${xdg_runtime_dir}/${wayland_display}"
+xwayland_socket="/tmp/.X11-unix/X${display##*:}"
 exchange_dir="${EXCHANGE_DIR:-/tmp/isolated-workspace}"
 
 echo "DISPLAY: ${display}"
@@ -20,7 +20,7 @@ echo "XDG_RUNTIME_DIR: ${xdg_runtime_dir}"
 
 echo "Wayland socket: ${wayland_socket}"
 echo "Xwayland socket: ${xwayland_socket}"
-echo "Exhange directory: ${exchange_dir}"
+echo "Exchange directory: ${exchange_dir}"
 
 # The container user has a subordinate host UID under rootless Podman, so the
 # exchange directory must be writable from both the host and container.
