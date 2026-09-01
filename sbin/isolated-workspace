@@ -1,0 +1,168 @@
+#!/usr/bin/env python3
+
+"""
+A simple helper script to utilize `isolated-workspace` container without needing
+open a terminal window.
+"""
+
+import os
+import sys
+import shutil
+import shlex
+
+import argparse as ap
+
+try:
+    import tkinter as tk
+    from tkinter import messagebox as tkmb
+    HAS_TKINTER = True
+except ImportError:
+    HAS_TKINTER = False
+
+from enum import IntEnum
+
+
+class ExitCode(IntEnum):
+    SUCCESS = 0     # success
+    ENOARG = -1     # no arguments given
+    ECMDFAIL = -2   # command is failed
+    ENOTSUP = -3    # not supported
+    ESYSTEM = -4    # some error related to underlying OS or dependencies
+
+
+def parse_arguments() -> (dict, list):
+    """Parse command line arguments and retun a dictory of them.
+
+    If no command line arguments are given, this function will return an empty
+    dictionary object.
+    """
+    parser = ap.ArgumentParser(
+        description='Helper to running commands in `isolated-workspace` container',
+        prog='isolated-workspace'
+    )
+    parser.add_argument(
+        "-w",
+        "--windowed",
+        dest="windowed",
+        action="store_true",
+        required=False,
+        help='Run with GUI [default if no command is given].',
+    )
+
+    if len(sys.argv) < 2:
+        parser.print_help()
+        return ({}, [])
+
+    args, extras = parser.parse_known_args()
+
+    return (vars(args), extras)
+
+
+def ask_in_gui() -> list:
+    root = tk.Tk()
+    root.title('isolated-workspace: Select Action')
+    root.columnconfigure(1, weight=1)
+
+    selected_command: list[str] = []
+    current_row = 0
+
+    def next_row() -> int:
+        nonlocal current_row
+        row = current_row
+        current_row += 1
+        return row
+
+    def btn_hndl_choose(cmd: list[str]):
+        nonlocal selected_command
+        selected_command = cmd
+        root.destroy()
+
+    def btn_hndl_run_command():
+        nonlocal selected_command
+        input_text = user_command.get().strip()
+        if not input_text:
+            tkmb.showerror(title='Empty Command',
+                           message='No command given!!!')
+        try:
+            selected_command = shlex.split(input_text)
+        except ValueError as e:
+            tkmb.showerror(title='Invalid Command',
+                           message=str(e))
+            return
+
+        root.destroy()
+
+    # Button for quick access: remmina
+    tk.Button(root, text='remmina', command=lambda: btn_hndl_choose(['remmina'])).grid(
+        row=next_row(), column=0, padx=5, pady=5, sticky='ew')
+
+    # Button for quick access: vncviewer
+    tk.Button(root, text='vncviewer', command=lambda: btn_hndl_choose(['vncviewer'])).grid(
+        row=next_row(), column=1, padx=5, pady=5, sticky='ew')
+
+    # GUI items for running custom command.
+    # Keep this as the last block of GUI item placement.
+    r = next_row()
+    tk.Label(root, text='Command to run:').grid(
+        row=r, column=0, padx=5, pady=5, sticky='w')
+
+    user_command = tk.Entry(root, width=80)
+    user_command.grid(row=r, column=1, padx=5, pady=5, sticky='ew')
+    r = next_row()
+
+    tk.Button(root, text='Run Command!', command=btn_hndl_run_command).grid(
+        row=next_row(), column=0, padx=5, pady=5, sticky='ew')
+
+    # End of GUI item placement.
+
+    root.wait_window()
+
+    return selected_command
+
+
+def exec_cmd(command: list) -> int:
+    if command and command[0] == '--':
+        command.pop(0)
+
+    if len(command) == 0:
+        print("No command given!")
+        return ExitCode.ENOARG
+
+    _cmd_argv = ['podman', 'exec', '-it',
+                 '--user', 'makiftasova',
+                 '--workdir', '/home/makiftasova',
+                 '--env', f"WAYLAND_DISPLAY={os.getenv('WAYLAND_DISPLAY', '')}",
+                 '--env', f"DISPLAY={os.getenv('DISPLAY', '')}",
+                 '--env', 'DISABLE_AUTO_UPDATE=true',
+                 'isolated-workspace',
+                 *command]
+
+    _exec = shutil.which(_cmd_argv[0])
+    if not _exec:
+        print(f"`{_cmd_argv[0]}` not found in $PATH")
+        return ExitCode.ESYSTEM
+
+    # for future debugging
+    # print(f"Running {_cmd_argv}")
+    print(f"Running {' '.join(_cmd_argv)}")
+
+    os.execvpe(_exec, _cmd_argv, os.environ)
+
+    raise AssertionError("unreacable")
+
+
+if __name__ == "__main__":
+    cmd_flags, extra_args = parse_arguments()
+    if not cmd_flags:
+        print('No arguments given')
+        sys.exit(ExitCode.ENOARG)
+
+    if cmd_flags["windowed"]:
+        if not HAS_TKINTER:
+            print('Cannot import `tkinter`!')
+            sys.exit(ExitCode.ESYSTEM)
+        command = ask_in_gui()
+    else:
+        command = extra_args
+
+    exec_cmd(command)
