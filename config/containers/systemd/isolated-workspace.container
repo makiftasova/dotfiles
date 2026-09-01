@@ -38,8 +38,8 @@ Environment=container=podman
 
 # Environment variables needed for running GUI apps in container
 Environment=DISPLAY=:0
-Environment=GDK_BACKEND=wayland
-Environment=QT_QPA_PLATFORM=wayland
+Environment=GDK_BACKEND=wayland,x11
+Environment=QT_QPA_PLATFORM=wayland;xcb
 Environment=WAYLAND_DISPLAY=wayland-1
 Environment=XDG_RUNTIME_DIR=%t
 
