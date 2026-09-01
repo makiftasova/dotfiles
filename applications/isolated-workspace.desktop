@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Isolated Workspace
+Comment=A container to run tailscale etc. isolated from the host
+Exec=isolated-workspace -w
+Terminal=false
+Categories=System;Network
+Keywords=network;container

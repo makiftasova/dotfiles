@@ -17,5 +17,9 @@ to let loose on your system.
   capability between host and container.
 * GUI apps work out of the box on a Wayland host: Wayland apps via the
   mounted wayland-1 socket, X11 apps via the mounted X socket (XWayland).
-  X11 apps must be run as user `makiftasova`, not root (see the
-  `isolated-workspace` shell alias).
+  X11 apps must be run as user `makiftasova`, not root
+* There is a helper python script in `sbin/isolated-workspace` which also have
+  a very basic GUI interface for running apps in container.
+* Use `applications/isolated-workspace.desktop` if you want to launch
+  `isolated-workspace` python script directly from your GUI instead of a
+  terminal.
