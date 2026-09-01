@@ -43,6 +43,9 @@ Environment=QT_QPA_PLATFORM=wayland;xcb
 Environment=WAYLAND_DISPLAY=wayland-1
 Environment=XDG_RUNTIME_DIR=%t
 
+# Disable oh-my-zsh auto-update
+Environment=DISABLE_AUTO_UPDATE=true
+
 [Service]
 ExecStartPre=/usr/bin/install -d -m 0700 /tmp/isolated-workspace
 Restart=always

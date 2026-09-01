@@ -74,6 +74,9 @@ RUN rm -f .zshrc && ./dotfiles/install --only link
 USER root
 WORKDIR /
 
+# Disable oh-my-zsh auto-update
+ENV DISABLE_AUTO_UPDATE=true
+
 # Try to preserve user home directory and tailscale login
 VOLUME ["/home/$USERNAME"]
 VOLUME ["/var/lib/tailscale"]
