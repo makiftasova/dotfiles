@@ -2,7 +2,7 @@
   "$schema": "https://opencode.ai/config.json",
   "share": "disabled",
   "default_agent": "plan",
-  "agent": {
+  "agents": {
     "build": {
       "color": "#5C9CF5"
     },
@@ -11,28 +11,30 @@
     }
   },
   "mcp": {
-    "atlassian": {
-      "type": "remote",
-      "url": "https://mcp.atlassian.com/v1/mcp/authv2",
-      "enabled": false
-    },
-    "gitlab": {
-      "type": "remote",
-      "url": "https://gitlab.com/api/v4/mcp",
-      "enabled": false
-    },
-    "playwright": {
-      "type": "local",
-      "command": [
-        "playwright-mcp",
-        "--isolated",
-        "--ignore-https-errors",
-        "--headless",
-        "--sandbox",
-        "--executable-path",
-        "/usr/bin/chromium"
-      ],
-      "enabled": false
+    "servers": {
+      "atlassian": {
+        "type": "remote",
+        "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+        "disabled": true
+      },
+      "gitlab": {
+        "type": "remote",
+        "url": "https://gitlab.com/api/v4/mcp",
+        "disabled": true
+      },
+      "playwright": {
+        "type": "local",
+        "command": [
+          "playwright-mcp",
+          "--isolated",
+          "--ignore-https-errors",
+          "--headless",
+          "--sandbox",
+          "--executable-path",
+          "/usr/bin/chromium"
+        ],
+        "disabled": true
+      }
     }
   }
 }
