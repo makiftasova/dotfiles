@@ -4,10 +4,10 @@
   "default_agent": "plan",
   "agent": {
     "build": {
-      "color": "secondary"
+      "color": "#5C9CF5"
     },
     "plan": {
-      "color": "primary"
+      "color": "#FAB283"
     }
   },
   "mcp": {
