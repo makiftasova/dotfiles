@@ -14,7 +14,7 @@
     "servers": {
       "atlassian": {
         "type": "remote",
-        "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+        "url": "https://mcp.atlassian.com/v2/mcp",
         "disabled": true
       },
       "gitlab": {
@@ -37,6 +37,8 @@
         ],
         "disabled": true
       },
+      // Requires the matching Playwright-managed browser on each machine:
+      //   playwright install firefox
       "playwright_firefox": {
         "type": "local",
         "command": [
