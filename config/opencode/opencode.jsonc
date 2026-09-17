@@ -10,6 +10,7 @@
       "color": "#FAB283"
     }
   },
+  "formatter": true,
   "mcp": {
     "servers": {
       "atlassian": {
