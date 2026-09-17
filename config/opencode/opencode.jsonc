@@ -22,16 +22,33 @@
         "url": "https://gitlab.com/api/v4/mcp",
         "disabled": true
       },
-      "playwright": {
+      "playwright_chromium": {
         "type": "local",
         "command": [
-          "playwright-mcp",
+          "playwright",
+          "mcp",
+          "--codegen",
+          "typescript",
           "--isolated",
-          "--ignore-https-errors",
           "--headless",
-          "--sandbox",
+          "--ignore-https-errors",
           "--executable-path",
           "/usr/bin/chromium"
+        ],
+        "disabled": true
+      },
+      "playwright_firefox": {
+        "type": "local",
+        "command": [
+          "playwright",
+          "mcp",
+          "--codegen",
+          "typescript",
+          "--isolated",
+          "--headless",
+          "--ignore-https-errors",
+          "--browser",
+          "firefox"
         ],
         "disabled": true
       }
