@@ -1,6 +1,4 @@
-.gitignore
-bun.lock
-node_modules
-package.json
-package-lock.json
-service.json
+*
+!.gitignore
+!cli.json
+!opencode.jsonc
