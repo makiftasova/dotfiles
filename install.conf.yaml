@@ -38,6 +38,7 @@
                   gst-plugin-pipewire
                   gst-plugins-bad
                   gst-plugins-base
+                  gst-plugins-espeak
                   gst-plugins-good
                   gst-plugins-ugly
                   gvfs
@@ -50,7 +51,6 @@
                   mako
                   mpv
                   mpv-mpris
-                  nautilus
                   neovim
                   nm-connection-editor
                   noto-fonts
@@ -60,6 +60,7 @@
                   openssh
                   otf-font-awesome
                   pamixer
+                  pcmanfm
                   pipewire
                   pipewire-alsa
                   pipewire-pulse
@@ -68,6 +69,7 @@
                   polkit-kde-agent
                   python-pynvim
                   ripgrep
+                  shfmt
                   slurp
                   sway
                   swayidle
