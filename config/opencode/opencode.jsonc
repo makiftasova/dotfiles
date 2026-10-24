@@ -23,6 +23,12 @@
         "url": "https://gitlab.com/api/v4/mcp",
         "disabled": true
       },
+      // Install the actual mcp with `r2pm -Uci r2mcp` if needed
+      "radare2": {
+        "type": "local",
+        "command": ["r2pm", "-r", "r2mcp"],
+        "disabled": true
+      },
       "playwright_chromium": {
         "type": "local",
         "command": [
