@@ -68,7 +68,8 @@
           "playwright",
           "mcp",
           "--extension"
-        ]
+        ],
+       "disabled": true
       }
     }
   }
