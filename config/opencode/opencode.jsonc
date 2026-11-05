@@ -62,12 +62,14 @@
         "disabled": true
       },
       // Requires playwright browser extension installed and enabled on browser
-      "playwright_extension": {
+      "playwright_chromium_extension": {
         "type": "local",
         "command": [
           "playwright",
           "mcp",
-          "--extension"
+          "--extension",
+          "--executable-path",
+          "/usr/bin/chromium"
         ],
        "disabled": true
       }
