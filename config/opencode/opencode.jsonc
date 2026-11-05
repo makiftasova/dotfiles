@@ -60,6 +60,15 @@
           "firefox"
         ],
         "disabled": true
+      },
+      // Requires playwright browser extension installed and enabled on browser
+      "playwright_extension": {
+        "type": "local",
+        "command": [
+          "playwright",
+          "mcp",
+          "--extension"
+        ]
       }
     }
   }
