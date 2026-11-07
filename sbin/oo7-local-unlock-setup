@@ -1,0 +1,162 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-only
+# vim: set ts=8 sw=8 sts=4 noet:
+#
+# Sets up a restricted, loopback-only ssh key which lets the current user run
+# `oo7-cli unlock` through `ssh localhost`.
+#
+# Why: oo7-daemon decides which password prompter to use (GUI or terminal)
+# from the caller's logind session. Processes started by tmux are not part of
+# any logind session, so the daemon falls back to the systemd user manager's
+# environment and, if DISPLAY/WAYLAND_DISPLAY is set there, opens a GUI prompt
+# which nobody can see over ssh. A command run through `ssh localhost` always
+# lives in a fresh logind `tty` session, so the terminal prompter is used.
+#
+# What it does (idempotent):
+#   - generates ~/.ssh/oo7_local (ed25519, no passphrase) if missing
+#   - authorizes it in ~/.ssh/authorized_keys with
+#       restrict,pty,from="127.0.0.1,::1",command="<oo7-cli> unlock"
+#     so the key can do nothing but run `oo7-cli unlock` from loopback
+#   - records the localhost host keys in ~/.ssh/known_hosts
+#
+# Author: Mehmet Akif TASOVA <makiftasova@gmail.com>
+#
+# Usage:
+#   oo7-local-unlock-setup [install|remove|status]
+#
+# After installing, unlock with:
+#   ssh -i ~/.ssh/oo7_local -o IdentitiesOnly=yes -t localhost
+#
+
+set -euo pipefail
+
+SSH_DIR="${HOME}/.ssh"
+KEY="${SSH_DIR}/oo7_local"
+AUTH_KEYS="${SSH_DIR}/authorized_keys"
+KNOWN_HOSTS="${SSH_DIR}/known_hosts"
+TAG='oo7-local'
+# absolute path of oo7-cli, empty if it is not installed
+OO7_CLI="$(command -v oo7-cli || true)"
+readonly OO7_CLI
+
+function usage {
+	echo "usage: ${0##*/} [install|remove|status]" >&2
+}
+
+function die {
+	echo "error: ${*}" >&2
+	exit 1
+}
+
+function need {
+	command -v "${1}" >/dev/null 2>&1 || die "command not found: ${1}"
+}
+
+# prints "yes" if something listens on port 22 on a loopback or wildcard
+# address, "no" otherwise. Always returns 0 so it is safe under `set -e`.
+function sshd_on_loopback {
+	if ss -Hltn 2>/dev/null | awk '{print $4}' \
+		| grep -Eq '^(127\.0\.0\.1|\[::1\]|0\.0\.0\.0|\[::\]|\*):22$'; then
+		echo yes
+	else
+		echo no
+	fi
+}
+
+function install_setup {
+	local pubkey tmp host sshd
+
+	need ssh
+	need ssh-keygen
+	need ssh-keyscan
+	[[ -n "${OO7_CLI}" ]] || die 'oo7-cli not found in PATH'
+
+	sshd="$(sshd_on_loopback)"
+	if [[ "${sshd}" != yes ]]; then
+		echo 'warning: nothing seems to listen on port 22; is sshd running?' >&2
+	fi
+
+	mkdir -p "${SSH_DIR}"
+	chmod 700 "${SSH_DIR}"
+
+	if [[ ! -f "${KEY}" ]]; then
+		ssh-keygen -q -t ed25519 -N '' -C "${TAG}" -f "${KEY}"
+		echo "generated ${KEY}"
+	fi
+
+	pubkey="$(cut -d' ' -f1,2 "${KEY}.pub")"
+
+	touch "${AUTH_KEYS}"
+	chmod 600 "${AUTH_KEYS}"
+
+	# drop any previous entry of ours, then add the current one
+	tmp="$(mktemp)"
+	grep -v -F " ${TAG}" "${AUTH_KEYS}" >"${tmp}" || true
+	echo "restrict,pty,from=\"127.0.0.1,::1\",command=\"${OO7_CLI} unlock\" ${pubkey} ${TAG}" >>"${tmp}"
+	cat "${tmp}" >"${AUTH_KEYS}"
+	rm -f "${tmp}"
+	echo "authorized ${KEY}.pub in ${AUTH_KEYS}"
+
+	touch "${KNOWN_HOSTS}"
+	chmod 600 "${KNOWN_HOSTS}"
+	for host in localhost 127.0.0.1 ::1; do
+		if ! ssh-keygen -F "${host}" -f "${KNOWN_HOSTS}" >/dev/null 2>&1; then
+			ssh-keyscan -t ed25519 "${host}" 2>/dev/null >>"${KNOWN_HOSTS}" || true
+		fi
+	done
+
+	cat <<-EOF
+
+	Done. Unlock the keyring with:
+	  ssh -i ${KEY} -o IdentitiesOnly=yes -o BatchMode=yes -t localhost
+
+	Suggested zsh function:
+	  oo7-unlock() {
+	    ssh -i ~/.ssh/oo7_local -o IdentitiesOnly=yes -o BatchMode=yes -t localhost
+	  }
+	EOF
+}
+
+function remove_setup {
+	local tmp
+
+	if [[ -f "${AUTH_KEYS}" ]]; then
+		tmp="$(mktemp)"
+		grep -v -F " ${TAG}" "${AUTH_KEYS}" >"${tmp}" || true
+		cat "${tmp}" >"${AUTH_KEYS}"
+		rm -f "${tmp}"
+		echo "removed ${TAG} entry from ${AUTH_KEYS}"
+	fi
+
+	rm -f "${KEY}" "${KEY}.pub"
+	echo "removed ${KEY}{,.pub}"
+	echo "note: localhost entries in ${KNOWN_HOSTS} were left untouched"
+}
+
+function status_setup {
+	local sshd
+
+	[[ -f "${KEY}" ]] && echo "key:            present (${KEY})" || echo "key:            missing"
+	if [[ -f "${AUTH_KEYS}" ]] && grep -q -F " ${TAG}" "${AUTH_KEYS}"; then
+		echo 'authorized_keys: entry present'
+	else
+		echo 'authorized_keys: entry missing'
+	fi
+	echo "oo7-cli:        ${OO7_CLI:-not found}"
+	if command -v ss >/dev/null 2>&1; then
+		sshd="$(sshd_on_loopback)"
+		echo "sshd on :22:    ${sshd}"
+	fi
+}
+
+case "${1:-install}" in
+	install) install_setup ;;
+	remove) remove_setup ;;
+	status) status_setup ;;
+	-h | --help | help) usage ;;
+	*)
+		usage
+		exit 2
+		;;
+esac

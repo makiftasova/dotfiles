@@ -1362,5 +1362,21 @@ HELP
 	>&2 echo '\nWarning: GitHub API repository size information may not be reliable (run with -h for details).'
 }
 
+# Unlock the oo7 keyring with a terminal password prompt, even from processes
+# which are not part of a logind session (e.g. tmux panes).
+# Set the key up once with `oo7-local-unlock-setup`.
+function oo7-unlock {
+	local _key="${HOME}/.ssh/oo7_local"
+
+	if [[ ! -f "${_key}" ]]; then
+		>&2 echo "oo7-unlock: ${_key} not found, run oo7-local-unlock-setup first"
+		return 1
+	fi
+
+	>&2 echo 'Please enter keyring password when prompted with "An application wants access to the keyring"'
+
+	ssh -i "${_key}" -o IdentitiesOnly=yes -o BatchMode=yes -t localhost
+}
+
 # shellcheck source=/dev/null disable=SC2154
 [ -f "${ZSH_CONFIG_LOCAL_HOME}/funcs" ] && source "${ZSH_CONFIG_LOCAL_HOME}/funcs"
