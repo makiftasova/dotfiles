@@ -57,6 +57,7 @@
                   noto-fonts-cjk
                   noto-fonts-emoji
                   noto-fonts-extra
+                  oo7
                   openssh
                   otf-font-awesome
                   pamixer
@@ -103,6 +104,12 @@
         -
           command: systemctl --user enable --now foot-server.socket
           description: Enable and run foot server
+          stdin: true
+          stdout: true
+          stderr: true
+        -
+          command: systemctl --user enable --now oo7-daemon.service
+          description: Enable and run oo7 secret servic provider
           stdin: true
           stdout: true
           stderr: true
