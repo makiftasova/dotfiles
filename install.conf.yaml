@@ -142,6 +142,9 @@
         ~/.clang-format:
                 path: config/clang-format/clang-format
                 create: true
+        ~/.claude:
+                path: config/claude
+                create: true
         ~/.config/alacritty:
                 path: config/alacritty/
                 create: true

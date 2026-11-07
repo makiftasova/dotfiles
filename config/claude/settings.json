@@ -1,0 +1,8 @@
+{
+  "theme": "dark",
+  "model": "sonnet",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  }
+}

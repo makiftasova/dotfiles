@@ -1,0 +1,9 @@
+# Ignore everything by default; ~/.claude is symlinked here and full of runtime state
+*
+
+# Explicitly allow tracked config
+!.gitignore
+!settings.json
+!statusline-command.sh
+!CLAUDE.md
+!keybindings.json
