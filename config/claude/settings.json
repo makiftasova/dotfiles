@@ -1,8 +1,13 @@
 {
-  "theme": "dark",
   "model": "sonnet",
+  "workflowKeywordTriggerEnabled": false,
   "statusLine": {
     "type": "command",
     "command": "bash ~/.claude/statusline-command.sh"
-  }
+  },
+  "promptSuggestionEnabled": false,
+  "awaySummaryEnabled": false,
+  "timeFormat": "24-hour",
+  "theme": "dark",
+  "editorMode": "normal"
 }
