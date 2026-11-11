@@ -23,6 +23,14 @@
         "url": "https://gitlab.com/api/v4/mcp",
         "disabled": true
       },
+      // Use gitlab's cli tool `glab` as local mcp server.
+      // This is a useful workaround  when gitlab remote mcp starts
+      // spamming HTTP 429 errors.
+      "glab": {
+        "type": "local",
+        "command": ["glab", "mcp", "serve"],
+        "disabled": true
+      },
       // Install the actual mcp with `r2pm -Uci r2mcp` if needed
       "radare2": {
         "type": "local",
