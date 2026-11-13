@@ -9,5 +9,6 @@
   "awaySummaryEnabled": false,
   "timeFormat": "24-hour",
   "theme": "dark",
-  "editorMode": "normal"
+  "editorMode": "normal",
+  "autoContinueAtUsageLimit": true
 }
