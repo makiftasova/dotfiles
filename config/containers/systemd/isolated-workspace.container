@@ -9,6 +9,9 @@ ContainerName=isolated-workspace
 HostName=makiftasova-remote
 Exec=/lib/systemd/systemd
 
+# systemd must run as PID 1 root; keep-id would otherwise make it uid 1000
+User=root
+
 # Enable UID/GID mapping for rootless user mounts
 UserNS=keep-id:uid=1000,gid=1000
 

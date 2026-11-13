@@ -29,6 +29,7 @@ install -d -m 0777 "${exchange_dir}"
 podman run --detach --rm --replace \
 	--name isolated-workspace \
 	--hostname makiftasova-remote \
+	--user root \
 	--userns=keep-id:uid=1000,gid=1000 \
 	--cap-add=NET_ADMIN \
 	--cap-add=NET_RAW \
