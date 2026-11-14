@@ -26,6 +26,9 @@ export GNUPGHOME="${HOME}/.config/gnupg"
 MAKEFLAGS="-j$(nproc)"
 export MAKEFLAGS
 
+GOFLAGS='-mod=readonly -trimpath'
+export GOFLAGS
+
 export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
 
 # add rubygems' bin directory to path if rubygems is installed
